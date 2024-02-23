@@ -107,7 +107,7 @@ async _renderPost(content, fileName) {
 
 markdown-it会将markdown文件的内容转化为HTML字符串，然后我们通过模板引擎[ejs](https://www.npmjs.com/package/ejs)生成HTML文件，具体HTML模板如下：
 
-```ejs
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,7 +129,7 @@ markdown-it会将markdown文件的内容转化为HTML字符串，然后我们通
 
 等到所有markdown文件转换为HTML文件后，我们就可以生成博客的首页页面了，原理是一样的，通过ejs的模板文件，传递具体博文数据进去，生成html文件。
 
-```ejs
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -254,7 +254,7 @@ ssRender.run()
 
 > home.ejs
 
-```ejs
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -294,7 +294,7 @@ ssRender.run()
 
 > post.ejs
 
-```ejs
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -45,7 +45,7 @@ app.listen(3000);
 
 lib文件夹下包含了核心的4个文件：
 
-```shell
+```bash
 .
 ├── application.js # 项目入口，最终导出给用户使用
 ├── context.js     # 请求上下文相关

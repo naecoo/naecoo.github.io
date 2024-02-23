@@ -40,7 +40,7 @@ docker run -itd -p 9000:9000 \
 
 ​	如果需要外网访问`Minio`的后台，我们需要配置Nginx，建议申请一个域名，然后在域名控制台配置二级域名，然后再`nginx.conf`下面配置:
 
-```nginx
+```
 server {
     listen 80;
     # 这里填写你的二级域名
@@ -56,7 +56,7 @@ server {
 
 同时，图片访问也需要进行配置:
 
-```nginx
+```
  server{
     listen 80;
     # 这里填写你的图片访问域名

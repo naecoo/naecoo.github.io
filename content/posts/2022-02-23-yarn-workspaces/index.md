@@ -60,7 +60,7 @@ yarn 同时还提供了一组命令，帮助提高操作效率：
 
    在指定的 package 下运行命令
 
-   ```shell
+   ```bash
    # 在 foo 下安装 express
    yarn workspace foo add express
    
@@ -75,7 +75,7 @@ yarn 同时还提供了一组命令，帮助提高操作效率：
 
    在所有 package 运行命令，没有则报错
 
-   ```shell
+   ```bash
    # 所有 package 执行 scripts 中的 build 命令
    yarn workspace run build
    ```
@@ -88,7 +88,7 @@ yarn 同时还提供了一组命令，帮助提高操作效率：
 
    在根目录下安装依赖
 
-   ```shell
+   ```bash
    # 将 eslint 作为全局依赖安装
    yarn add eslint -W
    ```

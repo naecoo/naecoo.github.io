@@ -203,15 +203,8 @@ const parseDate = (cfg) => {
 
 parseDate 方法将解析输入的参数，生成对应的 Date 实例。因此，整体解析流程是：
 
-```mermaid
-flowchart TB
-  A[dayjs] --> B{isDayjs}
-    B -->|Yes| C[Dayjs clone]
-    B -->|No| D[new Dayjs]
-    D --> E[parse]
-    E --> F[parseDate]
-    F --> G[init]
-```
+![image-dayjs1](./dayjs1.png)
+
 
 ### 显示
 
@@ -330,26 +323,8 @@ class Dayjs {
 
 上面的代码比较繁琐，但是逻辑比较简单，简而言之就是用一个正则表达式匹配输入的占位符，分别用数据来填充。比方说，我们这样格式化 `dayjs().format('YYYY-MM-DD')`，处理过程将是：
 
-```mermaid
-flowchart LR
+![image-dayjs2](./dayjs2.png)
 
-  A[YYYY-MM-DD]
-  A --> B[YYYY]
-  B --> B1["String(this.$y).slice(-2)"]
-  B1 --> B2[2024]
-
-  A --> C[MM]
-  C --> C1["Utils.s($M + 1, 2, '0')"]
-  C1 --> C2[01]
-
-  A --> D[DD]
-  D --> D1["Utils.s(this.$D, 2, '0')"]
-  D1 --> D2[15]
-
-  B2 --> E[2024-01-15]
-  C2 --> E
-  D2 --> E
-```
 
 除了格式化字符串之外，dayjs 还支持显示 unix 时间戳
 
@@ -561,13 +536,8 @@ class Dayjs{
 
 上面的代码比较复杂，但是大部分都是转换单位和计算变更数值，case by case。本质上就是根据单位和数值生成新的 Date 实例，然后用新 Date 实例生成新的 Dayjs 实例。
 
-```mermaid
-flowchart TB
-  A[add、subtract、startOf、endOf] --> B[转换单位]
-  B --> C[计算变更后的数据]
-  C --> D[用新数据生成新的Date实例]
-  D --> E[生成新的Dayjs实例]
-```
+![image-dayjs3](./dayjs3.png)
+
 
 ### 查询
 

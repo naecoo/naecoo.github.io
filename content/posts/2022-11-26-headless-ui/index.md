@@ -116,7 +116,7 @@ const onScroll = (data) => {
 
 基本的代码：
 
-```vue
+```typescript
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
@@ -156,7 +156,7 @@ const selectedFruit = ref(fruits[0])
 
 加一点样式：
 
-```vue
+```typescript
 <template>
   <Listbox v-model="selectedFruit">
     <ListboxButton>{{ selectedFruit.name }}</ListboxButton>
@@ -183,7 +183,7 @@ const selectedFruit = ref(fruits[0])
 
 加上多选和禁用选项的功能：
 
-```vue
+```typescript
 <script>
 ...
     
@@ -227,7 +227,7 @@ const selectedFruits = ref([fruits[0], fruits[1]]);
 
 最后完善一下样式，一个基本的 Select 组件就诞生了：
 
-```vue
+```typescript
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
