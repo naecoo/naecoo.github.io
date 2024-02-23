@@ -24,21 +24,16 @@ highlight_code = true
 extra_syntaxes_and_themes = []
 
 [extra]
-# Enable KaTex math formula support globally.
-math = false
-# Enable mermaid support globally.
 mermaid = true
-# Enable comment support globally.
+math = false
 comment = false
 
-# The profile on home page.
 [extra.profile]
 name = "Naeco"
 bio = "Go big or go home."
 avatar_url = "icons/github.svg"
 avatar_invert = true
 
-# The social icons below the profile on the home page.
 [[extra.profile.social]]
 name = "github"
 url = "https://github.com/naecoo"
@@ -73,4 +68,3 @@ url = "$BASE_URL/tags"
 #since = 2020
 #license = "CC BY-SA 4.0"
 #license_url = "https://creativecommons.org/licenses/by-sa/4.0/deed"
-
