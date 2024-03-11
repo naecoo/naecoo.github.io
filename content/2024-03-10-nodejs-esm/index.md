@@ -105,7 +105,7 @@ import("node:fs").then((fs) => {
 
 ### 加载 NPM 模块
 
-与此同时，依然可以使用 NPM 的模块，不管是否提供 ESM 模块包，因为 Node.js 支持在 ESM 模块中导入 CommonJS 模块
+与此同时，依然可以使用 NPM 的模块，不管是否提供 ESM 模块包，因为 Node.js 支持在 ESM 模块中导入 CommonJS 模块。
 
 ```javascript
 // cjs.cjs
@@ -125,6 +125,20 @@ import * as m from "./cjs.cjs";
 console.log(m);
 // [Module] { default: { name: 'exported' }, name: 'exported' }
 ```
+
+但是要注意，导入的模块中不能包含动态导入、导出。
+
+```javascript
+// cjs.cjs
+exports.name = "exported";
+
+if (Math.random() > 0.5) {
+  // 动态导入
+  const fs = require("fs");
+}
+```
+
+导入上面这样的 CommonJS 模块会报错。
 
 ### 加载网络模块
 
