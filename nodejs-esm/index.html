@@ -1,0 +1,455 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    Node.js 中使用 ESM 模块 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="Node.js 中使用 ESM 模块" />
+  <meta name="author" content="Node.js 中使用 ESM 模块" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;nodejs-esm&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">Node.js 中使用 ESM 模块</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2024-03-10</time>
+  <span class="mx-1">&middot;</span>
+  <span>4min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#wei-shen-me-bu-shi-yong-commonjs"
+            >为什么不使用 CommonJS</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#zai-node-js-zhong-shi-yong-esm"
+            >在 Node.js 中使用 ESM</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#ji-ben-shi-yong"
+                >基本使用</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#jia-zai-nei-zhi-mo-kuai"
+                >加载内置模块</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#dong-tai-dao-ru"
+                >动态导入</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#jia-zai-npm-mo-kuai"
+                >加载 NPM 模块</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#jia-zai-wang-luo-mo-kuai"
+                >加载网络模块</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/nodejs-esm/#xiang-guan-wen-zhang"
+            >相关文章</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="wei-shen-me-bu-shi-yong-commonjs">为什么不使用 CommonJS</h2>
+<ol>
+<li>
+<p>不是标准，只适用于 Node.js。不能在浏览器、Deno 等 runtime 上运行（需要编译或者中间层适配）</p>
+</li>
+<li>
+<p>CommonJS 语法太灵活，一些信息只能在运行时获取。因此没有办法进行静态分析，也没办法 tree-shaking，无法裁剪优化代码。</p>
+</li>
+</ol>
+<p>CommonJS 太灵活，只能在运行时获取信息...</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">exportKey </span><span>= </span><span style="color:#bf616a;">localStorage</span><span>.</span><span style="color:#96b5b4;">getItem</span><span>(Math.</span><span style="color:#96b5b4;">random</span><span>());
+</span><span>module.exports[</span><span style="color:#bf616a;">exportKey</span><span>] = () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  ...
+</span><span>};
+</span></code></pre>
+<ol start="3">
+<li>同时使用多种模块化标准，不利于分发代码。</li>
+</ol>
+<p>比如，一个 NPM 模块需要支持两种标准，需要引入额外的构建步骤，而且构建过程很复杂...</p>
+<p><img src="https://naecoo.github.io/nodejs-esm/./package-json-exports.jpeg" alt="1" /></p>
+<h2 id="zai-node-js-zhong-shi-yong-esm">在 Node.js 中使用 ESM</h2>
+<blockquote>
+<p>Node.js 从 12.x 版本开始支持 ESM。当前低于 &lt;= 12.x 的版本，执行时候需要声明 <code>--experimental-modules</code> flag：</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">node --experimental-modules</span><span> index.mjs
+</span></code></pre>
+</blockquote>
+<h3 id="ji-ben-shi-yong">基本使用</h3>
+<p>最简单的方法，将 <code>.js</code> 文件后缀改为 <code>.mjs</code>，同时加上后缀名</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// mod.mjs
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">add </span><span>= (</span><span style="color:#bf616a;">a</span><span>, </span><span style="color:#bf616a;">b</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">a </span><span>+ </span><span style="color:#bf616a;">b</span><span>;
+</span><span>};
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// index.mjs
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">add </span><span>} </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./mod.mjs</span><span>&quot;;
+</span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#8fa1b3;">add</span><span>(</span><span style="color:#d08770;">1</span><span>, </span><span style="color:#d08770;">1</span><span>));
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">node</span><span> index.mjs
+</span><span style="color:#bf616a;">//</span><span> 2
+</span></code></pre>
+<p>如果不想改为<code>.mjs</code>后缀，可以在 package.json 设置 <code>type</code> 字段为 <code>module</code>，这样 Node.js 才能识别到使用的是 ESM 模块</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  </span><span style="background-color:#bf616a;color:#2b303b;">...</span><span>
+</span><span>  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">module</span><span>&quot;
+</span><span>}
+</span></code></pre>
+<h3 id="jia-zai-nei-zhi-mo-kuai">加载内置模块</h3>
+<p>加载 Node.js 内置模块需要加上 <code>node:</code> 前缀：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">EventEmitter </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">node:events</span><span>&quot;;
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">e </span><span>= new EventEmitter();
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">readFile </span><span>} </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">node:fs</span><span>&quot;;
+</span><span style="color:#8fa1b3;">readFile</span><span>(&quot;</span><span style="color:#a3be8c;">./foo.txt</span><span>&quot;, (</span><span style="color:#bf616a;">err</span><span>, </span><span style="color:#bf616a;">source</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">err</span><span>) {
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">error</span><span>(</span><span style="color:#bf616a;">err</span><span>);
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">source</span><span>);
+</span><span>  }
+</span><span>});
+</span></code></pre>
+<h3 id="dong-tai-dao-ru">动态导入</h3>
+<p>动态导入同样也是支持的：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">readFile </span><span>} </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">node:fs</span><span>&quot;;
+</span><span>import(&quot;</span><span style="color:#a3be8c;">node:fs</span><span>&quot;).</span><span style="color:#96b5b4;">then</span><span>((</span><span style="color:#bf616a;">fs</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">readFile</span><span>(&quot;</span><span style="color:#a3be8c;">./foo.txt</span><span>&quot;, (</span><span style="color:#bf616a;">err</span><span>, </span><span style="color:#bf616a;">source</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">err</span><span>) {
+</span><span>      </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">error</span><span>(</span><span style="color:#bf616a;">err</span><span>);
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>      </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">source</span><span>);
+</span><span>    }
+</span><span>  });
+</span><span>});
+</span></code></pre>
+<h3 id="jia-zai-npm-mo-kuai">加载 NPM 模块</h3>
+<p>与此同时，依然可以使用 NPM 的模块，不管是否提供 ESM 模块包，因为 Node.js 支持在 ESM 模块中导入 CommonJS 模块。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// cjs.cjs
+</span><span>exports.name = &quot;</span><span style="color:#a3be8c;">exported</span><span>&quot;;
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">name </span><span>} </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./cjs.cjs</span><span>&quot;;
+</span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">name</span><span>);
+</span><span style="color:#65737e;">//  &#39;exported&#39;
+</span><span>
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">cjs </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./cjs.cjs</span><span>&quot;;
+</span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">cjs</span><span>);
+</span><span style="color:#65737e;">//  { name: &#39;exported&#39; }
+</span><span>
+</span><span style="color:#b48ead;">import </span><span style="color:#d08770;">* </span><span style="color:#b48ead;">as </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">./cjs.cjs</span><span>&quot;;
+</span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">m</span><span>);
+</span><span style="color:#65737e;">// [Module] { default: { name: &#39;exported&#39; }, name: &#39;exported&#39; }
+</span></code></pre>
+<p>但是要注意，导入的模块中不能包含动态导入、导出。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// cjs.cjs
+</span><span>exports.name = &quot;</span><span style="color:#a3be8c;">exported</span><span>&quot;;
+</span><span>
+</span><span style="color:#b48ead;">if </span><span>(Math.</span><span style="color:#96b5b4;">random</span><span>() &gt; </span><span style="color:#d08770;">0.5</span><span>) {
+</span><span>  </span><span style="color:#65737e;">// 动态导入
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">fs </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">fs</span><span>&quot;);
+</span><span>}
+</span></code></pre>
+<p>导入上面这样的 CommonJS 模块会报错。</p>
+<h3 id="jia-zai-wang-luo-mo-kuai">加载网络模块</h3>
+<blockquote>
+<p>需要 Node.js 版本 &gt;= 20.x，并声明 <code>--experimental-network-imports</code> flag</p>
+</blockquote>
+<p>Nodejs 可以在 ESM 模块中加载网络模块，实现类似 Deno 的依赖管理机制：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">worker_threads </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">node:worker_threads</span><span>&quot;;
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">configure</span><span>, </span><span style="color:#bf616a;">resize </span><span>} </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">https://example.com/imagelib.mjs</span><span>&quot;;
+</span><span style="color:#8fa1b3;">configure</span><span>({ </span><span style="color:#bf616a;">worker_threads </span><span>});
+</span></code></pre>
+<h2 id="zong-jie">总结</h2>
+<p>可以说 CommonJS 已经完成了它的历史使命，我们应该拥抱新的标准格式 ESM。本文总结了 CommonJS 相对于 ESM 的缺点，并提供了如何在 Node.js 中使用 ESM 的示例。</p>
+<h2 id="xiang-guan-wen-zhang">相关文章</h2>
+<ul>
+<li><a href="https://deno.com/blog/commonjs-is-hurting-javascript">CommonJS is hurting JavaScript</a></li>
+<li><a href="https://web.dev/articles/commonjs-larger-bundles#tree-shaking_with_commonjs">How CommonJS is making your bundles larger </a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/esm.html#modules-ecmascript-modules">Node.js ESM Docs</a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/packages.html#determining-module-system">Node.js Determining module system</a></li>
+<li><a href="https://esm.sh/#docs">esm.sh</a></li>
+</ul>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/nodejs/"
+      >nodejs</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;dayjs&#x2F;"
+    ><span class="mr-1.5">←</span><span>dayjs 分析</span></a
+  >
+  <!---->
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

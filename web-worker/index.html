@@ -1,0 +1,413 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    让你的函数运行在web worker中 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="让你的函数运行在web worker中" />
+  <meta name="author" content="让你的函数运行在web worker中" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;web-worker&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">让你的函数运行在web worker中</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-04-27</time>
+  <span class="mx-1">&middot;</span>
+  <span>7min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/web-worker/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/web-worker/#shi-xian-fang-fa"
+            >实现方法</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/web-worker/#hou-xu"
+            >后续</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="qian-yan">前言</h3>
+<p>我们都知道JavaScript在浏览器中执行采用的是单线程模型，也就是说，在同一时间下所有的任务都只能在一个线程上完成，只有上一件任务完成才能开始下一件任务。如果javascript的代码计算量太大，执行会耗费很长的时间，会影响了其他任务的执行，严重的还可能阻塞UI线程的渲染，导致页面出现卡顿等情况。而且现在很多的cpu都是多核的，单线程执行会浪费很多cpu的性能。所以浏览器厂商提供的<code>web worker</code>的接口，就是为了提供让<code>javascript</code>代码运行在多个线程的环境。<code>web worker</code>的工作线程和主线程是分开的，两者互不干扰，相互间通过事件接口进行通信。不过<code>web worker</code>提供的接口太原始了，不是很方便我们使用，每次实例化<code>worker</code>之后都要预定义单独的<code>javascript</code>脚本文件，而且还要单独维护一套通信的方法。
+所以我们得想一个办法让<code>worker</code>用起来优雅顺手一点，最好是提供一个接口可以像函数一样调用，比如像这样：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">work </span><span>= </span><span style="color:#8fa1b3;">someWorker</span><span>()
+</span><span>  </span><span style="color:#bf616a;">work</span><span>.</span><span style="color:#96b5b4;">add</span><span>(</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">count</span><span>(</span><span style="color:#bf616a;">n</span><span>){
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">n </span><span>+ </span><span style="color:#d08770;">1
+</span><span>  })
+</span><span>  </span><span style="color:#bf616a;">work</span><span>.</span><span style="color:#8fa1b3;">count</span><span>(</span><span style="color:#d08770;">1</span><span>).</span><span style="color:#96b5b4;">then</span><span>(</span><span style="color:#bf616a;">res </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">res</span><span>) </span><span style="color:#65737e;">// 2
+</span><span>  })
+</span></code></pre>
+<p>这样看上去是不是比较直观一点，配合<code>async</code>和<code>await</code>用起来就非常优雅了，完全屏蔽了js主线程和<code>worker</code>之间通信的细节。</p>
+<h3 id="shi-xian-fang-fa">实现方法</h3>
+<p>其实具体通信的解决方法很简单，我们只需要在函数调用的时候，<code>postMessage</code>要调用的函数和参数到<code>worker</code>里面去，再监听<code>worker</code>返回的结果。<code>worker</code>内部也是一样的道理，监听主线程传过来的消息，再执行相应的函数，用<code>postMessage</code>返回执行结果。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// js主线程
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">invoke </span><span>(</span><span style="color:#bf616a;">method </span><span>= &#39;&#39;, </span><span style="color:#bf616a;">params </span><span>= []) {
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">promise </span><span>= new Promise((</span><span style="color:#bf616a;">resolve</span><span>, </span><span style="color:#bf616a;">reject</span><span>)</span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#bf616a;">worker</span><span>.</span><span style="color:#8fa1b3;">onmessage </span><span>= (</span><span style="color:#bf616a;">e</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#8fa1b3;">resolve</span><span>(JSON.</span><span style="color:#96b5b4;">parse</span><span>(</span><span style="color:#bf616a;">e</span><span>.data))
+</span><span>    }
+</span><span>    </span><span style="color:#bf616a;">worker</span><span>.</span><span style="color:#8fa1b3;">onerror </span><span>= (</span><span style="color:#bf616a;">e</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#8fa1b3;">reject</span><span>(</span><span style="color:#bf616a;">e</span><span>)
+</span><span>    }
+</span><span>  })
+</span><span>  </span><span style="color:#bf616a;">worker</span><span>.</span><span style="color:#96b5b4;">postMessage</span><span>(JSON.</span><span style="color:#96b5b4;">stringify</span><span>({
+</span><span>    </span><span style="color:#bf616a;">method</span><span>,
+</span><span>    </span><span style="color:#bf616a;">params
+</span><span>  }))
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">promise
+</span><span>}
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// worker
+</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#8fa1b3;">onmessage </span><span>= (</span><span style="color:#bf616a;">e</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span>{</span><span style="color:#bf616a;">method</span><span>, </span><span style="color:#bf616a;">params</span><span>} = JSON.</span><span style="color:#96b5b4;">parse</span><span>(</span><span style="color:#bf616a;">e</span><span>).data
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">result </span><span>= </span><span style="color:#bf616a;">self</span><span>[</span><span style="color:#bf616a;">method</span><span>].</span><span style="color:#96b5b4;">apply</span><span>(</span><span style="color:#d08770;">null</span><span>, </span><span style="color:#bf616a;">params</span><span>)
+</span><span>  </span><span style="color:#8fa1b3;">postMessage</span><span>(JSON.</span><span style="color:#96b5b4;">stringify</span><span>(</span><span style="color:#bf616a;">result</span><span>))
+</span><span>}
+</span><span style="color:#65737e;">// self是worker全局环境的引用，和window差不多
+</span><span style="color:#65737e;">// 所以调用self的方法就是调用全局环境下注册的方法
+</span></code></pre>
+<p>这样我们就实现了一个简单的<code>worker</code>通信模型，只需要在传入<code>worker</code>的js脚本中提前定义好函数，就可以在主线程通过<code>invoke</code>调用函数了。但这和我们的想法还是有点不一样，我们的模型的可以动态地往worker中添加函数，而且函数可以定义在主线程中，这样可以获得更好的灵活性和可维护性。
+那么问题来了，实例化<code>worker</code>需要传入js文件的地址，而且这个地址不能是<code>file://</code>开头的，意味着不能访问本地的文件，所以worker的脚本必须加载至网络。那么有没有一种好的方法可以动态生成js代码片段，而且能够包装成<code>worker</code>可以接受的类型呢？
+其实是有的，浏览器厂商提供了一个<code>URL</code>的对象，这个对象有一个<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/URL/createObjectURL"><code>create​ObjectURL</code></a>方法，这个方法可以接受一个二进制对象生成URL，所以我们还需要<code>Blob</code>类来生成二进制数据，我们的问题就可以完美解决了。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">let </span><span style="color:#bf616a;">funcStr </span><span>= &#39;&#39;
+</span><span style="color:#65737e;">// 我们把函数名和函数引用以key-value的方式用Map储存起来
+</span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">const </span><span>[</span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">func</span><span>] of </span><span style="color:#bf616a;">methods</span><span>.</span><span style="color:#96b5b4;">entries</span><span>()) {
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">str </span><span>= &#39;&#39;
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#8fa1b3;">isArrowFunc</span><span>(</span><span style="color:#bf616a;">func</span><span>)) {
+</span><span>    </span><span style="color:#bf616a;">str </span><span>= `</span><span style="color:#a3be8c;">;var ${</span><span style="color:#bf616a;">name</span><span style="color:#a3be8c;">} = ${</span><span style="color:#ebcb8b;">Function</span><span style="color:#a3be8c;">.prototype.</span><span style="color:#bf616a;">toString</span><span style="color:#a3be8c;">.</span><span style="color:#96b5b4;">call</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">func</span><span style="color:#a3be8c;">)}</span><span>`
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#bf616a;">str </span><span>= `</span><span style="color:#a3be8c;">;${</span><span style="color:#ebcb8b;">Function</span><span style="color:#a3be8c;">.prototype.</span><span style="color:#bf616a;">toString</span><span style="color:#a3be8c;">.</span><span style="color:#96b5b4;">call</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">func</span><span style="color:#a3be8c;">)}</span><span>`
+</span><span>  }
+</span><span>  </span><span style="color:#bf616a;">funcStr </span><span>+= </span><span style="color:#bf616a;">str
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">code </span><span>= `</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">code</span><span style="color:#a3be8c;">};</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">worker_scheduler</span><span style="color:#a3be8c;">}</span><span>`
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">url </span><span>= </span><span style="color:#bf616a;">URL</span><span>.</span><span style="color:#8fa1b3;">createObjectURL</span><span>(new Blob([</span><span style="color:#bf616a;">code</span><span>]))
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">worker </span><span>= new Worker(</span><span style="color:#bf616a;">url</span><span>)
+</span></code></pre>
+<p>其实原理也很简单，我们通过<code>Function.toString</code>这个方法得到函数的定义，相当于把函数定义复制到了<code>worker</code>脚本。这里需要提醒一下的是，es6箭头函数的函数定义和普通的函数有一定的区别，我们需要分别处理。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">fn1 </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{}
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">fn2 </span><span>() {}
+</span><span style="color:#ebcb8b;">Function</span><span>.prototype.</span><span style="color:#bf616a;">toString</span><span>.</span><span style="color:#96b5b4;">call</span><span>(</span><span style="color:#bf616a;">fn1</span><span>)
+</span><span style="color:#65737e;">// () =&gt; {}
+</span><span style="color:#ebcb8b;">Function</span><span>.prototype.</span><span style="color:#bf616a;">toString</span><span>.</span><span style="color:#96b5b4;">call</span><span>(</span><span style="color:#bf616a;">fn2</span><span>)
+</span><span style="color:#65737e;">// function fn2 () {}
+</span></code></pre>
+<p>我们可以看到箭头函数的定义没有定义的名字，不过我们可以通过<code>Function.name</code>获取到函数定义名。</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>fn1.name //  &quot;fn1&quot;
+</span><span>fn2.name //   &quot;fn2&quot;
+</span></code></pre>
+<p>接下来的东西都很简单了，我们自己在内部维护这样的一套机制，只需要对外暴露<code>add</code>和<code>invoke</code>两个接口就可以让主线程定义的函数跑在<code>worker</code>当中了。
+所以我顺手实现了一个库<a href="https://github.com/naecoo/funcwork">funcwork</a>，内部实现代码只要一百多行，对外暴露了3个方法，用起来很方便。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">funcwork form </span><span>&#39;</span><span style="color:#a3be8c;">funcwork</span><span>&#39;
+</span><span>
+</span><span style="color:#bf616a;">const </span><span>{ </span><span style="color:#bf616a;">add</span><span>, </span><span style="color:#bf616a;">invoke</span><span>, </span><span style="color:#bf616a;">terminate </span><span>} = </span><span style="color:#bf616a;">funcwork</span><span>()
+</span><span>
+</span><span style="color:#bf616a;">function sayName</span><span> (</span><span style="color:#bf616a;">name</span><span>) {
+</span><span>  </span><span style="color:#bf616a;">return</span><span> `</span><span style="color:#bf616a;">Hello $</span><span>{</span><span style="color:#bf616a;">name</span><span>}!`
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">const sayHi () {
+</span><span style="color:#a3be8c;">  return &#39;Hi!&#39;
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">async function requestInfo (url, id) {
+</span><span style="color:#a3be8c;">    return fetch(url, {id})
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">add(sayName, sayHi)
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">await invoke(&#39;sayName&#39;, [&#39;naeco&#39;])    // Hello naeco!
+</span><span style="color:#a3be8c;">await invoke(&#39;sayHi&#39;)                // Hi!
+</span><span style="color:#a3be8c;">await invoke(&#39;requestInfo&#39;, [&#39;api/getUserInfo&#39;, &#39;xxx123456&#39;]) //  user info...
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">// 不用的时候记得销毁
+</span><span style="color:#a3be8c;">terminate()
+</span></code></pre>
+<p>大家觉得不错的可以顺手给个star😂😂😂</p>
+<h3 id="hou-xu">后续</h3>
+<p>其实web worker这个东西出现了也挺久了，现在浏览器支持度已经很不错了，但是我发现实际项目还是很少人用到。个人认为主要原因有两个：</p>
+<ol>
+<li>接口不友好</li>
+<li>使用场景有限</li>
+</ol>
+<p>针对第一点我们可以自己进行封装，可以让<code>web worker</code>用起来像<code>promise</code>一样顺手。第二点要看我们具体的业务场景了，一些计算量比较大的工作可以尝试交给<code>web worker</code>，比如<code>canvas</code>和图片的计算，服务器轮询和上传文件等等场景。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/html/"
+      >html</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vue-component-message&#x2F;"
+    ><span class="mr-1.5">←</span><span>从0开始手写一个Vue消息弹窗组件</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vuebx&#x2F;"
+    ><span>60行代码实现一个状态管理库</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

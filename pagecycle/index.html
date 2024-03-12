@@ -1,0 +1,564 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    网页生命周期(Page lifecycle API) - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="网页生命周期(Page lifecycle API)" />
+  <meta name="author" content="网页生命周期(Page lifecycle API)" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pagecycle&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">网页生命周期(Page lifecycle API)</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-11-02</time>
+  <span class="mx-1">&middot;</span>
+  <span>12min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#bei-jing"
+            >背景</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#gai-lan"
+            >概览</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#zhuang-tai"
+                >状态</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#shi-jian"
+                >事件</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#xin-zeng-gong-neng"
+                >新增功能</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#guan-cha-zhuang-tai"
+            >观察状态</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#feng-zhuang-zhuang-tai-guan-cha-qi"
+                >封装状态观察器</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#kua-ping-tai"
+                >跨平台</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#zui-jia-shi-jian"
+            >最佳实践</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pagecycle/#xiang-guan-zi-liao"
+            >相关资料</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="bei-jing">背景</h3>
+<p>apps的生命周期对于操作系统管理系统资源来说至关重要。在Android、IOS和Windows等的平台上，系统可以随意启动和中止apps的运行，这使得这些平台能够重新分配资源，以提供最好的操作体验给用户。</p>
+<p>但对于web应用，并没有类似的生命周期机制。随着打开网页数量增加，内存、CPU、网络吞吐等系统关键资源都被过度使用，导致系统性能下降，降低了用户的操作体验。</p>
+<p>虽然浏览器很早之前就有提供关于生命周期的事件，比如<code>load</code>、<code>unload</code>和<code>visibilitychange</code>等，但是这些事件只允许开发人员响应用户自行发起的生命周期状态更改。为了让网页更可靠地运行，尤其是在低功耗的设备（手机、智能手表等），浏览器需要一种主动回收和分配系统资源的机制。</p>
+<p><a href="https://wicg.github.io/page-lifecycle/spec.html">Page Lifecycle API</a>就是为了解决这些问题而提出的方案，目标主要有三点：</p>
+<ol>
+<li>在web上引入并标准化生命周期状态的概念</li>
+<li>定义新的应用状态，允许浏览器限制网页持续占据系统资源</li>
+<li>创建新的API和事件，允许开发人员响应这些应用状态之间的转换</li>
+</ol>
+<p><code>Page Lifecycle API</code>已经在Chrome 68上得到支持，下面将会进行详细介绍。</p>
+<p>+++</p>
+<h3 id="gai-lan">概览</h3>
+<p><code>Page Lifecycle API</code>定义了规范化的app生命周期状态，且每个页面在一个阶段只能处于一个状态，每个状态的改变都会有相应的事件被触发。话不多说，先上图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/11/2/16e2a10c43ce5690?w=3280&amp;h=2218&amp;f=png&amp;s=181596" alt="page lifecycle" /></p>
+<h4 id="zhuang-tai">状态</h4>
+<p>页面状态有6个，下面将分别展开描述，from代表的是前一个页面状态，to代表的是下一阶段可能会变更到的状态。</p>
+<ol>
+<li><code>Active</code></li>
+</ol>
+<p>如果页面可见并具有输入焦点，则该页面处于<code>Active</code>状态</p>
+<p>from：<code>passive</code>(focus事件)</p>
+<p>to: <code>passive</code>(blur事件)</p>
+<ol start="2">
+<li><code>Passive</code></li>
+</ol>
+<p>如果页面可见并不具有输入焦点，则该页面处于<code>Passive</code>状态</p>
+<p>from: <code>avtive</code>(blur事件)、<code>hidden</code>(visibilitychange事件)</p>
+<p>to: <code>avtive</code>(focus事件)、<code>hidden</code>(visibilitychange事件)</p>
+<ol start="3">
+<li><code>Hidden</code></li>
+</ol>
+<p>如果页面不可见且不处于<code>frozen</code>状态，则该页面处于<code>hidden</code>状态</p>
+<p>from: <code>passive</code>(visibilitychange事件)</p>
+<p>to:  <code>passive</code>(visibilitychange事件)、<code>frozen</code>(freeze事件)、<code>terminated</code>(pagehide事件)</p>
+<ol start="4">
+<li><code>Frozen</code></li>
+</ol>
+<p>如果网页处于<code>frozen</code>状态下，浏览器将暂停执行页面任务队列中的可冻结任务，直到页面被解除冻结。这意味着像定时器和回调函数这样的任务不会运行。</p>
+<p>from: <code>hidden</code>(freeze事件)</p>
+<p>to:  <code>active</code>(resume和pageshow事件)、<code>passive</code>(resume和pageshow事件)、<code>hidden</code>(resume事件)</p>
+<ol start="5">
+<li><code>Terminated</code></li>
+</ol>
+<p>如果页面开始被浏览器卸载并从内存中清除，它就处于<code>terminated</code>状态。在此状态下不能启动任何新任务，如果现有运行时间太长，可能会被提前终止。</p>
+<p>from: <code>hidden</code>(pagehide事件)</p>
+<p>to: None</p>
+<ol start="6">
+<li><code>Discarded</code></li>
+</ol>
+<p>当浏览器为了节省资源而卸载页面时，它处于<code>discarded</code>状态。任何类型的任务、事件回调或JavaScript代码都不能在这种状态下运行，因为丢弃通常发生在资源约束下，可以理解为页面被动关闭，浏览器主动释放资源。</p>
+<p>from: <code>frozen</code>(无事件触发)</p>
+<p>to: None </p>
+<h4 id="shi-jian">事件</h4>
+<p><span style="color:red;">*</span>代表的是<code>Page Lifecycle API</code>新提供的事件</p>
+<ol>
+<li>
+<p>foucs</p>
+<p>DOM元素获取焦点，前一个状态一般是<code>passive</code>，当前状态是<code>avtive</code></p>
+</li>
+<li>
+<p>blur</p>
+<p>DOM元素失去焦点，前一个状态一般是<code>active</code>，当前状态是<code>passive</code></p>
+</li>
+<li>
+<p>visibilitychange</p>
+<p><code>document</code>的<code>visibilitySatate</code>属性发生变更，当用户导航到新页面、切换选项卡、关闭选项卡、最小化或关闭浏览器、或切换移动操作系统上的应用程序时，会触发事件。前一个状态是<code>passive</code>或<code>hidden</code>,，当前状态是<code>passive</code>或者<code>hidden</code></p>
+</li>
+<li>
+<p>freeze<span style="color:red;">*</span></p>
+<p>页面被冻结，任务队列中的可冻结任务都停止运行。前一个状态是<code>hidden</code>，当前状态是<code>frozen</code></p>
+</li>
+<li>
+<p>resume<span style="color:red;">*</span></p>
+<p>页面解除冻结状态，前一个状态是<code>frozen</code>，当前状态是<code>active</code>、<code>passive</code>或者<code>hidden</code></p>
+</li>
+<li>
+<p>pageshow</p>
+<p>当一条会话历史记录被执行的时候将会触发事件，包括了后退(前进)按钮操作，同时也会在<code>onload</code>事件触发后初始化页面时触发。前一个状态可能为<code>frozen</code>，当前状态为<code>active</code>、<code>passive</code>或<code>hidden</code></p>
+</li>
+<li>
+<p>pagehide</p>
+<p>与<code>pageshow</code>类似，不同的就是导航离开当前网页时触发。先前的状态可能为<code>hidden</code>，当前状态可能为<code>frozen</code>或者<code>terminated</code></p>
+</li>
+<li>
+<p>beforeunload</p>
+<p>窗口、文档及其资源即将被卸载。文档仍然可见，此时事件仍然可以取消。前一个状态可能为<code>hidden</code>，当前状态为<code>terminated</code></p>
+</li>
+<li>
+<p>unload</p>
+<p>卸载页面时触发，前一个状态可能为<code>hidden</code>，当前状态为<code>terminated</code></p>
+</li>
+</ol>
+<h4 id="xin-zeng-gong-neng">新增功能</h4>
+<p>上面的图表显示了两种系统触发的页面状态：<code>frozen </code>和<code>discard</code>，这种页面状态和用户触发的不一样，开发者无法主动感知状态变更。但是在Chrome  68上，开发者可以监听<code>freeze</code>和<code>resume</code>两个事件处理页面状态变更。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&#39;</span><span style="color:#a3be8c;">freeze</span><span>&#39;, (</span><span style="color:#bf616a;">event</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 页面处于冻结状态
+</span><span>});
+</span><span>
+</span><span>document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&#39;</span><span style="color:#a3be8c;">resume</span><span>&#39;, (</span><span style="color:#bf616a;">event</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 页面解冻
+</span><span>});
+</span></code></pre>
+<p>同时<code>document</code>对象新增了<code>wasDiscarded</code>属性，这个属性代表页面是否处于<code>discarded</code>状态，开发者可以根据这个属性的值处理不同的逻辑</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">if </span><span>(document.</span><span style="color:#bf616a;">wasDiscarded</span><span>) {
+</span><span>  </span><span style="color:#65737e;">// 页面被浏览器丢弃
+</span><span>}
+</span></code></pre>
+<p>+++</p>
+<h3 id="guan-cha-zhuang-tai">观察状态</h3>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// active、passive和hidden三种状态
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">getState </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(document.</span><span style="color:#bf616a;">visibilityState </span><span>=== &#39;</span><span style="color:#a3be8c;">hidden</span><span>&#39;) {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>&#39;</span><span style="color:#a3be8c;">hidden</span><span>&#39;;
+</span><span>  }
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(document.</span><span style="color:#96b5b4;">hasFocus</span><span>()) {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>&#39;</span><span style="color:#a3be8c;">active</span><span>&#39;;
+</span><span>  }
+</span><span>  </span><span style="color:#b48ead;">return </span><span>&#39;</span><span style="color:#a3be8c;">passive</span><span>&#39;;
+</span><span>};
+</span></code></pre>
+<p>另外，<code>frozen</code>和和<code>terminated</code>的状态变更可以通过监听<code>freeze</code>和<code>pagehide</code>事件获取。</p>
+<h4 id="feng-zhuang-zhuang-tai-guan-cha-qi">封装状态观察器</h4>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 保存初始页面状态
+</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">state </span><span>= </span><span style="color:#8fa1b3;">getState</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// 记录状态变更并打印在控制台
+</span><span style="color:#65737e;">// 更新当前页面状态
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">logStateChange </span><span>= (</span><span style="color:#bf616a;">nextState</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">prevState </span><span>= </span><span style="color:#bf616a;">state</span><span>;
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">nextState </span><span>!== </span><span style="color:#bf616a;">prevState</span><span>) {
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(`</span><span style="color:#a3be8c;">State change: ${</span><span style="color:#bf616a;">prevState</span><span style="color:#a3be8c;">} &gt;&gt;&gt; ${</span><span style="color:#bf616a;">nextState</span><span style="color:#a3be8c;">}</span><span>`);
+</span><span>    </span><span style="color:#bf616a;">state </span><span>= </span><span style="color:#bf616a;">nextState</span><span>;
+</span><span>  }
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 监听生命周期事件，保持页面状态更新
+</span><span>[&#39;</span><span style="color:#a3be8c;">pageshow</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">focus</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">blur</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">visibilitychange</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">resume</span><span>&#39;].</span><span style="color:#96b5b4;">forEach</span><span>((</span><span style="color:#bf616a;">type</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  window.</span><span style="color:#96b5b4;">addEventListener</span><span>(</span><span style="color:#bf616a;">type</span><span>, () </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">logStateChange</span><span>(</span><span style="color:#8fa1b3;">getState</span><span>()), {capture: </span><span style="color:#d08770;">true</span><span>});
+</span><span>});
+</span><span>
+</span><span style="color:#65737e;">// 监听freeze事件
+</span><span>window.</span><span style="color:#96b5b4;">addEventListener</span><span>(&#39;</span><span style="color:#a3be8c;">freeze</span><span>&#39;, () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 页面状态变更为frozen
+</span><span>  </span><span style="color:#8fa1b3;">logStateChange</span><span>(&#39;</span><span style="color:#a3be8c;">frozen</span><span>&#39;);
+</span><span>}, {capture: </span><span style="color:#d08770;">true</span><span>});
+</span><span>
+</span><span>window.</span><span style="color:#96b5b4;">addEventListener</span><span>(&#39;</span><span style="color:#a3be8c;">pagehide</span><span>&#39;, (</span><span style="color:#bf616a;">event</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(event.</span><span style="color:#bf616a;">persisted</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// event.persisted为true意味着页面是从缓存中加载的，所以是frozen状态
+</span><span>    </span><span style="color:#8fa1b3;">logStateChange</span><span>(&#39;</span><span style="color:#a3be8c;">frozen</span><span>&#39;);
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#65737e;">// terminated状态
+</span><span>    </span><span style="color:#8fa1b3;">logStateChange</span><span>(&#39;</span><span style="color:#a3be8c;">terminated</span><span>&#39;);
+</span><span>  }
+</span><span>}, {capture: </span><span style="color:#d08770;">true</span><span>});
+</span></code></pre>
+<h4 id="kua-ping-tai">跨平台</h4>
+<p><code>Page Lifecycle</code>这个标准刚刚引入，并没有得到全部浏览器平台的支持。有些浏览器可能在切换标签的时候不会触发<code>blur</code>事件，有些浏览器没有实现<code>freeze</code>和<code>resume</code>事件，IE10以下版本不支持<code>visibilitychange</code>事件等等...</p>
+<p>为了让开发者更容易上手处理跨平台兼容的问题，谷歌开发了<a href="https://github.com/GoogleChromeLabs/page-lifecycle">PageLifecycle.js</a>这个库，用于观察页面生命周期状态的变化。PageLifecycle.js按事件触发顺序规范化处理了跨浏览器的差异，保证状态变更和标准规范保存一致。</p>
+<p>+++</p>
+<h3 id="zui-jia-shi-jian">最佳实践</h3>
+<p>对于开发者来说，理解页面生命状态并懂得根据页面状态不懂执行不同业务逻辑是非常重要的，下面介绍各个状态下的最佳实践：</p>
+<ol>
+<li>
+<p>Active</p>
+<p><code>active</code>状态是用户最关键的时间，因此也是页面响应用户输入最重要的时间，任何可能阻塞主线程执行的非UI渲染任务都可以放到<code>requestidlecallback</code>或者<code>web worker</code>执行</p>
+</li>
+<li>
+<p>Passive</p>
+<p>在此状态下，用户没有和页面进行交互，但页面仍然处于可视状态，所以UI和动画需要保持渲染状态，从<code>active</code>状态过渡到<code>passive</code>是一个保存页面状态的好时机，比如一些表单值。</p>
+</li>
+<li>
+<p>Hidden</p>
+<p>页面被隐藏或者关闭，停止所有与用户交互、UI渲染有关的任务，并及时保存应用状态</p>
+</li>
+<li>
+<p>Frozen</p>
+<p>在<code>frozen</code>状态下，<a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">可冻结任务</a>将会被挂起直到页面解冻(有可能永远不会发生）。在这个状态下，开发者要做以下几点：</p>
+<ol>
+<li>关闭IndexedDB连接</li>
+<li>关闭<a href="https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API">BroadcastChannel</a> 连接</li>
+<li>关闭WebRTC连接</li>
+<li>停止http轮询和websocket连接</li>
+<li>停止定时器</li>
+</ol>
+</li>
+<li>
+<p>Terminated</p>
+<p>通常在此状态下不需要处理任何任务，因为这个阶段的任务不能保存可靠执行，有可能被强行终止。但你也可以做一些状态持久化或者埋点分析的任务</p>
+</li>
+</ol>
+<p>+++</p>
+<h3 id="xiang-guan-zi-liao">相关资料</h3>
+<ol>
+<li><a href="https://developers.google.com/web/updates/2018/07/page-lifecycle-api">developers-google-web-page-lifecycle-api</a></li>
+<li><a href="https://wicg.github.io/page-lifecycle/spec.html">Page Lifecycle API</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Events/pageshow">windows-event-pageshow</a></li>
+</ol>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/browser/"
+      >browser</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/html/"
+      >html</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pika&#x2F;"
+    ><span class="mr-1.5">←</span><span>告别webpack，直接运行npm包</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vuepress&#x2F;"
+    ><span>重构博客</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

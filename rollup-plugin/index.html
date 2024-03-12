@@ -1,0 +1,575 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    如何实现一个 Rollup 插件 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="如何实现一个 Rollup 插件" />
+  <meta name="author" content="如何实现一个 Rollup 插件" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;rollup-plugin&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">如何实现一个 Rollup 插件</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2022-01-22</time>
+  <span class="mx-1">&middot;</span>
+  <span>9min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#tldr"
+            >TLDR</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#rollup-jie-shao"
+            >Rollup 介绍</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#rollup-cha-jian-xi-tong"
+            >Rollup 插件系统</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#rollup-cha-jian-hooks"
+                >Rollup 插件 hooks</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#rollup-cha-jian-shang-xia-wen"
+                >Rollup 插件上下文</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#shi-xian-yi-ge-jian-dan-de-css-jie-xi-cha-jian"
+            >实现一个简单的 CSS 解析插件</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/rollup-plugin/#xiang-guan-zi-liao"
+            >相关资料</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="tldr">TLDR</h2>
+<p>直接看源码和文档</p>
+<ul>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#plugin-development">rollup plugin 文档</a></p>
+</li>
+<li>
+<p><a href="https://github.com/naecoo/rollup-plugin-css2"><code>rollup-plugin-css2</code></a></p>
+</li>
+</ul>
+<h2 id="rollup-jie-shao">Rollup 介绍</h2>
+<p><a href="https://rollupjs.org/guide/en/">Rollup</a> 是面向下一代的 <code>javascript</code> 模块打包工具，相比于 <a href="https://github.com/webpack/webpack">Webpack</a> 来说，Rollup 显得轻巧且灵活。过去有一种说法是库工具或者一些简单的应用才会使用 Rollup，而大型应用还是会采取 Webpack 进行构建打包。时间来到2022年，上述说法显然不再具有普遍的参考意义，越来越多的应用，甚至是大型的 App 也会采取 Rollup 来进行构建，比如 <a href="https://github.com/vitejs/vite">Vite</a> 在生产环境下就放弃了 Webpack，改成 Rollup 来进行应用的构建。 对于我本人来说，一般小型的库会用 <a href="https://github.com/evanw/esbuild">Esbuild</a> ，其余皆使用 Rollup。</p>
+<p>基于这个背景下，我认为学习如何开发 Rollup 插件是非常有必要的，不管是业务还是技术上的原因，很多时候都需要在构建、编译、打包等过程中，进行定制化开发，这时候就必须要开发自己的插件了。</p>
+<h2 id="rollup-cha-jian-xi-tong">Rollup 插件系统</h2>
+<p>如同 Babel 和 Webpack 等工具一样，Rollup 也有一个非常强大的插件系统，Rollup 本身提供了一个基础的构建框架，大部分功能都可以通过插件的形式实现，这也是 Rollup 的设计哲学之一。</p>
+<p>Rollup 插件是一个对象结构，里面包含了插件的名称，<code>name</code> 字段，以及一系列钩子函数（hooks），这些钩子函数会在解析、构建、编译和打包等环节触发，帮助我们完成文件解析、代码转译等功能。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// rollup 插件形式
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">plugin </span><span>= {
+</span><span>    </span><span style="color:#65737e;">// 插件名称
+</span><span>    name: &#39;</span><span style="color:#a3be8c;">some-rollup-plugin</span><span>&#39;,
+</span><span>    
+</span><span>    </span><span style="color:#65737e;">// transform 钩子
+</span><span>    </span><span style="color:#8fa1b3;">transofrm</span><span>() {},
+</span><span>    
+</span><span>    </span><span style="color:#65737e;">// resolveId 钩子
+</span><span>    </span><span style="color:#8fa1b3;">resolveId</span><span>() {}
+</span><span>    
+</span><span>    ...
+</span><span>}
+</span></code></pre>
+<p>通常插件提供者不会直接提供插件对象本身，而是提供一个插件工厂函数，可以输入选项，生成插件对象。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">pluginFactor</span><span>(</span><span style="color:#bf616a;">options</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// 解析选项
+</span><span>    ...
+</span><span>    
+</span><span>    </span><span style="color:#65737e;">// 返回插件对象
+</span><span>    </span><span style="color:#b48ead;">return </span><span>{
+</span><span>        name: &#39;</span><span style="color:#a3be8c;">some-rollup-plugin</span><span>&#39;,
+</span><span>            
+</span><span>        ...
+</span><span>    }
+</span><span>}
+</span><span>    
+</span><span style="color:#b48ead;">export default </span><span style="color:#bf616a;">pluginFactor</span><span>;
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// rollup.config.js
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">pluginFactor </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">path-to-plugin</span><span>&#39;;
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>{
+</span><span>    input: &#39;&#39;,
+</span><span>    output: {
+</span><span>        ...
+</span><span>    },
+</span><span>    plugins: [
+</span><span>        </span><span style="color:#65737e;">// 使用插件
+</span><span>        </span><span style="color:#8fa1b3;">pluginFactor</span><span>()
+</span><span>    ]
+</span><span>};
+</span></code></pre>
+<p>Rollup 希望插件提供者可以遵循一些插件开发的条例，这里我就不一一翻译了，感兴趣的同学直接查看<a href="https://rollupjs.org/guide/en/#conventions">原文</a>吧。</p>
+<h3 id="rollup-cha-jian-hooks">Rollup 插件 hooks</h3>
+<p>所谓 hook，中文通常叫钩子，rollup 将整体流程划分为很多种阶段，相应地触发对应的 hook 函数，比如会有 resolveId、load 、transform、moduleParsed、renderChunk、generateBundle 等等的 hooks 。</p>
+<p>hooks 根据函数返回类型分为 sync 和 async 两种：</p>
+<ul>
+<li>
+<p>sync</p>
+<p>hook 函数<strong>不返回</strong>promise</p>
+</li>
+<li>
+<p>async</p>
+<p>hook 函数<strong>返回</strong> promise</p>
+</li>
+</ul>
+<p>同时又有这些类型之分：</p>
+<ul>
+<li>
+<p>first</p>
+<p>如果多个插件同时注册 hook，这个 hook 会串行执行，如果某个插件的 hook 函数返回 <code>null</code> 或者 <code>undefined</code>，那么将结束hook的执行流程，进入下一个 hook 的流程，这个 hook 剩余的函数不会执行。</p>
+</li>
+<li>
+<p>sequential</p>
+<p>如果多个插件同时注册 hook，这个 hook 会按照指定顺序执行。如果某个 hook 函数是 async 类型的，将会等待该函数 resolve，才会执行下一个函数</p>
+</li>
+<li>
+<p>parallel</p>
+<p>如果多个插件同时注册 hook，这个 hook 会按照指定顺序执行。如果某个 hook 函数是 async 类型的，<strong>不会</strong>等待该函数 resolve，继续执行下一个函数</p>
+</li>
+</ul>
+<p>rollup 的工作流程可以分为 build 和 output 两个阶段，所以 hook 也分为 <a href="https://rollupjs.org/guide/en/#build-hooks">build hooks</a> 和 <a href="https://rollupjs.org/guide/en/#output-generation-hooks">output generation hooks</a> 两类，我们可以简单了解一下具体的工作流程：</p>
+<h4 id="build-hooks">build hooks</h4>
+<blockquote>
+<p><a href="https://rollupjs.org/guide/en/#build-hooks">rollup.js (rollupjs.org)</a></p>
+</blockquote>
+<p><img src="https://naecoo.github.io/rollup-plugin/./1643203269245.png" alt="rollup bundle hooks" /></p>
+<h4 id="output-generation-hooks">output generation hooks</h4>
+<blockquote>
+<p><a href="https://rollupjs.org/guide/en/#output-generation-hooks">rollup.js (rollupjs.org)</a></p>
+</blockquote>
+<p><img src="https://naecoo.github.io/rollup-plugin/./1643203286189.png" alt="rollup output generation hooks" /></p>
+<p>rollup 的插件工作流程看上去很复杂，hook 也很多，其实并不然，对于插件开发者来说，只需要了解大概的流程即可，大部分的插件只需要用到其中两三个 hook。</p>
+<h3 id="rollup-cha-jian-shang-xia-wen">Rollup 插件上下文</h3>
+<p>rollup 在 hook 函数的<a href="https://rollupjs.org/guide/en/#plugin-context">上下文</a>绑定了一些方法和属性，可以在函数内部通过<code>this</code> 访问。主要会使用到的 API 有：</p>
+<ul>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thisaddwatchfile"><code>this.addWatchFile</code></a></p>
+<p>监听模式下，动态添加文件到监听范围中</p>
+</li>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thisemitfile"><code>this.emitFile</code></a></p>
+<p>在构建、打包的时候，输出一个新的文件，比方说将图片、字体、样式等文件输出到文件系统中</p>
+</li>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thiserror"><code>this.error</code></a></p>
+<p>主动抛出异常，终止构建的流程</p>
+</li>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thisgetmoduleinfo"><code>this.getModuleInfo</code></a></p>
+<p>返回模块的信息，模块包括入口文件、入口文件的依赖，以及依赖的依赖等</p>
+</li>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thisload"><code>this.load</code></a></p>
+<p>加载并解析对应模块</p>
+</li>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thisload"><code>this.parse</code></a></p>
+<p>调用 rollup 内部的方法，将<code>js</code> 代码解析成抽象语法树（AST）</p>
+</li>
+<li>
+<p><a href="https://rollupjs.org/guide/en/#thisresolve"><code>this.resolve</code></a></p>
+<p>解析模块的导入，比方说可以将导入语句解析成对应文件路径，或者是网页的 URL </p>
+</li>
+</ul>
+<h2 id="shi-xian-yi-ge-jian-dan-de-css-jie-xi-cha-jian">实现一个简单的 CSS 解析插件</h2>
+<p>国际惯例，先给上源码的链接：<a href="https://github.com/naecoo/rollup-plugin-css2"><code>rollup-plugin-css2</code></a></p>
+<p>然后我们来简单分析一下代码：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// rollup 插件辅助方法，下面这个方法用于生成过滤规则
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createFilter </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">@rollup/pluginutils</span><span>&#39;;
+</span><span style="color:#65737e;">// CSS 转译器 
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">transformer </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">@parcel/css</span><span>&#39;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">path </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">path</span><span>&#39;;
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">isString </span><span>= (</span><span style="color:#bf616a;">val</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>typeof </span><span style="color:#bf616a;">val </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;;
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">isFunction </span><span>= (</span><span style="color:#bf616a;">val</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>typeof </span><span style="color:#bf616a;">val </span><span>=== &#39;</span><span style="color:#a3be8c;">function</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// 生成插件的工厂方法
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">pluginGenerator </span><span>= (</span><span style="color:#bf616a;">customOptions </span><span>= {}) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 合并插件选项
+</span><span>	</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">options </span><span>= {
+</span><span>		include: [&#39;</span><span style="color:#a3be8c;">**/*.css</span><span>&#39;],
+</span><span>		exclude: [],
+</span><span>		transformOptions: {
+</span><span>			minify: </span><span style="color:#d08770;">false</span><span>,
+</span><span>			targets: {},
+</span><span>			drafts: {
+</span><span>				nesting: </span><span style="color:#d08770;">false
+</span><span>			}
+</span><span>		},
+</span><span>		...</span><span style="color:#bf616a;">customOptions
+</span><span>	};
+</span><span>
+</span><span>	</span><span style="color:#65737e;">// rollup 推荐每一个 transform 类型的插件都需要提供 include 和 exclude 选项，生成过滤规则
+</span><span>    </span><span style="color:#65737e;">// 主要用于限制插件作用的文件范文，避免误伤其他文件
+</span><span>	</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">filter </span><span>= </span><span style="color:#8fa1b3;">createFilter</span><span>(</span><span style="color:#bf616a;">options</span><span>.</span><span style="color:#bf616a;">include</span><span>, </span><span style="color:#bf616a;">options</span><span>.</span><span style="color:#bf616a;">exclude</span><span>);
+</span><span>    </span><span style="color:#65737e;">// 存储 CSS 代码
+</span><span>	</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">styles </span><span>= new Map();
+</span><span>    </span><span style="color:#65737e;">// 记录引入 CSS 文件的顺序
+</span><span>	</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">orders </span><span>= new Set();
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 返回插件
+</span><span>	</span><span style="color:#b48ead;">return </span><span>{
+</span><span>        </span><span style="color:#65737e;">// 插件名称
+</span><span>		name: &#39;</span><span style="color:#a3be8c;">css2</span><span>&#39;,
+</span><span>		
+</span><span>        </span><span style="color:#65737e;">// transform 钩子
+</span><span>		</span><span style="color:#b48ead;">async </span><span style="color:#8fa1b3;">transform</span><span>(</span><span style="color:#bf616a;">code</span><span>, </span><span style="color:#bf616a;">id</span><span>) {
+</span><span>            </span><span style="color:#65737e;">// 不符合过滤规则的，不处理
+</span><span>			</span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#8fa1b3;">filter</span><span>(</span><span style="color:#bf616a;">id</span><span>)) </span><span style="color:#b48ead;">return</span><span>;
+</span><span>
+</span><span>            </span><span style="color:#65737e;">// 去除 CSS 转换器的选项
+</span><span>			</span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">minify</span><span>, </span><span style="color:#bf616a;">targets</span><span>, </span><span style="color:#bf616a;">drafts </span><span>} = </span><span style="color:#bf616a;">options</span><span>.</span><span style="color:#bf616a;">transformOptions</span><span>;
+</span><span>			
+</span><span>            </span><span style="color:#65737e;">// 转换 CSS 代码
+</span><span>			</span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">code</span><span>: </span><span style="color:#bf616a;">transformCode </span><span>} = </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">transformer</span><span>.</span><span style="color:#8fa1b3;">transform</span><span>({
+</span><span>				code: </span><span style="color:#ebcb8b;">Buffer</span><span>.</span><span style="color:#8fa1b3;">from</span><span>(</span><span style="color:#bf616a;">code</span><span>),
+</span><span>				filename: </span><span style="color:#bf616a;">id</span><span>,
+</span><span>				</span><span style="color:#bf616a;">minify</span><span>,
+</span><span>				</span><span style="color:#bf616a;">targets</span><span>,
+</span><span>				</span><span style="color:#bf616a;">drafts
+</span><span>			});
+</span><span>	
+</span><span>			</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">css </span><span>= </span><span style="color:#bf616a;">transformCode</span><span>.</span><span style="color:#96b5b4;">toString</span><span>();
+</span><span>            </span><span style="color:#65737e;">// 存储 CSS 代码
+</span><span>			</span><span style="color:#bf616a;">styles</span><span>.</span><span style="color:#96b5b4;">set</span><span>(</span><span style="color:#bf616a;">id</span><span>, </span><span style="color:#bf616a;">css</span><span>);
+</span><span>            </span><span style="color:#65737e;">// 设置顺序
+</span><span>			</span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">orders</span><span>.</span><span style="color:#96b5b4;">has</span><span>(</span><span style="color:#bf616a;">id</span><span>)) {
+</span><span>				</span><span style="color:#bf616a;">orders</span><span>.</span><span style="color:#96b5b4;">add</span><span>(</span><span style="color:#bf616a;">id</span><span>);
+</span><span>			}
+</span><span>			
+</span><span>            </span><span style="color:#65737e;">// 返回转换后的内容，包装成一个合法的 ESM 模块
+</span><span>			</span><span style="color:#b48ead;">return </span><span>{
+</span><span>				code: `</span><span style="color:#a3be8c;">export default ${JSON.</span><span style="color:#96b5b4;">stringify</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">css</span><span style="color:#a3be8c;">)}</span><span>`,
+</span><span>				map: { mappings: &#39;&#39; }
+</span><span>			};
+</span><span>		},
+</span><span>		
+</span><span>        </span><span style="color:#65737e;">// generateBundle 钩子
+</span><span>		</span><span style="color:#8fa1b3;">generateBundle</span><span>(</span><span style="color:#bf616a;">opts</span><span>) {
+</span><span>            </span><span style="color:#65737e;">// 合并 CSS 代码
+</span><span>			</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">css </span><span>= &#39;&#39;;
+</span><span>			</span><span style="color:#bf616a;">orders</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>((</span><span style="color:#bf616a;">id</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>				</span><span style="color:#bf616a;">css </span><span>+= </span><span style="color:#bf616a;">styles</span><span>.</span><span style="color:#96b5b4;">get</span><span>(</span><span style="color:#bf616a;">id</span><span>) ?? &#39;&#39;;
+</span><span>			});
+</span><span>
+</span><span>			</span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">output </span><span>} = </span><span style="color:#bf616a;">options</span><span>;
+</span><span>			
+</span><span>            </span><span style="color:#65737e;">// 如果选项传入是一个函数，调用该函数
+</span><span>			</span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#8fa1b3;">isFunction</span><span>(</span><span style="color:#bf616a;">output</span><span>)) {
+</span><span>				</span><span style="color:#8fa1b3;">output</span><span>(</span><span style="color:#bf616a;">css</span><span>, </span><span style="color:#bf616a;">styles</span><span>);
+</span><span>				</span><span style="color:#b48ead;">return</span><span>;
+</span><span>			}
+</span><span>
+</span><span>			</span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">css</span><span>.length &lt;= </span><span style="color:#d08770;">0 </span><span>|| !</span><span style="color:#bf616a;">output</span><span>) </span><span style="color:#b48ead;">return</span><span>;
+</span><span>			
+</span><span>            </span><span style="color:#65737e;">// 解析文件名称
+</span><span>			</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">name </span><span>= </span><span style="color:#8fa1b3;">isString</span><span>(</span><span style="color:#bf616a;">output</span><span>) ? </span><span style="color:#bf616a;">output</span><span>.</span><span style="color:#8fa1b3;">trim</span><span>() : </span><span style="color:#bf616a;">opts</span><span>.</span><span style="color:#bf616a;">file </span><span>?? &#39;</span><span style="color:#a3be8c;">bundle.js</span><span>&#39;;
+</span><span>			</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">dest </span><span>= </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#8fa1b3;">basename</span><span>(</span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#8fa1b3;">extname</span><span>(</span><span style="color:#bf616a;">name</span><span>));
+</span><span>			</span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dest</span><span>) {
+</span><span>                </span><span style="color:#65737e;">// 调用 rollup 暴露给钩子函数的函数，生成静态文件
+</span><span>				</span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#8fa1b3;">emitFile</span><span>({ type: &#39;</span><span style="color:#a3be8c;">asset</span><span>&#39;, source: </span><span style="color:#bf616a;">css</span><span>, fileName: `</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">dest</span><span style="color:#a3be8c;">}.css</span><span>` });
+</span><span>			}
+</span><span>		}
+</span><span>	};
+</span><span>};
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span style="color:#bf616a;">pluginGenerator</span><span>;
+</span></code></pre>
+<h2 id="xiang-guan-zi-liao">相关资料</h2>
+<ul>
+<li><a href="https://rollupjs.org/guide/en/">Rollup</a></li>
+<li><a href="https://rollupjs.org/guide/en/#plugin-development">Rollup Plugin</a></li>
+<li><a href="https://rollupjs.org/guide/en/#build-hooks">Rollup Plugin Hooks</a></li>
+<li><a href="https://github.com/rollup/plugins">Rollup Official Plugins</a></li>
+</ul>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;brainfuck-compiler&#x2F;"
+    ><span class="mr-1.5">←</span><span>用 JavaScript 实现一个 简单的 brainfuck 编译器</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;yarn-workspaces&#x2F;"
+    ><span>yarn workspaces 简单介绍</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

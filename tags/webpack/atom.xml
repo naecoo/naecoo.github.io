@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Naeco&#x27;s blog - webpack</title>
+    <link rel="self" type="application/atom+xml" href="https://naecoo.github.io/tags/webpack/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://naecoo.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2019-09-15T00:00:00+00:00</updated>
+    <id>https://naecoo.github.io/tags/webpack/atom.xml</id>
+    <entry xml:lang="en">
+        <title>告别webpack，直接运行npm包</title>
+        <published>2019-09-15T00:00:00+00:00</published>
+        <updated>2019-09-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              naeco
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://naecoo.github.io/pika/"/>
+        <id>https://naecoo.github.io/pika/</id>
+        
+        <content type="html" xml:base="https://naecoo.github.io/pika/">&lt;h3 id=&quot;wei-shen-me-yao-da-bao&quot;&gt;为什么要打包？&lt;&#x2F;h3&gt;
+&lt;p&gt;2019年，距离es6正式发布已经过去了4年多了，es6给我们带来了许多新特性，包括全新的JavaScript模块系统（&lt;a href=&quot;https:&#x2F;&#x2F;flaviocopes.com&#x2F;es-modules&#x2F;&quot;&gt;ESM&lt;&#x2F;a&gt;），它可以直接在浏览器运行。但一般我们开发项目，还是要引入Browserify和Webpack等打包工具进行打包，诚然，这些打包工具可以给项目带来很多好处、比如混淆、压缩和转译代码等等。但与此同时，也带给项目极大的复杂性，各种各样的配置文件和插件等。很多时候，我们不得不进行打包，因为&lt;a href=&quot;https:&#x2F;&#x2F;www.npmjs.com&#x2F;&quot;&gt;npm&lt;&#x2F;a&gt;的存在，我们通常会引用很多注册在&lt;code&gt;npm&lt;&#x2F;code&gt;上面的包，早期的&lt;code&gt;npm&lt;&#x2F;code&gt;包大部分都是&lt;code&gt;common.js（cjs）&lt;&#x2F;code&gt;风格的，这意味着浏览器不能直接运行，所以一般都要经过打包工具转换成浏览器支持的模块。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;xian-zhuang&quot;&gt;现状&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;npm&lt;&#x2F;code&gt;后面推出了&lt;code&gt;module&lt;&#x2F;code&gt;入口的模块，即ESM风格的模块，到目前为止，已经超过70000个包提供了&lt;a href=&quot;https:&#x2F;&#x2F;www.pika.dev&#x2F;about&#x2F;stats&quot;&gt;ESM的版本&lt;&#x2F;a&gt;，已经基本满足我们开发的需要了。所以为什么我们不直接跳过打包这个步骤，直接运行呢？事实上，自己写的ESM模块可以直接运行，但大部分&lt;code&gt;npm&lt;&#x2F;code&gt;包都会有依赖，浏览器没办法从&lt;code&gt;node_modules&lt;&#x2F;code&gt;导入这些依赖，所以我们依然需要对代码进行打包，转译。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;pika-web&quot;&gt;@pika&#x2F;web&lt;&#x2F;h3&gt;
+&lt;p&gt;基于上述原因，&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pikapkg&#x2F;web&quot;&gt;@pika&#x2F;web&lt;&#x2F;a&gt;诞生了。&lt;code&gt;@pika&#x2F;web&lt;&#x2F;code&gt;不是构建工具，而是依赖安装工具，它可以帮助你构建npm包，然后直接在浏览器上运行，只需要一行代码：&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;npx&lt;&#x2F;span&gt;&lt;span&gt; @pika&#x2F;web
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;shi-yong-fang-fa&quot;&gt;使用方法&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;@pika&#x2F;web&lt;&#x2F;code&gt;使用起来十分简单，我们首先需要在&lt;code&gt;package.json&lt;&#x2F;code&gt;的&lt;code&gt;dependencies&lt;&#x2F;code&gt;显式声明项目所依赖的包:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; package.json
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dependencies&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: {
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;^1.0.0&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;},
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后在项目中引用这个包:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; index.js
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后执行&lt;code&gt;npx @pika&#x2F;web&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;user-gold-cdn.xitu.io&#x2F;2019&#x2F;9&#x2F;13&#x2F;16d293bcbc8221c3?w=322&amp;amp;h=57&amp;amp;f=png&amp;amp;s=5966&quot; alt=&quot;&quot; &#x2F;&gt;
+pika会在项目根目录生成一个&lt;code&gt;web_modules&lt;&#x2F;code&gt;的文件夹，里面放着项目依赖的文件，最后一步就是将替换项目引用依赖的地址&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; before
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;test&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; after
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name &lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;web_modules&#x2F;test.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;最后一步，因为我们的代码需要在浏览器执行，所以需要嵌入到&lt;code&gt;html&lt;&#x2F;code&gt;文件中:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DOCTYPE &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;html&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;html &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;lang&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;en&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;meta &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;charset&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;UTF-8&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;Document&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;body&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;body&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;module&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;src&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&#x2F;index.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;html&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;然后用浏览器打开文件，你会得到你想要的结果。&lt;&#x2F;p&gt;
+&lt;p&gt;可能有的同学会有说：“我的项目引用的依赖很多，总不能一个个去替换地址吧，多麻烦啊！”，没问题，pika提供了一个&lt;code&gt;babel&lt;&#x2F;code&gt;的插件帮助我们替换模块引用。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;yuan-ma-jie-mi&quot;&gt;源码解密&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;@pika&#x2F;web&lt;&#x2F;code&gt;的原理很简单，首先它会从&lt;code&gt;package.json&lt;&#x2F;code&gt;的&lt;code&gt;dependencies&lt;&#x2F;code&gt;种寻找项目依赖，收集好依赖就会逐个解析依赖，生成&lt;code&gt;rollup&lt;&#x2F;code&gt;的配置文件，最后用&lt;code&gt;rollup&lt;&#x2F;code&gt;将每一个依赖打包成模块，放到&lt;code&gt;web_modules&lt;&#x2F;code&gt;中。&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;收集依赖&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pkgManifest &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;path&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cwd&lt;&#x2F;span&gt;&lt;span&gt;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;package.json&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;));
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;namedExports&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;webDependencies&lt;&#x2F;span&gt;&lt;span&gt;} = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pkgManifest&lt;&#x2F;span&gt;&lt;span&gt;[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;@pika&#x2F;web&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;] || {
+&lt;&#x2F;span&gt;&lt;span&gt;    namedExports: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;undefined&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    webDependencies: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;undefined&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;  };
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;doesWhitelistExist &lt;&#x2F;span&gt;&lt;span&gt;= !!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;webDependencies&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;arrayOfDeps &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;webDependencies &lt;&#x2F;span&gt;&lt;span&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Object&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;keys&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;pkgManifest&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dependencies &lt;&#x2F;span&gt;&lt;span&gt;|| {});
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;ul&gt;
+&lt;li&gt;逐个解析&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;depManifestLoc &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;resolveFrom&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cwd&lt;&#x2F;span&gt;&lt;span&gt;, `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dep&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}&#x2F;package.json&lt;&#x2F;span&gt;&lt;span&gt;`);
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;depManifest &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;require&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;depManifestLoc&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;foundEntrypoint&lt;&#x2F;span&gt;&lt;span&gt;: string = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;depManifest&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;module&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; If the package was a part of the explicit whitelist, fallback to it&amp;#39;s main CJS entrypoint.
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;foundEntrypoint &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isExplicit&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;foundEntrypoint &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;depManifest&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;main &lt;&#x2F;span&gt;&lt;span&gt;|| &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;index.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;;
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;ul&gt;
+&lt;li&gt;生成&lt;code&gt;rollup&lt;&#x2F;code&gt;打包配置&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;inputOptions &lt;&#x2F;span&gt;&lt;span&gt;= {
+&lt;&#x2F;span&gt;&lt;span&gt;      input: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;depObject&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      plugins: [
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;rollupPluginNodeResolve&lt;&#x2F;span&gt;&lt;span&gt;({
+&lt;&#x2F;span&gt;&lt;span&gt;          mainFields: [&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;browser&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;module&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isStrict &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;filter&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Boolean&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;          modulesOnly: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isStrict&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Default: false
+&lt;&#x2F;span&gt;&lt;span&gt;          extensions: [&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.mjs&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.cjs&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.json&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Default: [ &amp;#39;.mjs&amp;#39;, &amp;#39;.js&amp;#39;, &amp;#39;.json&amp;#39;, &amp;#39;.node&amp;#39; ]
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; whether to prefer built-in modules (e.g. `fs`, `path`) or local ones with the same names
+&lt;&#x2F;span&gt;&lt;span&gt;          preferBuiltins: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Default: true
+&lt;&#x2F;span&gt;&lt;span&gt;        }),
+&lt;&#x2F;span&gt;&lt;span&gt;        !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isStrict &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;rollupPluginCommonjs&lt;&#x2F;span&gt;&lt;span&gt;({
+&lt;&#x2F;span&gt;&lt;span&gt;            extensions: [&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.cjs&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Default: [ &amp;#39;.js&amp;#39; ]
+&lt;&#x2F;span&gt;&lt;span&gt;            namedExports: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;knownNamedExports&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;          }),
+&lt;&#x2F;span&gt;&lt;span&gt;        !!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isBabel &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;rollupPluginBabel&lt;&#x2F;span&gt;&lt;span&gt;({
+&lt;&#x2F;span&gt;&lt;span&gt;            compact: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;            babelrc: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;            presets: [
+&lt;&#x2F;span&gt;&lt;span&gt;              [
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;babelPresetEnv&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                {
+&lt;&#x2F;span&gt;&lt;span&gt;                  modules: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;                  targets: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hasBrowserlistConfig &lt;&#x2F;span&gt;&lt;span&gt;? &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;undefined &lt;&#x2F;span&gt;&lt;span&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;gt;0.75%, not ie 11, not op_mini all&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;                },
+&lt;&#x2F;span&gt;&lt;span&gt;              ],
+&lt;&#x2F;span&gt;&lt;span&gt;            ],
+&lt;&#x2F;span&gt;&lt;span&gt;          }),
+&lt;&#x2F;span&gt;&lt;span&gt;        !!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isOptimized &lt;&#x2F;span&gt;&lt;span&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;rollupPluginTerser&lt;&#x2F;span&gt;&lt;span&gt;(),
+&lt;&#x2F;span&gt;&lt;span&gt;      ],
+&lt;&#x2F;span&gt;&lt;span&gt;      }) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;as&lt;&#x2F;span&gt;&lt;span&gt; any,
+&lt;&#x2F;span&gt;&lt;span&gt;    };
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;outputOptions &lt;&#x2F;span&gt;&lt;span&gt;= {
+&lt;&#x2F;span&gt;&lt;span&gt;      dir: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;destLoc&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      format: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;esm&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;esm&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;      sourcemap: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sourceMap &lt;&#x2F;span&gt;&lt;span&gt;=== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;undefined &lt;&#x2F;span&gt;&lt;span&gt;? &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isOptimized &lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sourceMap&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;      exports: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;named&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;named&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;      chunkFileNames: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;common&#x2F;[name]-[hash].js&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;    };
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;packageBundle &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;rollup&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;rollup&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;inputOptions&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;await &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;packageBundle&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;write&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;outputOptions&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fs&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;writeFileSync&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;path&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;destLoc&lt;&#x2F;span&gt;&lt;span&gt;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;import-map.json&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;),
+&lt;&#x2F;span&gt;&lt;span&gt;      JSON.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;stringify&lt;&#x2F;span&gt;&lt;span&gt;({imports: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;importMap&lt;&#x2F;span&gt;&lt;span&gt;}, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;undefined&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;      {encoding: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;utf8&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;},
+&lt;&#x2F;span&gt;&lt;span&gt;    );
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; ...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+</feed>

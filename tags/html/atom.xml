@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Naeco&#x27;s blog - html</title>
+    <link rel="self" type="application/atom+xml" href="https://naecoo.github.io/tags/html/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://naecoo.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2021-02-28T00:00:00+00:00</updated>
+    <id>https://naecoo.github.io/tags/html/atom.xml</id>
+    <entry xml:lang="en">
+        <title>preload、prefetch和preconnect的简单介绍</title>
+        <published>2021-02-28T00:00:00+00:00</published>
+        <updated>2021-02-28T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              naeco
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://naecoo.github.io/preload-prefetch-preconnect/"/>
+        <id>https://naecoo.github.io/preload-prefetch-preconnect/</id>
+        
+        <content type="html" xml:base="https://naecoo.github.io/preload-prefetch-preconnect/">&lt;h3 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h3&gt;
+&lt;p&gt;​	得益于浏览器技术的不断发展，现代网页应用体验已经不断接近原生应用，许多大公司也将原生应用迁移到浏览器，甚至更极端的，放弃原生应用，只提供网页应用。随之而来的，网页应用的代码量在不断增加，如果还像以前的样子，将所有代码放到一两个文件中，势必会影响网页加载和渲染的速度。所以网页应用一般都会利用构建工具，如webpack、gulp和rollup等，将代码按模块、路由或者命名空间进行分割，然后生成一个个比较小的js、css和html文件。但是问题又随之而来了，在如此众多的资源文件中，该如何决定加载的先后顺序和优先级呢？幸运的是，浏览器提供了preload、prefetch、preconnect和prerender等指令用来帮助网页优化资源的加载。这些指令用于&lt;code&gt;&amp;lt;link&amp;gt;&lt;&#x2F;code&gt;标签中，可以用来加载图像、css、js和字体等关键资源。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;preload&quot;&gt;preload&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;link &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prelaod&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;as&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;xxx.xxx.com&#x2F;xxx.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	指定了preload的link标签将会告诉浏览器，提高该资源的加载优先级，必须而且要提前进行资源加载，不管该资源是否被使用。同时，preload不会阻塞页面的渲染过程，避免了下载资源对页面渲染造成的延迟。preload主要用于网页必须的关键资源加载，对于不确定是否使用的资源，使用preload可能会造成带宽的浪费，以及性能损耗。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;prefetch&quot;&gt;prefetch&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;link &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prefetch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;as&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;xxx.xxx.com&#x2F;xxx.js&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	与preload不同，prefetch是一个低优先级的资源提示，它的作用是告诉浏览器加载可能会用到的资源，比如其他网页、继续滚动才会加载的资源等等。&lt;&#x2F;p&gt;
+&lt;p&gt;​	prefetch有prefetch和dns-prefetch两种&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;prefetch-1&quot;&gt;prefetch&lt;&#x2F;h4&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;link &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prefetch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;fonts.gstatic.com&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	提前加载未来可能会用到的资源，浏览器将会在空闲时获取资源，获取完成后，将会存储在浏览器缓存中，等到真正使用时，直接从内存中读取即可。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;dns-prefetch&quot;&gt;dns-prefetch&lt;&#x2F;h4&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;link &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dns-prefetch&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;fonts.gstatic.com&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	标识了dns-prefetch的资源，在真正获取之前，将会提前进行dns解析，可以加快请求的速度。一般dns-prefetch针对的是跨域资源，同域资源其实是无效的。道理也很简单，同域的资源在请求html页面的时候已经解析完成了，所以dns-prefetch一般用于CDN、以及请求第三方资源，比如google font、google analytics等。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;preconnect&quot;&gt;preconnect&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;link &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;preconnect&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;cdn.example.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	preconnect 允许浏览器在一个 HTTP 请求正式发给服务器前预先执行一些操作，这包括 DNS 解析，TLS 协商，TCP 握手，这消除了往返延迟并为用户节省了时间。可以理解为preconnect是升级版的dns-prefetch，预执行更多动作，同时也消耗更多的性能，请谨慎使用。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;prerender&quot;&gt;prerender&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;link &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;prerender&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;example.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	prerender，也就是预渲染，将会下载完整的网页资源，然后在后台进行渲染，这是会创建DOM结构，执行CSS和JavaScript，结果将会被放置在内存中。注意此指令将会加载链接包含的所有资源，会消耗大量的网络带宽、内存和cpu，建议只用于用户肯定会访问的页面链接。&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>noopener、noreferrer和nofollow的作用</title>
+        <published>2020-12-27T00:00:00+00:00</published>
+        <updated>2020-12-27T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              naeco
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://naecoo.github.io/noopener/"/>
+        <id>https://naecoo.github.io/noopener/</id>
+        
+        <content type="html" xml:base="https://naecoo.github.io/noopener/">&lt;h3 id=&quot;jian-jie&quot;&gt;简介&lt;&#x2F;h3&gt;
+&lt;p&gt;​   HTML中，a标签可以设置多个rel属性，其中包括noopener、noreferrer和nofollow，相信很多人这三个属性都不太了解，但是这三个属性关乎到网页的安全性和SEO等方面，每个开发者都应该了解其作用。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;noopener&quot;&gt;noopener&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;baidu&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​   当a标签设置了&lt;code&gt;target=&amp;quot;_blank&amp;quot;&lt;&#x2F;code&gt;，点击链接，浏览器将会打开一个新的tab页，但是由于两个网页依然存在关联性，很多开发者都会忽略其中的安全和性能问题：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;新打开的网页可能与原网页运行在同一进程，如果新网页运行大量的js脚本，原网页性能也会受到影响&lt;&#x2F;li&gt;
+&lt;li&gt;新打开的网页可以通过&lt;code&gt;window.opener&lt;&#x2F;code&gt;属性访问原网页，所以新网页可以将原网页重定向到其他URL，比如一些黑客会将网页重定向到一个钓鱼网站，来获取用户的私密信息。
+通过设置&lt;code&gt;rel=&amp;quot;noopener&amp;quot;&lt;&#x2F;code&gt;属性可以避免这个问题，所以，a标签每次设置&lt;code&gt;target=&amp;quot;_blank&amp;quot;&lt;&#x2F;code&gt;时，都必须设置rel=&amp;quot;noopener&amp;quot;：&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;noopener&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;baidu&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;noreferrer&quot;&gt;noreferrer&lt;&#x2F;h3&gt;
+&lt;p&gt;​	该属性和noopener是一样的作用，你可以挑选任意一个。但有一点不同的是，noreferrer会设置请求头为&lt;code&gt;referrer=no-referrer&lt;&#x2F;code&gt;，同时，noreferrer可以得到更低版本浏览器的支持。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;noopener&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;baidu&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;lt;!-- 或者 --&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;noreferrer&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;baidu&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;lt;!-- 也可以这样，最佳实践 --&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;href&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;rel&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;noreferrer noopener&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;baidu&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;​	很多人可能用js打开新网页，而不是a标签，比如利用以下js方法：&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span&gt;window.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;但是这个方法并没有提供设置rel属性的参数，所以，为了设置rel，可以采用这个方案：&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;js&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-js &quot;&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;openPage &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span&gt;= document.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;createElement&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;.href = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;.target = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;target&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;.rel = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;noreferrer noopener&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;click&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;openPage&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.baidu.com&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_blank&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;nofollow&quot;&gt;nofollow&lt;&#x2F;h3&gt;
+&lt;p&gt;​	通过设置nofollow这个属性，我们可以告知搜索引擎不要追踪此网页上的链接或不要追踪此特定链接。这个属性会影响搜索引擎对网页的打分，所以要谨慎使用，最好是要先学习一定的SEO知识再去使用，关于更多请看参考&lt;sup&gt;3&lt;&#x2F;sup&gt;。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;can-kao&quot;&gt;参考&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;html.spec.whatwg.org&#x2F;multipage&#x2F;links.html#link-type-noreferrer&quot;&gt;link-type-noreferrer&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;web.dev&#x2F;external-anchors-use-rel-noopener&#x2F;&quot;&gt;external-anchors-use-rel-noopener&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;ahrefs.com&#x2F;blog&#x2F;zh&#x2F;nofollow-links&#x2F;&quot;&gt;Nofollow链接 VS Follow链接：所有你需要了解的知识&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>网页生命周期(Page lifecycle API)</title>
+        <published>2019-11-02T00:00:00+00:00</published>
+        <updated>2019-11-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              naeco
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://naecoo.github.io/pagecycle/"/>
+        <id>https://naecoo.github.io/pagecycle/</id>
+        
+        <content type="html" xml:base="https://naecoo.github.io/pagecycle/">&lt;h3 id=&quot;bei-jing&quot;&gt;背景&lt;&#x2F;h3&gt;
+&lt;p&gt;apps的生命周期对于操作系统管理系统资源来说至关重要。在Android、IOS和Windows等的平台上，系统可以随意启动和中止apps的运行，这使得这些平台能够重新分配资源，以提供最好的操作体验给用户。&lt;&#x2F;p&gt;
+&lt;p&gt;但对于web应用，并没有类似的生命周期机制。随着打开网页数量增加，内存、CPU、网络吞吐等系统关键资源都被过度使用，导致系统性能下降，降低了用户的操作体验。&lt;&#x2F;p&gt;
+&lt;p&gt;虽然浏览器很早之前就有提供关于生命周期的事件，比如&lt;code&gt;load&lt;&#x2F;code&gt;、&lt;code&gt;unload&lt;&#x2F;code&gt;和&lt;code&gt;visibilitychange&lt;&#x2F;code&gt;等，但是这些事件只允许开发人员响应用户自行发起的生命周期状态更改。为了让网页更可靠地运行，尤其是在低功耗的设备（手机、智能手表等），浏览器需要一种主动回收和分配系统资源的机制。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;wicg.github.io&#x2F;page-lifecycle&#x2F;spec.html&quot;&gt;Page Lifecycle API&lt;&#x2F;a&gt;就是为了解决这些问题而提出的方案，目标主要有三点：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;在web上引入并标准化生命周期状态的概念&lt;&#x2F;li&gt;
+&lt;li&gt;定义新的应用状态，允许浏览器限制网页持续占据系统资源&lt;&#x2F;li&gt;
+&lt;li&gt;创建新的API和事件，允许开发人员响应这些应用状态之间的转换&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;code&gt;Page Lifecycle API&lt;&#x2F;code&gt;已经在Chrome 68上得到支持，下面将会进行详细介绍。&lt;&#x2F;p&gt;
+&lt;p&gt;+++&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;gai-lan&quot;&gt;概览&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;code&gt;Page Lifecycle API&lt;&#x2F;code&gt;定义了规范化的app生命周期状态，且每个页面在一个阶段只能处于一个状态，每个状态的改变都会有相应的事件被触发。话不多说，先上图：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;user-gold-cdn.xitu.io&#x2F;2019&#x2F;11&#x2F;2&#x2F;16e2a10c43ce5690?w=3280&amp;amp;h=2218&amp;amp;f=png&amp;amp;s=181596&quot; alt=&quot;page lifecycle&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;zhuang-tai&quot;&gt;状态&lt;&#x2F;h4&gt;
+&lt;p&gt;页面状态有6个，下面将分别展开描述，from代表的是前一个页面状态，to代表的是下一阶段可能会变更到的状态。&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;Active&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;如果页面可见并具有输入焦点，则该页面处于&lt;code&gt;Active&lt;&#x2F;code&gt;状态&lt;&#x2F;p&gt;
+&lt;p&gt;from：&lt;code&gt;passive&lt;&#x2F;code&gt;(focus事件)&lt;&#x2F;p&gt;
+&lt;p&gt;to: &lt;code&gt;passive&lt;&#x2F;code&gt;(blur事件)&lt;&#x2F;p&gt;
+&lt;ol start=&quot;2&quot;&gt;
+&lt;li&gt;&lt;code&gt;Passive&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;如果页面可见并不具有输入焦点，则该页面处于&lt;code&gt;Passive&lt;&#x2F;code&gt;状态&lt;&#x2F;p&gt;
+&lt;p&gt;from: &lt;code&gt;avtive&lt;&#x2F;code&gt;(blur事件)、&lt;code&gt;hidden&lt;&#x2F;code&gt;(visibilitychange事件)&lt;&#x2F;p&gt;
+&lt;p&gt;to: &lt;code&gt;avtive&lt;&#x2F;code&gt;(focus事件)、&lt;code&gt;hidden&lt;&#x2F;code&gt;(visibilitychange事件)&lt;&#x2F;p&gt;
+&lt;ol start=&quot;3&quot;&gt;
+&lt;li&gt;&lt;code&gt;Hidden&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;如果页面不可见且不处于&lt;code&gt;frozen&lt;&#x2F;code&gt;状态，则该页面处于&lt;code&gt;hidden&lt;&#x2F;code&gt;状态&lt;&#x2F;p&gt;
+&lt;p&gt;from: &lt;code&gt;passive&lt;&#x2F;code&gt;(visibilitychange事件)&lt;&#x2F;p&gt;
+&lt;p&gt;to:  &lt;code&gt;passive&lt;&#x2F;code&gt;(visibilitychange事件)、&lt;code&gt;frozen&lt;&#x2F;code&gt;(freeze事件)、&lt;code&gt;terminated&lt;&#x2F;code&gt;(pagehide事件)&lt;&#x2F;p&gt;
+&lt;ol start=&quot;4&quot;&gt;
+&lt;li&gt;&lt;code&gt;Frozen&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;如果网页处于&lt;code&gt;frozen&lt;&#x2F;code&gt;状态下，浏览器将暂停执行页面任务队列中的可冻结任务，直到页面被解除冻结。这意味着像定时器和回调函数这样的任务不会运行。&lt;&#x2F;p&gt;
+&lt;p&gt;from: &lt;code&gt;hidden&lt;&#x2F;code&gt;(freeze事件)&lt;&#x2F;p&gt;
+&lt;p&gt;to:  &lt;code&gt;active&lt;&#x2F;code&gt;(resume和pageshow事件)、&lt;code&gt;passive&lt;&#x2F;code&gt;(resume和pageshow事件)、&lt;code&gt;hidden&lt;&#x2F;code&gt;(resume事件)&lt;&#x2F;p&gt;
+&lt;ol start=&quot;5&quot;&gt;
+&lt;li&gt;&lt;code&gt;Terminated&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;如果页面开始被浏览器卸载并从内存中清除，它就处于&lt;code&gt;terminated&lt;&#x2F;code&gt;状态。在此状态下不能启动任何新任务，如果现有运行时间太长，可能会被提前终止。&lt;&#x2F;p&gt;
+&lt;p&gt;from: &lt;code&gt;hidden&lt;&#x2F;code&gt;(pagehide事件)&lt;&#x2F;p&gt;
+&lt;p&gt;to: None&lt;&#x2F;p&gt;
+&lt;ol start=&quot;6&quot;&gt;
+&lt;li&gt;&lt;code&gt;Discarded&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;当浏览器为了节省资源而卸载页面时，它处于&lt;code&gt;discarded&lt;&#x2F;code&gt;状态。任何类型的任务、事件回调或JavaScript代码都不能在这种状态下运行，因为丢弃通常发生在资源约束下，可以理解为页面被动关闭，浏览器主动释放资源。&lt;&#x2F;p&gt;
+&lt;p&gt;from: &lt;code&gt;frozen&lt;&#x2F;code&gt;(无事件触发)&lt;&#x2F;p&gt;
+&lt;p&gt;to: None &lt;&#x2F;p&gt;
+&lt;h4 id=&quot;shi-jian&quot;&gt;事件&lt;&#x2F;h4&gt;
+&lt;p&gt;&lt;span style=&quot;color:red;&quot;&gt;*&lt;&#x2F;span&gt;代表的是&lt;code&gt;Page Lifecycle API&lt;&#x2F;code&gt;新提供的事件&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;foucs&lt;&#x2F;p&gt;
+&lt;p&gt;DOM元素获取焦点，前一个状态一般是&lt;code&gt;passive&lt;&#x2F;code&gt;，当前状态是&lt;code&gt;avtive&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;blur&lt;&#x2F;p&gt;
+&lt;p&gt;DOM元素失去焦点，前一个状态一般是&lt;code&gt;active&lt;&#x2F;code&gt;，当前状态是&lt;code&gt;passive&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;visibilitychange&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;document&lt;&#x2F;code&gt;的&lt;code&gt;visibilitySatate&lt;&#x2F;code&gt;属性发生变更，当用户导航到新页面、切换选项卡、关闭选项卡、最小化或关闭浏览器、或切换移动操作系统上的应用程序时，会触发事件。前一个状态是&lt;code&gt;passive&lt;&#x2F;code&gt;或&lt;code&gt;hidden&lt;&#x2F;code&gt;,，当前状态是&lt;code&gt;passive&lt;&#x2F;code&gt;或者&lt;code&gt;hidden&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;freeze&lt;span style=&quot;color:red;&quot;&gt;*&lt;&#x2F;span&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;页面被冻结，任务队列中的可冻结任务都停止运行。前一个状态是&lt;code&gt;hidden&lt;&#x2F;code&gt;，当前状态是&lt;code&gt;frozen&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;resume&lt;span style=&quot;color:red;&quot;&gt;*&lt;&#x2F;span&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;页面解除冻结状态，前一个状态是&lt;code&gt;frozen&lt;&#x2F;code&gt;，当前状态是&lt;code&gt;active&lt;&#x2F;code&gt;、&lt;code&gt;passive&lt;&#x2F;code&gt;或者&lt;code&gt;hidden&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;pageshow&lt;&#x2F;p&gt;
+&lt;p&gt;当一条会话历史记录被执行的时候将会触发事件，包括了后退(前进)按钮操作，同时也会在&lt;code&gt;onload&lt;&#x2F;code&gt;事件触发后初始化页面时触发。前一个状态可能为&lt;code&gt;frozen&lt;&#x2F;code&gt;，当前状态为&lt;code&gt;active&lt;&#x2F;code&gt;、&lt;code&gt;passive&lt;&#x2F;code&gt;或&lt;code&gt;hidden&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;pagehide&lt;&#x2F;p&gt;
+&lt;p&gt;与&lt;code&gt;pageshow&lt;&#x2F;code&gt;类似，不同的就是导航离开当前网页时触发。先前的状态可能为&lt;code&gt;hidden&lt;&#x2F;code&gt;，当前状态可能为&lt;code&gt;frozen&lt;&#x2F;code&gt;或者&lt;code&gt;terminated&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;beforeunload&lt;&#x2F;p&gt;
+&lt;p&gt;窗口、文档及其资源即将被卸载。文档仍然可见，此时事件仍然可以取消。前一个状态可能为&lt;code&gt;hidden&lt;&#x2F;code&gt;，当前状态为&lt;code&gt;terminated&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;unload&lt;&#x2F;p&gt;
+&lt;p&gt;卸载页面时触发，前一个状态可能为&lt;code&gt;hidden&lt;&#x2F;code&gt;，当前状态为&lt;code&gt;terminated&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h4 id=&quot;xin-zeng-gong-neng&quot;&gt;新增功能&lt;&#x2F;h4&gt;
+&lt;p&gt;上面的图表显示了两种系统触发的页面状态：&lt;code&gt;frozen &lt;&#x2F;code&gt;和&lt;code&gt;discard&lt;&#x2F;code&gt;，这种页面状态和用户触发的不一样，开发者无法主动感知状态变更。但是在Chrome  68上，开发者可以监听&lt;code&gt;freeze&lt;&#x2F;code&gt;和&lt;code&gt;resume&lt;&#x2F;code&gt;两个事件处理页面状态变更。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span&gt;document.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addEventListener&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;freeze&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;event&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 页面处于冻结状态
+&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;document.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addEventListener&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;resume&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;event&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 页面解冻
+&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;同时&lt;code&gt;document&lt;&#x2F;code&gt;对象新增了&lt;code&gt;wasDiscarded&lt;&#x2F;code&gt;属性，这个属性代表页面是否处于&lt;code&gt;discarded&lt;&#x2F;code&gt;状态，开发者可以根据这个属性的值处理不同的逻辑&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(document.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wasDiscarded&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 页面被浏览器丢弃
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;+++&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;guan-cha-zhuang-tai&quot;&gt;观察状态&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; active、passive和hidden三种状态
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;getState &lt;&#x2F;span&gt;&lt;span&gt;= () &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(document.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;visibilityState &lt;&#x2F;span&gt;&lt;span&gt;=== &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hidden&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hidden&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;;
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(document.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;hasFocus&lt;&#x2F;span&gt;&lt;span&gt;()) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;active&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;;
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;passive&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;;
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;另外，&lt;code&gt;frozen&lt;&#x2F;code&gt;和和&lt;code&gt;terminated&lt;&#x2F;code&gt;的状态变更可以通过监听&lt;code&gt;freeze&lt;&#x2F;code&gt;和&lt;code&gt;pagehide&lt;&#x2F;code&gt;事件获取。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;feng-zhuang-zhuang-tai-guan-cha-qi&quot;&gt;封装状态观察器&lt;&#x2F;h4&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 保存初始页面状态
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;state &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;getState&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 记录状态变更并打印在控制台
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 更新当前页面状态
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;logStateChange &lt;&#x2F;span&gt;&lt;span&gt;= (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nextState&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prevState &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;state&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nextState &lt;&#x2F;span&gt;&lt;span&gt;!== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prevState&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(`&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;State change: ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prevState&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;} &amp;gt;&amp;gt;&amp;gt; ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nextState&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;`);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;state &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nextState&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;};
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 监听生命周期事件，保持页面状态更新
+&lt;&#x2F;span&gt;&lt;span&gt;[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;pageshow&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;focus&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;blur&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;visibilitychange&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;resume&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;forEach&lt;&#x2F;span&gt;&lt;span&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  window.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addEventListener&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span&gt;, () &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;logStateChange&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;getState&lt;&#x2F;span&gt;&lt;span&gt;()), {capture: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 监听freeze事件
+&lt;&#x2F;span&gt;&lt;span&gt;window.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addEventListener&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;freeze&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, () &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 页面状态变更为frozen
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;logStateChange&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;frozen&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;);
+&lt;&#x2F;span&gt;&lt;span&gt;}, {capture: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;window.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;addEventListener&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;pagehide&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;event&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(event.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;persisted&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; event.persisted为true意味着页面是从缓存中加载的，所以是frozen状态
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;logStateChange&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;frozen&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;);
+&lt;&#x2F;span&gt;&lt;span&gt;  } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; terminated状态
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;logStateChange&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;terminated&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;);
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;}, {capture: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span&gt;});
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h4 id=&quot;kua-ping-tai&quot;&gt;跨平台&lt;&#x2F;h4&gt;
+&lt;p&gt;&lt;code&gt;Page Lifecycle&lt;&#x2F;code&gt;这个标准刚刚引入，并没有得到全部浏览器平台的支持。有些浏览器可能在切换标签的时候不会触发&lt;code&gt;blur&lt;&#x2F;code&gt;事件，有些浏览器没有实现&lt;code&gt;freeze&lt;&#x2F;code&gt;和&lt;code&gt;resume&lt;&#x2F;code&gt;事件，IE10以下版本不支持&lt;code&gt;visibilitychange&lt;&#x2F;code&gt;事件等等...&lt;&#x2F;p&gt;
+&lt;p&gt;为了让开发者更容易上手处理跨平台兼容的问题，谷歌开发了&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;GoogleChromeLabs&#x2F;page-lifecycle&quot;&gt;PageLifecycle.js&lt;&#x2F;a&gt;这个库，用于观察页面生命周期状态的变化。PageLifecycle.js按事件触发顺序规范化处理了跨浏览器的差异，保证状态变更和标准规范保存一致。&lt;&#x2F;p&gt;
+&lt;p&gt;+++&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;zui-jia-shi-jian&quot;&gt;最佳实践&lt;&#x2F;h3&gt;
+&lt;p&gt;对于开发者来说，理解页面生命状态并懂得根据页面状态不懂执行不同业务逻辑是非常重要的，下面介绍各个状态下的最佳实践：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Active&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;active&lt;&#x2F;code&gt;状态是用户最关键的时间，因此也是页面响应用户输入最重要的时间，任何可能阻塞主线程执行的非UI渲染任务都可以放到&lt;code&gt;requestidlecallback&lt;&#x2F;code&gt;或者&lt;code&gt;web worker&lt;&#x2F;code&gt;执行&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Passive&lt;&#x2F;p&gt;
+&lt;p&gt;在此状态下，用户没有和页面进行交互，但页面仍然处于可视状态，所以UI和动画需要保持渲染状态，从&lt;code&gt;active&lt;&#x2F;code&gt;状态过渡到&lt;code&gt;passive&lt;&#x2F;code&gt;是一个保存页面状态的好时机，比如一些表单值。&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Hidden&lt;&#x2F;p&gt;
+&lt;p&gt;页面被隐藏或者关闭，停止所有与用户交互、UI渲染有关的任务，并及时保存应用状态&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Frozen&lt;&#x2F;p&gt;
+&lt;p&gt;在&lt;code&gt;frozen&lt;&#x2F;code&gt;状态下，&lt;a href=&quot;https:&#x2F;&#x2F;html.spec.whatwg.org&#x2F;multipage&#x2F;webappapis.html#queue-a-task&quot;&gt;可冻结任务&lt;&#x2F;a&gt;将会被挂起直到页面解冻(有可能永远不会发生）。在这个状态下，开发者要做以下几点：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;关闭IndexedDB连接&lt;&#x2F;li&gt;
+&lt;li&gt;关闭&lt;a href=&quot;https:&#x2F;&#x2F;developer.mozilla.org&#x2F;en-US&#x2F;docs&#x2F;Web&#x2F;API&#x2F;Broadcast_Channel_API&quot;&gt;BroadcastChannel&lt;&#x2F;a&gt; 连接&lt;&#x2F;li&gt;
+&lt;li&gt;关闭WebRTC连接&lt;&#x2F;li&gt;
+&lt;li&gt;停止http轮询和websocket连接&lt;&#x2F;li&gt;
+&lt;li&gt;停止定时器&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Terminated&lt;&#x2F;p&gt;
+&lt;p&gt;通常在此状态下不需要处理任何任务，因为这个阶段的任务不能保存可靠执行，有可能被强行终止。但你也可以做一些状态持久化或者埋点分析的任务&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;+++&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;xiang-guan-zi-liao&quot;&gt;相关资料&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;developers.google.com&#x2F;web&#x2F;updates&#x2F;2018&#x2F;07&#x2F;page-lifecycle-api&quot;&gt;developers-google-web-page-lifecycle-api&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;wicg.github.io&#x2F;page-lifecycle&#x2F;spec.html&quot;&gt;Page Lifecycle API&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;docs&#x2F;Web&#x2F;Events&#x2F;pageshow&quot;&gt;windows-event-pageshow&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>让你的函数运行在web worker中</title>
+        <published>2019-04-27T00:00:00+00:00</published>
+        <updated>2019-04-27T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              naeco
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://naecoo.github.io/web-worker/"/>
+        <id>https://naecoo.github.io/web-worker/</id>
+        
+        <content type="html" xml:base="https://naecoo.github.io/web-worker/">&lt;h3 id=&quot;qian-yan&quot;&gt;前言&lt;&#x2F;h3&gt;
+&lt;p&gt;我们都知道JavaScript在浏览器中执行采用的是单线程模型，也就是说，在同一时间下所有的任务都只能在一个线程上完成，只有上一件任务完成才能开始下一件任务。如果javascript的代码计算量太大，执行会耗费很长的时间，会影响了其他任务的执行，严重的还可能阻塞UI线程的渲染，导致页面出现卡顿等情况。而且现在很多的cpu都是多核的，单线程执行会浪费很多cpu的性能。所以浏览器厂商提供的&lt;code&gt;web worker&lt;&#x2F;code&gt;的接口，就是为了提供让&lt;code&gt;javascript&lt;&#x2F;code&gt;代码运行在多个线程的环境。&lt;code&gt;web worker&lt;&#x2F;code&gt;的工作线程和主线程是分开的，两者互不干扰，相互间通过事件接口进行通信。不过&lt;code&gt;web worker&lt;&#x2F;code&gt;提供的接口太原始了，不是很方便我们使用，每次实例化&lt;code&gt;worker&lt;&#x2F;code&gt;之后都要预定义单独的&lt;code&gt;javascript&lt;&#x2F;code&gt;脚本文件，而且还要单独维护一套通信的方法。
+所以我们得想一个办法让&lt;code&gt;worker&lt;&#x2F;code&gt;用起来优雅顺手一点，最好是提供一个接口可以像函数一样调用，比如像这样：&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;work &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;someWorker&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;work&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;n&lt;&#x2F;span&gt;&lt;span&gt;){
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;n &lt;&#x2F;span&gt;&lt;span&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;  })
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;work&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;then&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;res&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 2
+&lt;&#x2F;span&gt;&lt;span&gt;  })
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样看上去是不是比较直观一点，配合&lt;code&gt;async&lt;&#x2F;code&gt;和&lt;code&gt;await&lt;&#x2F;code&gt;用起来就非常优雅了，完全屏蔽了js主线程和&lt;code&gt;worker&lt;&#x2F;code&gt;之间通信的细节。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;shi-xian-fang-fa&quot;&gt;实现方法&lt;&#x2F;h3&gt;
+&lt;p&gt;其实具体通信的解决方法很简单，我们只需要在函数调用的时候，&lt;code&gt;postMessage&lt;&#x2F;code&gt;要调用的函数和参数到&lt;code&gt;worker&lt;&#x2F;code&gt;里面去，再监听&lt;code&gt;worker&lt;&#x2F;code&gt;返回的结果。&lt;code&gt;worker&lt;&#x2F;code&gt;内部也是一样的道理，监听主线程传过来的消息，再执行相应的函数，用&lt;code&gt;postMessage&lt;&#x2F;code&gt;返回执行结果。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; js主线程
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;invoke &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;method &lt;&#x2F;span&gt;&lt;span&gt;= &amp;#39;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;params &lt;&#x2F;span&gt;&lt;span&gt;= []) {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;promise &lt;&#x2F;span&gt;&lt;span&gt;= new Promise((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;resolve&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;reject&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;worker&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;onmessage &lt;&#x2F;span&gt;&lt;span&gt;= (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;resolve&lt;&#x2F;span&gt;&lt;span&gt;(JSON.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;parse&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span&gt;.data))
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;worker&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;onerror &lt;&#x2F;span&gt;&lt;span&gt;= (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;reject&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;  })
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;worker&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;postMessage&lt;&#x2F;span&gt;&lt;span&gt;(JSON.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;stringify&lt;&#x2F;span&gt;&lt;span&gt;({
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;method&lt;&#x2F;span&gt;&lt;span&gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;params
+&lt;&#x2F;span&gt;&lt;span&gt;  }))
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;promise
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; worker
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;onmessage &lt;&#x2F;span&gt;&lt;span&gt;= (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;method&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;params&lt;&#x2F;span&gt;&lt;span&gt;} = JSON.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;parse&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span&gt;).data
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;result &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;method&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;apply&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;params&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;postMessage&lt;&#x2F;span&gt;&lt;span&gt;(JSON.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;stringify&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;result&lt;&#x2F;span&gt;&lt;span&gt;))
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; self是worker全局环境的引用，和window差不多
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 所以调用self的方法就是调用全局环境下注册的方法
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样我们就实现了一个简单的&lt;code&gt;worker&lt;&#x2F;code&gt;通信模型，只需要在传入&lt;code&gt;worker&lt;&#x2F;code&gt;的js脚本中提前定义好函数，就可以在主线程通过&lt;code&gt;invoke&lt;&#x2F;code&gt;调用函数了。但这和我们的想法还是有点不一样，我们的模型的可以动态地往worker中添加函数，而且函数可以定义在主线程中，这样可以获得更好的灵活性和可维护性。
+那么问题来了，实例化&lt;code&gt;worker&lt;&#x2F;code&gt;需要传入js文件的地址，而且这个地址不能是&lt;code&gt;file:&#x2F;&#x2F;&lt;&#x2F;code&gt;开头的，意味着不能访问本地的文件，所以worker的脚本必须加载至网络。那么有没有一种好的方法可以动态生成js代码片段，而且能够包装成&lt;code&gt;worker&lt;&#x2F;code&gt;可以接受的类型呢？
+其实是有的，浏览器厂商提供了一个&lt;code&gt;URL&lt;&#x2F;code&gt;的对象，这个对象有一个&lt;a href=&quot;https:&#x2F;&#x2F;developer.mozilla.org&#x2F;zh-CN&#x2F;docs&#x2F;Web&#x2F;API&#x2F;URL&#x2F;createObjectURL&quot;&gt;&lt;code&gt;create​ObjectURL&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;方法，这个方法可以接受一个二进制对象生成URL，所以我们还需要&lt;code&gt;Blob&lt;&#x2F;code&gt;类来生成二进制数据，我们的问题就可以完美解决了。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;funcStr &lt;&#x2F;span&gt;&lt;span&gt;= &amp;#39;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 我们把函数名和函数引用以key-value的方式用Map储存起来
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;func&lt;&#x2F;span&gt;&lt;span&gt;] of &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;methods&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;entries&lt;&#x2F;span&gt;&lt;span&gt;()) {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str &lt;&#x2F;span&gt;&lt;span&gt;= &amp;#39;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;isArrowFunc&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;func&lt;&#x2F;span&gt;&lt;span&gt;)) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str &lt;&#x2F;span&gt;&lt;span&gt;= `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;;var ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;} = ${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Function&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.prototype.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;toString&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;call&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;func&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)}&lt;&#x2F;span&gt;&lt;span&gt;`
+&lt;&#x2F;span&gt;&lt;span&gt;  } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str &lt;&#x2F;span&gt;&lt;span&gt;= `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Function&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.prototype.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;toString&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;call&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;func&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)}&lt;&#x2F;span&gt;&lt;span&gt;`
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;funcStr &lt;&#x2F;span&gt;&lt;span&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;code &lt;&#x2F;span&gt;&lt;span&gt;= `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;code&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;};&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;worker_scheduler&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span&gt;`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;URL&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;createObjectURL&lt;&#x2F;span&gt;&lt;span&gt;(new Blob([&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;code&lt;&#x2F;span&gt;&lt;span&gt;]))
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;worker &lt;&#x2F;span&gt;&lt;span&gt;= new Worker(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;其实原理也很简单，我们通过&lt;code&gt;Function.toString&lt;&#x2F;code&gt;这个方法得到函数的定义，相当于把函数定义复制到了&lt;code&gt;worker&lt;&#x2F;code&gt;脚本。这里需要提醒一下的是，es6箭头函数的函数定义和普通的函数有一定的区别，我们需要分别处理。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;fn1 &lt;&#x2F;span&gt;&lt;span&gt;= () &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;fn2 &lt;&#x2F;span&gt;&lt;span&gt;() {}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Function&lt;&#x2F;span&gt;&lt;span&gt;.prototype.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;toString&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;call&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fn1&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; () =&amp;gt; {}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Function&lt;&#x2F;span&gt;&lt;span&gt;.prototype.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;toString&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;call&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fn2&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; function fn2 () {}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;我们可以看到箭头函数的定义没有定义的名字，不过我们可以通过&lt;code&gt;Function.name&lt;&#x2F;code&gt;获取到函数定义名。&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;fn1.name &#x2F;&#x2F;  &amp;quot;fn1&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;fn2.name &#x2F;&#x2F;   &amp;quot;fn2&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;接下来的东西都很简单了，我们自己在内部维护这样的一套机制，只需要对外暴露&lt;code&gt;add&lt;&#x2F;code&gt;和&lt;code&gt;invoke&lt;&#x2F;code&gt;两个接口就可以让主线程定义的函数跑在&lt;code&gt;worker&lt;&#x2F;code&gt;当中了。
+所以我顺手实现了一个库&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;naecoo&#x2F;funcwork&quot;&gt;funcwork&lt;&#x2F;a&gt;，内部实现代码只要一百多行，对外暴露了3个方法，用起来很方便。&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;javascript&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-javascript &quot;&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;funcwork form &lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;funcwork&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;invoke&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;terminate &lt;&#x2F;span&gt;&lt;span&gt;} = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;funcwork&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;function sayName&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; `&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Hello $&lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;}!`
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;const sayHi () {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;  return &amp;#39;Hi!&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;async function requestInfo (url, id) {
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;    return fetch(url, {id})
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;add(sayName, sayHi)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;await invoke(&amp;#39;sayName&amp;#39;, [&amp;#39;naeco&amp;#39;])    &#x2F;&#x2F; Hello naeco!
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;await invoke(&amp;#39;sayHi&amp;#39;)                &#x2F;&#x2F; Hi!
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;await invoke(&amp;#39;requestInfo&amp;#39;, [&amp;#39;api&#x2F;getUserInfo&amp;#39;, &amp;#39;xxx123456&amp;#39;]) &#x2F;&#x2F;  user info...
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;&#x2F; 不用的时候记得销毁
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;terminate()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;大家觉得不错的可以顺手给个star😂😂😂&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;hou-xu&quot;&gt;后续&lt;&#x2F;h3&gt;
+&lt;p&gt;其实web worker这个东西出现了也挺久了，现在浏览器支持度已经很不错了，但是我发现实际项目还是很少人用到。个人认为主要原因有两个：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;接口不友好&lt;&#x2F;li&gt;
+&lt;li&gt;使用场景有限&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;针对第一点我们可以自己进行封装，可以让&lt;code&gt;web worker&lt;&#x2F;code&gt;用起来像&lt;code&gt;promise&lt;&#x2F;code&gt;一样顺手。第二点要看我们具体的业务场景了，一些计算量比较大的工作可以尝试交给&lt;code&gt;web worker&lt;&#x2F;code&gt;，比如&lt;code&gt;canvas&lt;&#x2F;code&gt;和图片的计算，服务器轮询和上传文件等等场景。&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

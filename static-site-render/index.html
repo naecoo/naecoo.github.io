@@ -1,0 +1,586 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    一个简单的静态网站生成器 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="一个简单的静态网站生成器" />
+  <meta name="author" content="一个简单的静态网站生成器" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;static-site-render&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">一个简单的静态网站生成器</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2020-09-24</time>
+  <span class="mx-1">&middot;</span>
+  <span>7min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/static-site-render/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/static-site-render/#jie-xi-wen-zhang"
+            >解析文章</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/static-site-render/#sheng-cheng-htmlwen-jian"
+            >生成HTML文件</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/static-site-render/#sheng-cheng-shou-ye-htmlwen-jian"
+            >生成首页HTML文件</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/static-site-render/#dai-ma"
+            >代码</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="qian-yan">前言</h3>
+<p>随着云技术的发展，现在互联网上许多公司都提供了免费托管网站的服务，比如大名鼎鼎的Github Pages、Netty等，这些服务的流行也推动了静态博客站点生成器的流行。互联网早期可能很多人会用WordPress搭建博客，但现在早就是Hexo、Hugo和Vuepree等静态博客的天下了。比如本站就是采用VuePress搭建的，每次写博客只需要重新渲染打包，再加上自动化CI/CD，一键就能发布更新。很多人，包括我自己，觉得静态博客生成器很难做，其实不然，背后的技术原理其实很简单，一个基本的静态博客生成器的流程大概会有：</p>
+<ul>
+<li>解析所有markdown文件</li>
+<li>渲染成HTML文件</li>
+<li>生成页面链接</li>
+</ul>
+<p>所以现在，我们就根据这三个步骤，实现一个简单的静态博客生成器吧。</p>
+<h3 id="jie-xi-wen-zhang">解析文章</h3>
+<p>我们可以用一个类来实现全部的逻辑，首先是类的初始化</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">StaticSiteRender </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor </span><span>(</span><span style="color:#bf616a;">options </span><span>= </span><span style="color:#eff1f5;">{}</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">defaultOptions </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// markdown文件目录
+</span><span style="color:#eff1f5;">      sourcePath: </span><span>&#39;</span><span style="color:#a3be8c;">./source</span><span>&#39;</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 模板文件目录
+</span><span style="color:#eff1f5;">      templtePath: </span><span>&#39;</span><span style="color:#a3be8c;">./template</span><span>&#39;</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 输出目录
+</span><span style="color:#eff1f5;">      output: </span><span>&#39;</span><span style="color:#a3be8c;">./public</span><span>&#39;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters </span><span>= </span><span style="color:#eff1f5;">[]
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options </span><span>= </span><span style="color:#ebcb8b;">Object</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">assign</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">defaultOptions</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">options</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// markdown渲染器
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">md </span><span>= new </span><span style="color:#eff1f5;">MarkdownIt()
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">md </span><span>= </span><span style="color:#bf616a;">md
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 支持markdown的frontMatter
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">md</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">use</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">markdownItFrontMatter</span><span style="color:#eff1f5;">, </span><span>(</span><span style="color:#bf616a;">fm</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// FIXME: 由于markdown-it插件的处理流程是在回调函数，所以只能在这里存储起来
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">push</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">YAML</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">parse</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">fm</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// ...
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>在类的初始化时候可以传入配置修改相关文件的路径，然后进行markdown解析器的初始化，这里我们用的是<a href="https://www.npmjs.com/package/markdown-it">markdown-it</a>， 同时我们用了markdown-it的一个插件<a href="https://www.npmjs.com/package/markdown-it-front-matter">markdown-it-front-matter</a>， 这个插件的作用是解析markdown文件的元信息，一般是这样的形式：</p>
+<pre data-lang="markdown" style="background-color:#2b303b;color:#c0c5ce;" class="language-markdown "><code class="language-markdown" data-lang="markdown"><span>+++
+</span><span>title: markdown文章
+</span><span>author: naeco
+</span><span>tags:
+</span><span style="color:#bf616a;"> - Vue
+</span><span style="color:#bf616a;"> - js
+</span><span style="color:#bf616a;">+++
+</span><span style="color:#bf616a;">### markdown
+</span><span style="color:#bf616a;">- 1
+</span><span style="color:#bf616a;">- 2
+</span></code></pre>
+<p>插件将会吧<code>---</code>之间包裹的内容解析成字符串，我们再通过YAML解析器解析成js的对象：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>{
+</span><span>    &quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">markdown文章</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">author</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">naeco</span><span>&quot;,
+</span><span>    &quot;</span><span style="color:#a3be8c;">tags</span><span>&quot;: [&quot;</span><span style="color:#a3be8c;">vue</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">js</span><span>&quot;]
+</span><span>}
+</span></code></pre>
+<p>然后是解析markdown，这里处理比较简单，直接遍历文件夹下的所有markdown文件</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 遍历文件夹
+</span><span style="color:#bf616a;">async </span><span style="color:#8fa1b3;">parsePost</span><span>() {
+</span><span>    </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">frontMatters </span><span>= []
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">postPath </span><span>= </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">this</span><span>.options.</span><span style="color:#bf616a;">sourcePath</span><span>)
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">sources </span><span>= </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">readdirSync</span><span>(</span><span style="color:#bf616a;">postPath</span><span>)
+</span><span>    </span><span style="color:#bf616a;">sources</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">source</span><span>, </span><span style="color:#bf616a;">index</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">sourcePath </span><span>= </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">postPath</span><span>, </span><span style="color:#bf616a;">source</span><span>)
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">content </span><span>= </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">readFileSync</span><span>(</span><span style="color:#bf616a;">sourcePath</span><span>, &#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;)
+</span><span>      </span><span style="color:#65737e;">// 解析markdown内容
+</span><span>      </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#8fa1b3;">_renderPost</span><span>(</span><span style="color:#bf616a;">content</span><span>, </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#8fa1b3;">basename</span><span>(</span><span style="color:#bf616a;">source</span><span>, </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#8fa1b3;">extname</span><span>(</span><span style="color:#bf616a;">source</span><span>)))
+</span><span>    })
+</span><span>  }
+</span></code></pre>
+<h3 id="sheng-cheng-htmlwen-jian">生成HTML文件</h3>
+<p>遍历得到所有markdown文件后，就可以调用markdown-it将其转换为HTML文件了</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// markdown =&gt; html
+</span><span style="color:#bf616a;">async </span><span style="color:#8fa1b3;">_renderPost</span><span>(</span><span style="color:#bf616a;">content</span><span>, </span><span style="color:#bf616a;">fileName</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">markdown </span><span>= </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">md</span><span>.</span><span style="color:#8fa1b3;">render</span><span>(</span><span style="color:#bf616a;">content</span><span>)
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">frontMatter </span><span>= </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">frontMatters</span><span>[</span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">frontMatters</span><span>.length - </span><span style="color:#d08770;">1</span><span>]
+</span><span>    </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#8fa1b3;">assign</span><span>(</span><span style="color:#bf616a;">frontMatter</span><span>, { </span><span style="color:#bf616a;">fileName </span><span>})
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">readFileSync</span><span>(</span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">this</span><span>.options.</span><span style="color:#bf616a;">templtePath</span><span>, &#39;</span><span style="color:#a3be8c;">./post.ejs</span><span>&#39;), &#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;)
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">html </span><span>= </span><span style="color:#bf616a;">ejs</span><span>.</span><span style="color:#8fa1b3;">render</span><span>(</span><span style="color:#bf616a;">template</span><span>, {
+</span><span>      title: </span><span style="color:#bf616a;">frontMatter</span><span>.title || &#39;&#39;,
+</span><span>      content: </span><span style="color:#bf616a;">markdown
+</span><span>    })
+</span><span>    
+</span><span>    </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">writeFileSync</span><span>(</span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">this</span><span>.options.</span><span style="color:#bf616a;">output</span><span>, &#39;</span><span style="color:#a3be8c;">./post/</span><span>&#39;, `</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">fileName</span><span style="color:#a3be8c;">}.html</span><span>`), </span><span style="color:#bf616a;">html</span><span>)
+</span><span>  }
+</span></code></pre>
+<p>markdown-it会将markdown文件的内容转化为HTML字符串，然后我们通过模板引擎<a href="https://www.npmjs.com/package/ejs">ejs</a>生成HTML文件，具体HTML模板如下：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;!</span><span style="color:#b48ead;">DOCTYPE </span><span style="color:#d08770;">html</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">html </span><span style="color:#d08770;">lang</span><span>=&quot;</span><span style="color:#a3be8c;">en</span><span>&quot;&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span>=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">name</span><span>=&quot;</span><span style="color:#a3be8c;">viewport</span><span>&quot; </span><span style="color:#d08770;">content</span><span>=&quot;</span><span style="color:#a3be8c;">width=device-width, initial-scale=1.0</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">title</span><span>&gt;&lt;%= title %&gt;&lt;/</span><span style="color:#bf616a;">title</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">main</span><span>&gt;
+</span><span>    &lt;%- content %&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">main</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">html</span><span>&gt;
+</span></code></pre>
+<h3 id="sheng-cheng-shou-ye-htmlwen-jian">生成首页HTML文件</h3>
+<p>等到所有markdown文件转换为HTML文件后，我们就可以生成博客的首页页面了，原理是一样的，通过ejs的模板文件，传递具体博文数据进去，生成html文件。</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;!</span><span style="color:#b48ead;">DOCTYPE </span><span style="color:#d08770;">html</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">html </span><span style="color:#d08770;">lang</span><span>=&quot;</span><span style="color:#a3be8c;">en</span><span>&quot;&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span>=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">name</span><span>=&quot;</span><span style="color:#a3be8c;">viewport</span><span>&quot; </span><span style="color:#d08770;">content</span><span>=&quot;</span><span style="color:#a3be8c;">width=device-width, initial-scale=1.0</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">title</span><span>&gt;首页&lt;/</span><span style="color:#bf616a;">title</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>    &lt;%
+</span><span>      posts.forEach(function(post){%&gt;
+</span><span>        &lt;</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">h3</span><span>&gt;
+</span><span>            &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span>=&quot;</span><span style="color:#a3be8c;">./post/&lt;%- post.fileName %&gt;.html</span><span>&quot;&gt;
+</span><span>              &lt;%- post.title %&gt;
+</span><span>            &lt;/</span><span style="color:#bf616a;">a</span><span>&gt;
+</span><span>          &lt;/</span><span style="color:#bf616a;">h3</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">p</span><span>&gt;author: &lt;%- post.author %&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">p</span><span>&gt;creatAt: &lt;%- post.date %&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>            tags:
+</span><span>            &lt;%
+</span><span>              (post.tags || []).forEach(function(tag){%&gt;
+</span><span>                &lt;</span><span style="color:#bf616a;">span </span><span style="color:#d08770;">style</span><span>=&quot;margin-left: </span><span style="color:#d08770;">5px</span><span>;&quot;&gt;&lt;%- tag %&gt;&lt;/</span><span style="color:#bf616a;">span</span><span>&gt;
+</span><span>              &lt;%})
+</span><span>            %&gt;
+</span><span>          &lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>        &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>      &lt;%})
+</span><span>    %&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">html</span><span>&gt;
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span> </span><span style="color:#bf616a;">async </span><span style="color:#8fa1b3;">_renderHome </span><span>() {
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">readFileSync</span><span>(</span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">this</span><span>.options.</span><span style="color:#bf616a;">templtePath</span><span>, &#39;</span><span style="color:#a3be8c;">./home.ejs</span><span>&#39;), &#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;)
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">html </span><span>= </span><span style="color:#bf616a;">ejs</span><span>.</span><span style="color:#8fa1b3;">render</span><span>(</span><span style="color:#bf616a;">template</span><span>, { posts: </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">frontMatters </span><span>})
+</span><span>    </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">writeFileSync</span><span>(</span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">this</span><span>.options.</span><span style="color:#bf616a;">output</span><span>, `</span><span style="color:#a3be8c;">home.html</span><span>`), </span><span style="color:#bf616a;">html</span><span>)
+</span><span>  }
+</span></code></pre>
+<p>这里所有的工作就已经完成了，你可以把生成的HTML文件放在托管平台上，这样就可以在互联网上访问你的博客。</p>
+<h3 id="dai-ma">代码</h3>
+<blockquote>
+<p>index.js</p>
+</blockquote>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">path </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">path</span><span>&#39;)
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">fs </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">fs</span><span>&#39;)
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">YAML </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">YAML</span><span>&#39;)
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">MarkdownIt </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">markdown-it</span><span>&#39;)
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">markdownItFrontMatter </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">markdown-it-front-matter</span><span>&#39;)
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ejs </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">ejs</span><span>&#39;)
+</span><span>
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">StaticSiteRender </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor </span><span>(</span><span style="color:#bf616a;">options </span><span>= </span><span style="color:#eff1f5;">{}</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">defaultOptions </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// markdown文件目录
+</span><span style="color:#eff1f5;">      sourcePath: </span><span>&#39;</span><span style="color:#a3be8c;">./source</span><span>&#39;</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 模板文件目录
+</span><span style="color:#eff1f5;">      templtePath: </span><span>&#39;</span><span style="color:#a3be8c;">./template</span><span>&#39;</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 输出目录
+</span><span style="color:#eff1f5;">      output: </span><span>&#39;</span><span style="color:#a3be8c;">./public</span><span>&#39;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters </span><span>= </span><span style="color:#eff1f5;">[]
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options </span><span>= </span><span style="color:#ebcb8b;">Object</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">assign</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">defaultOptions</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">options</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">md </span><span>= new </span><span style="color:#eff1f5;">MarkdownIt()
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">md </span><span>= </span><span style="color:#bf616a;">md
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">md</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">use</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">markdownItFrontMatter</span><span style="color:#eff1f5;">, </span><span>(</span><span style="color:#bf616a;">fm</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">push</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">YAML</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">parse</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">fm</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">async </span><span style="color:#8fa1b3;">parsePost</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters </span><span>= </span><span style="color:#eff1f5;">[]
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">postPath </span><span>= </span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">resolve</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options.</span><span style="color:#bf616a;">sourcePath</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">sources </span><span>= </span><span style="color:#bf616a;">fs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">readdirSync</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">postPath</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">sources</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">source</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">index</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">sourcePath </span><span>= </span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">resolve</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">postPath</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">source</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">content </span><span>= </span><span style="color:#bf616a;">fs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">readFileSync</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">sourcePath</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">_renderPost</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">content</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">basename</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">source</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">extname</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">source</span><span style="color:#eff1f5;">)))
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">async </span><span style="color:#8fa1b3;">_renderPost</span><span>(</span><span style="color:#bf616a;">content</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">fileName</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">markdown </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">md</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">render</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">content</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">frontMatter </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters</span><span style="color:#eff1f5;">.length </span><span>- </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">Object</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">assign</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">frontMatter</span><span style="color:#eff1f5;">, { </span><span style="color:#bf616a;">fileName </span><span style="color:#eff1f5;">})
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#bf616a;">fs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">readFileSync</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">resolve</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options.</span><span style="color:#bf616a;">templtePath</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">./post.ejs</span><span>&#39;</span><span style="color:#eff1f5;">), </span><span>&#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">html </span><span>= </span><span style="color:#bf616a;">ejs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">render</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">, {
+</span><span style="color:#eff1f5;">      title: </span><span style="color:#bf616a;">frontMatter</span><span style="color:#eff1f5;">.title </span><span>|| &#39;&#39;</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      content: </span><span style="color:#bf616a;">markdown
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">fs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">writeFileSync</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">resolve</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options.</span><span style="color:#bf616a;">output</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">./post/</span><span>&#39;</span><span style="color:#eff1f5;">, </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">fileName</span><span style="color:#a3be8c;">}.html</span><span>`</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">html</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">async </span><span style="color:#8fa1b3;">_renderHome </span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#bf616a;">fs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">readFileSync</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">resolve</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options.</span><span style="color:#bf616a;">templtePath</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">./home.ejs</span><span>&#39;</span><span style="color:#eff1f5;">), </span><span>&#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">html </span><span>= </span><span style="color:#bf616a;">ejs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">render</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">, { posts: </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">frontMatters </span><span style="color:#eff1f5;">})
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">fs</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">writeFileSync</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">resolve</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.options.</span><span style="color:#bf616a;">output</span><span style="color:#eff1f5;">, </span><span>`</span><span style="color:#a3be8c;">home.html</span><span>`</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">html</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">async </span><span style="color:#8fa1b3;">run </span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">parsePost</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">_renderHome</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ssRender </span><span>= new StaticSiteRender()
+</span><span style="color:#bf616a;">ssRender</span><span>.</span><span style="color:#8fa1b3;">run</span><span>()
+</span></code></pre>
+<blockquote>
+<p>home.ejs</p>
+</blockquote>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;!</span><span style="color:#b48ead;">DOCTYPE </span><span style="color:#d08770;">html</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">html </span><span style="color:#d08770;">lang</span><span>=&quot;</span><span style="color:#a3be8c;">en</span><span>&quot;&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span>=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">name</span><span>=&quot;</span><span style="color:#a3be8c;">viewport</span><span>&quot; </span><span style="color:#d08770;">content</span><span>=&quot;</span><span style="color:#a3be8c;">width=device-width, initial-scale=1.0</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">title</span><span>&gt;首页&lt;/</span><span style="color:#bf616a;">title</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>    &lt;%
+</span><span>      posts.forEach(function(post){%&gt;
+</span><span>        &lt;</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">h3</span><span>&gt;
+</span><span>            &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span>=&quot;</span><span style="color:#a3be8c;">./post/&lt;%- post.fileName %&gt;.html</span><span>&quot;&gt;
+</span><span>              &lt;%- post.title %&gt;
+</span><span>            &lt;/</span><span style="color:#bf616a;">a</span><span>&gt;
+</span><span>          &lt;/</span><span style="color:#bf616a;">h3</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">p</span><span>&gt;author: &lt;%- post.author %&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">p</span><span>&gt;creatAt: &lt;%- post.date %&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>          &lt;</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>            tags:
+</span><span>            &lt;%
+</span><span>              (post.tags || []).forEach(function(tag){%&gt;
+</span><span>                &lt;</span><span style="color:#bf616a;">span </span><span style="color:#d08770;">style</span><span>=&quot;margin-left: </span><span style="color:#d08770;">5px</span><span>;&quot;&gt;&lt;%- tag %&gt;&lt;/</span><span style="color:#bf616a;">span</span><span>&gt;
+</span><span>              &lt;%})
+</span><span>            %&gt;
+</span><span>          &lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>        &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>      &lt;%})
+</span><span>    %&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">html</span><span>&gt;
+</span></code></pre>
+<blockquote>
+<p>post.ejs</p>
+</blockquote>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;!</span><span style="color:#b48ead;">DOCTYPE </span><span style="color:#d08770;">html</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">html </span><span style="color:#d08770;">lang</span><span>=&quot;</span><span style="color:#a3be8c;">en</span><span>&quot;&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span>=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">name</span><span>=&quot;</span><span style="color:#a3be8c;">viewport</span><span>&quot; </span><span style="color:#d08770;">content</span><span>=&quot;</span><span style="color:#a3be8c;">width=device-width, initial-scale=1.0</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">title</span><span>&gt;&lt;%= title %&gt;&lt;/</span><span style="color:#bf616a;">title</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">main</span><span>&gt;
+</span><span>    &lt;%- content %&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">main</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">html</span><span>&gt;
+</span></code></pre>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/nodejs/"
+      >nodejs</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/blog/"
+      >blog</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;koajs&#x2F;"
+    ><span class="mr-1.5">←</span><span>koa原理解析</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;noopener&#x2F;"
+    ><span>noopener、noreferrer和nofollow的作用</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

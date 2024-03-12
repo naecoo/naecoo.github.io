@@ -1,0 +1,470 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    yarn workspaces 简单介绍 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="yarn workspaces 简单介绍" />
+  <meta name="author" content="yarn workspaces 简单介绍" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;yarn-workspaces&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">yarn workspaces 简单介绍</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2022-02-23</time>
+  <span class="mx-1">&middot;</span>
+  <span>6min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/yarn-workspaces/#yarn-workspace"
+            >yarn workspace</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/yarn-workspaces/#monorepo"
+            >monorepo</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/yarn-workspaces/#yarn-workspace-shi-yong"
+            >yarn workspace 使用</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/yarn-workspaces/#yarn-workspace-fen-xi"
+            >yarn workspace 分析</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/yarn-workspaces/#reference"
+            >Reference</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="yarn-workspace">yarn workspace</h2>
+<p>workspace 是 <a href="https://www.npmjs.com/package/yarn">yarn</a> 支持的一种特性，在 yarn 1.0.0 版本开始默认支持。该功能可以让我们在同一个代码仓库中管理多个 package，也就是 <a href="https://en.wikipedia.org/wiki/Monorepo">monorepo</a> 的代码管理方式。</p>
+<h2 id="monorepo">monorepo</h2>
+<p>很多大型的项目都包含有多个 package，比如 vue、react、babel、rollup等，如果每一个 package 都需要单独一个仓库，整体项目的工作流程将会变得异常复杂。采用了 monorepo 的做法，将所有 package 放在同一个代码仓库中，可以统一进行构建、发布，对于调试和依赖管理都很方便。</p>
+<p><a href="https://github.com/vuejs/core">vue</a> 的仓库就是一个很典型的 monorepo 架构，代码分成了多个 package，统一放置在 packages 目录下：</p>
+<p><img src="https://naecoo.github.io/yarn-workspaces/./1645625707203.png" alt="image-20220223221506859" /></p>
+<h2 id="yarn-workspace-shi-yong">yarn workspace 使用</h2>
+<p>使用 workspace，首先要在代码仓库根目录的 <code>package.json</code> 文件中设置 <code>private</code> 和 <code>workspaces</code> 属性：</p>
+<blockquote>
+<p>package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>   &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">learn-yarn-workspace</span><span>&quot;,
+</span><span>   &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;,
+</span><span>   &quot;</span><span style="color:#a3be8c;">private</span><span>&quot;: </span><span style="color:#d08770;">true</span><span>,
+</span><span>   &quot;</span><span style="color:#a3be8c;">workspaces</span><span>&quot;: [
+</span><span>      &quot;</span><span style="color:#a3be8c;">packages/pkg1</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">packages/pkg2</span><span>&quot;
+</span><span>   ],
+</span><span>}
+</span></code></pre>
+<p>首先 <code>private</code> 必须设置为 <code>true</code>，代表不会被发布，然后在 <code>workspaces</code> 中声明 各个 package，此处代表 packages 目录下面的 pkg1 和 pkg2 分别为两个 package。<code>workspaces</code> 属性支持 glob 表达式，所以也可以写成：</p>
+<blockquote>
+<p>package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">workspaces</span><span>&quot;: [&quot;</span><span style="color:#a3be8c;">packages/*</span><span>&quot;]
+</span><span>}
+</span></code></pre>
+<p>这就代表 packages 的所有子目录都作为 package，纳入 workspaces。</p>
+<p>yarn 同时还提供了一组命令，帮助提高操作效率：</p>
+<ol>
+<li>
+<p><code>yarn workspace &lt;package_name&gt; &lt;command&gt;</code></p>
+<p>在指定的 package 下运行命令</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 在 foo 下安装 express
+</span><span style="color:#bf616a;">yarn</span><span> workspace foo add express
+</span><span>
+</span><span style="color:#65737e;"># 在 foo 下移除 express
+</span><span style="color:#bf616a;">yarn</span><span> workspace foo remove express
+</span><span>
+</span><span style="color:#65737e;"># 在 foo 下执行 scripts 中的 dev 命令
+</span><span style="color:#bf616a;">yarn</span><span> workspace foo run dev
+</span></code></pre>
+</li>
+<li>
+<p><code>yarn workspace run &lt;command&gt;</code></p>
+<p>在所有 package 运行命令，没有则报错</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 所有 package 执行 scripts 中的 build 命令
+</span><span style="color:#bf616a;">yarn</span><span> workspace run build
+</span></code></pre>
+</li>
+<li>
+<p><code>yarn workspace info [--json]</code></p>
+<p>输出 workspace 中的依赖信息</p>
+</li>
+<li>
+<p><code>yarn &lt;add|remove&gt; &lt;package&gt; -W</code></p>
+<p>在根目录下安装依赖</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 将 eslint 作为全局依赖安装
+</span><span style="color:#bf616a;">yarn</span><span> add eslint</span><span style="color:#bf616a;"> -W
+</span></code></pre>
+</li>
+</ol>
+<h2 id="yarn-workspace-fen-xi">yarn workspace 分析</h2>
+<p>使用 workspace 之后，yarn 会将 所有 package 的依赖统一安装在一起，提高了性能，同时节约了硬盘空间。同时，yarn 会在 <code>node_modules</code> 中生成 package 的软链接，指向 workspaces 中的最新代码文件，相对于 <code>yarn link</code> 来说，使用更加地快捷和方便。</p>
+<p>我们以一个简单的例子来说明 yarn workspace 具体的工作机制：</p>
+<p><img src="https://naecoo.github.io/yarn-workspaces/./1645627835280.png" alt="image-20220223225035020" /></p>
+<blockquote>
+<p>test/package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">learn-yarn-workspace</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">license</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">MIT</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">private</span><span>&quot;: </span><span style="color:#d08770;">true</span><span>,
+</span><span>  &quot;</span><span style="color:#a3be8c;">workspaces</span><span>&quot;: [
+</span><span>    &quot;</span><span style="color:#a3be8c;">packages/*</span><span>&quot;
+</span><span>  ]
+</span><span>}
+</span></code></pre>
+<blockquote>
+<p>test/pakcages/pkg1/package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">pkg1</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;
+</span><span>}
+</span></code></pre>
+<blockquote>
+<p>test/packages/pkg2/package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">pkg2</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;
+</span><span>}
+</span></code></pre>
+<p>执行 <code>yarn install</code>后，node_modules 会生成对应模块的软链接:</p>
+<p><img src="https://naecoo.github.io/yarn-workspaces/./1645628358738.png" alt="image-20220223225918484" /></p>
+<p>所以各个模块之间可以很方便地进行引用。</p>
+<p>那么问题来了，假设 pkg2 依赖 pkg1，但是依赖的版本和本地不一致怎么办，比方说，pkg2 依赖的是 <code>1.0.1</code> 版本，与本地的 <code>1.0.0</code> 版本不一致：</p>
+<blockquote>
+<p>test/packages/pkg2/package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">pkg2</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">dependencies</span><span>&quot;: {
+</span><span>    &quot;</span><span style="color:#a3be8c;">pkg1</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.1</span><span>&quot;
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>由于涉及到包发布的问题，这里我们改成依赖 <code>express</code> 的不同版本来说明问题:</p>
+<blockquote>
+<p>test/pakcages/pkg1/package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">pkg1</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">dependencies</span><span>&quot;: {
+</span><span>    &quot;</span><span style="color:#a3be8c;">express</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">4.0.0</span><span>&quot;
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<blockquote>
+<p>test/packages/pkg2/package.json</p>
+</blockquote>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">pkg2</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">dependencies</span><span>&quot;: {
+</span><span>    &quot;</span><span style="color:#a3be8c;">express</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">3.0.0</span><span>&quot;
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>重新执行一次 <code>yarn install</code>，我们发现项目根目录的 <code>node_modules</code>  文件下的 <code>express</code> 版本为 <code>3.0.0</code>，那么 <code>4.0.0</code> 版本的去哪里了呢？我们再打开 pkg1 的目录，发现这里的 <code>node_modules</code> 文件夹也多了一个 <code>express</code>：</p>
+<p><img src="https://naecoo.github.io/yarn-workspaces/./1645629123555.png" alt="image-20220223231203310" /></p>
+<p>很显然，yarn 为了解决对同一个依赖的冲突，会将低版本号的依赖放在根目录下的 <code>node_modules</code> ，而其他版本则会放在对应模块下面的 <code>node_modules</code> 中。同时，依赖的依赖也可能会发生版本冲突，解决方法也是一样的，我们可以看到上述的图片中，除了 <code>express</code> 之外，还有其他的依赖包，这些都是 <code>express</code> 的依赖。</p>
+<p>我们简单总结一下规则：</p>
+<ol>
+<li>
+<p>yarn 会在根目录的 node_modules 下面为各个 package 创建软链接，指向 workspace 指定的目录。</p>
+</li>
+<li>
+<p>如果不同的 package 依赖同一个依赖的不同版本，为了解决冲突，低版本依赖安装在根目录，而其他依赖直接安装到对应 package 的 node_modules 下面。</p>
+</li>
+<li>
+<p>依赖包的依赖如果发生冲突，解决方法和 2 一致。</p>
+</li>
+</ol>
+<h2 id="reference">Reference</h2>
+<ol>
+<li><a href="https://classic.yarnpkg.com/en/docs/workspaces">yarn workspaces docs</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/381794854">yarn workspace 指南</a></li>
+</ol>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;rollup-plugin&#x2F;"
+    ><span class="mr-1.5">←</span><span>如何实现一个 Rollup 插件</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;petite-vue&#x2F;"
+    ><span>petite-vue 框架分析</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

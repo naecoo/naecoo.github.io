@@ -1,0 +1,935 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    obvious - 微前端框架分析 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="obvious - 微前端框架分析" />
+  <meta name="author" content="obvious - 微前端框架分析" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;obvious&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">obvious - 微前端框架分析</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2021-09-05</time>
+  <span class="mx-1">&middot;</span>
+  <span>16min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#obviouskuang-jia-jie-shao"
+            >obvious框架介绍</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#yuan-ma-fen-xi"
+            >源码分析</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#socket"
+                >socket</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#app"
+                >app</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#bus"
+                >bus</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/obvious/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="qian-yan">前言</h2>
+<p>前几天，阮一峰在他的<a href="https://www.ruanyifeng.com/blog/2021/08/weekly-issue-173.html">周刊</a>上介绍了一个国产的微前端框架 <a href="https://github.com/ObviousJs/obvious-core">obvious</a> ，实现得很简洁，本文就带大家从源码角度分析该框架。</p>
+<h2 id="obviouskuang-jia-jie-shao">obvious框架介绍</h2>
+<p>obvious 是一个渐进式微前端库，在微前端架构中，obvious 专注于解决前端微应用的依赖编排和应用间的通信问题，旨在通过简洁易懂，符合编程直觉的 API 以及灵活的中间件机制，帮助用户快速搭建好基础微前端体系，并支持进行更深层次地定制，从而实现完整可靠的微前端架构。obvious 有以下特性：</p>
+<ul>
+<li>
+<p>提供基于全局状态，事件广播，事件单播的通信机制</p>
+</li>
+<li>
+<p>支持在定义微应用时声明依赖，当激活一个微应用时，其依赖将被自动激活，从而在设计前端项目时，能灵活拆分和组合各个微应用</p>
+</li>
+<li>
+<p>支持类似 <code>koa</code> 的中间件机制，用户可以通过编写中间件的方式灵活控制微应用的资源加载和执行过程</p>
+</li>
+<li>
+<p>概念简单易懂，函数式API简洁明了</p>
+</li>
+</ul>
+<p>obvious 的 API 十分简洁，只提供了 <code>bus</code>、<code>socket </code> 和 <code>app</code> 共三类API，bus主要用于管理和编排各个服务；app用于注册应用和依赖；socket则用于全局状态管理和组件通信。</p>
+<p>我们可以通过官方的示例来看 obvious 是如何使用的，假设我们需要在同一个宿主环境中分别加载 <code>Vue</code> 和 <code>React</code> 的单页面应用 ，首先需求在宿主环境中进行应用的注册：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">touchBus </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">obvious-core</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// 获取根 bus
+</span><span style="color:#b48ead;">const </span><span>[</span><span style="color:#bf616a;">bus</span><span>] = </span><span style="color:#8fa1b3;">touchBus</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// 安装应用及其依赖
+</span><span style="color:#bf616a;">bus</span><span>.</span><span style="color:#8fa1b3;">config</span><span>({
+</span><span>  assets: {
+</span><span>    &#39;</span><span style="color:#a3be8c;">react-app</span><span>&#39;: {
+</span><span>      js: [
+</span><span>        &#39;</span><span style="color:#a3be8c;">http://localhost:3000/static/js/bundle.js</span><span>&#39;,
+</span><span>        &#39;</span><span style="color:#a3be8c;">http://localhost:3000/static/js/0.chunk.js</span><span>&#39;,
+</span><span>        &#39;</span><span style="color:#a3be8c;">http://localhost:3000/static/js/main.chunk.js</span><span>&#39;
+</span><span>      ]
+</span><span>    },
+</span><span>    &#39;</span><span style="color:#a3be8c;">vue-app</span><span>&#39;: {
+</span><span>      js: [
+</span><span>        &#39;</span><span style="color:#a3be8c;">http://localhost:8081/js/app.js</span><span>&#39;,
+</span><span>        &#39;</span><span style="color:#a3be8c;">http://localhost:8081/js/chunk-vendors.js</span><span>&#39;
+</span><span>      ]
+</span><span>    }
+</span><span>  }
+</span><span>});
+</span><span>
+</span><span style="color:#65737e;">// 启动应用
+</span><span style="color:#bf616a;">bus</span><span>.</span><span style="color:#8fa1b3;">activateApp</span><span>(&#39;</span><span style="color:#a3be8c;">react-app</span><span>&#39;, {mountPoint: document.</span><span style="color:#96b5b4;">getElementById</span><span>(&#39;</span><span style="color:#a3be8c;">#react-app</span><span>&#39;)});
+</span><span style="color:#bf616a;">bus</span><span>.</span><span style="color:#8fa1b3;">activateApp</span><span>(&#39;</span><span style="color:#a3be8c;">vue-app</span><span>&#39;, {mountPoint: document.</span><span style="color:#96b5b4;">getElementById</span><span>(&#39;</span><span style="color:#a3be8c;">#vue-app</span><span>&#39;)});
+</span></code></pre>
+<p>在 Vue 应用中：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">touchBus </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">obvious-core</span><span>&#39;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">vue</span><span>&#39;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">App </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./App.vue</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// 获取根 bus
+</span><span style="color:#b48ead;">const </span><span>[</span><span style="color:#bf616a;">bus</span><span>] = </span><span style="color:#8fa1b3;">touchBus</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// 注册回调，等待应用所依赖的资源全部加载完成后将会执行回调函数
+</span><span style="color:#bf616a;">bus</span><span>.</span><span style="color:#8fa1b3;">createApp</span><span>(&#39;</span><span style="color:#a3be8c;">vue-app</span><span>&#39;)
+</span><span>  .</span><span style="color:#8fa1b3;">bootstrap</span><span>(</span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">config</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 挂载 Vue 应用
+</span><span>    new Vue({
+</span><span>      </span><span style="color:#8fa1b3;">render</span><span>: </span><span style="color:#bf616a;">h </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">h</span><span>(</span><span style="color:#bf616a;">App</span><span>),
+</span><span>    }).</span><span style="color:#8fa1b3;">$mount</span><span>(</span><span style="color:#bf616a;">config</span><span>.</span><span style="color:#bf616a;">mountPoint</span><span>);
+</span><span>  });
+</span></code></pre>
+<p>在React应用中：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">touchBus </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">obvious-core</span><span>&#39;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">React </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">react</span><span>&#39;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">ReactDOM </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">react-dom</span><span>&#39;;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">App </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./app.js</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// 获取根 bus
+</span><span style="color:#b48ead;">const </span><span>[</span><span style="color:#bf616a;">bus</span><span>] = </span><span style="color:#8fa1b3;">touchBus</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// 注册回调，等待应用所依赖的资源全部加载完成后将会执行回调函数
+</span><span style="color:#bf616a;">bus</span><span>.</span><span style="color:#8fa1b3;">createApp</span><span>(&#39;</span><span style="color:#a3be8c;">react-app</span><span>&#39;)
+</span><span>  .</span><span style="color:#8fa1b3;">bootstrap</span><span>(</span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">config</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 挂载 React 应用
+</span><span>    </span><span style="color:#bf616a;">ReactDOM</span><span>.</span><span style="color:#8fa1b3;">render</span><span>(&lt;App /&gt;, document.</span><span style="color:#96b5b4;">querySelector</span><span>(</span><span style="color:#bf616a;">config</span><span>.</span><span style="color:#bf616a;">mountPoint</span><span>));
+</span><span>  });
+</span></code></pre>
+<h2 id="yuan-ma-fen-xi">源码分析</h2>
+<p>话不多说，马上进入源码分析环节，为了节省大家的时间，本文只会对<strong>关键的流程进行分析，会跳过和省略一些不必要的环节</strong>，如果对完整的源代码感兴趣，想进行更深层次地阅读，可以点击此<a href="https://github.com/ObviousJs/obvious-core">链接</a>查看。</p>
+<p>obvious 源码位于项目工程的 <code>src</code> 文件目录中，看上去非常精简，只有七八个文件：</p>
+<p><img src="https://naecoo.github.io/obvious/./1630933785415.png" alt="image-20210906210945070" /></p>
+<p>首先从入口 <code>index.ts</code> 分析：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// ./src/index.ts
+</span><span>
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">Bus</span><span>, </span><span style="color:#bf616a;">createBus</span><span>, </span><span style="color:#bf616a;">getBus</span><span>, </span><span style="color:#bf616a;">touchBus </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./lib/bus</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// typescript 类型定义
+</span><span style="color:#b48ead;">declare </span><span>global {
+</span><span>  </span><span style="color:#b48ead;">interface </span><span>Window {
+</span><span>      </span><span style="color:#bf616a;">__Bus__</span><span>: Record&lt;string, Bus&gt;;
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">Obvious </span><span>= {
+</span><span>  </span><span style="color:#bf616a;">createBus</span><span>,
+</span><span>  </span><span style="color:#bf616a;">getBus</span><span>,
+</span><span>  </span><span style="color:#bf616a;">touchBus
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 导出 API
+</span><span style="color:#b48ead;">export </span><span>{ </span><span style="color:#bf616a;">Bus</span><span>, </span><span style="color:#bf616a;">createBus</span><span>, </span><span style="color:#bf616a;">getBus</span><span>, </span><span style="color:#bf616a;">touchBus </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./lib/bus</span><span>&#39;;
+</span><span style="color:#b48ead;">export </span><span>{ </span><span style="color:#bf616a;">App </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./lib/app</span><span>&#39;;
+</span><span style="color:#b48ead;">export </span><span>{ </span><span style="color:#bf616a;">Socket </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./lib/socket</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// 默认导出
+</span><span style="color:#b48ead;">export default </span><span style="color:#bf616a;">Obvious</span><span>;
+</span><span>
+</span></code></pre>
+<p>从入口处也可以看出，obvious 大致分为三个核心功能模块，和上述的三个 API 一一对应，分别是 bus、app 和 socket，我们可以先从  socket 模块开始阅读。</p>
+<h3 id="socket">socket</h3>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// ./src/lib/socket.ts
+</span><span>
+</span><span style="color:#65737e;">// 简单的发布订阅模型，用于事件通信
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">EventEmitter </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./event-emitter</span><span>&#39;;
+</span><span>
+</span><span style="color:#b48ead;">export class </span><span style="color:#ebcb8b;">Socket </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">   </span><span style="color:#b48ead;">constructor</span><span>(</span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">eventEmitter</span><span>: </span><span style="color:#eff1f5;">EventEmitter, </span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">_state</span><span>: </span><span style="color:#eff1f5;">Object</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 每一个 socket 示例都会维护一个单独的发布订阅模型
+</span><span style="color:#eff1f5;">   	  </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">eventEmitter </span><span>= </span><span style="color:#bf616a;">eventEmitter</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// socket 用于共享的 state
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state </span><span>= </span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">   }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 添加订阅事件（多播）
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">onBroadcast</span><span>(</span><span style="color:#bf616a;">eventName</span><span>: </span><span style="color:#eff1f5;">string, </span><span style="color:#bf616a;">callback</span><span>: </span><span style="color:#eff1f5;">CallbackType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">eventEmitter</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">addBroadcastEventListener</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">eventName</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">callback</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 触发事件（多播）
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">broadcast</span><span>(</span><span style="color:#bf616a;">eventName</span><span>: </span><span style="color:#eff1f5;">string, </span><span>...</span><span style="color:#bf616a;">args</span><span>: </span><span style="color:#eff1f5;">any[]</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">eventEmitter</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">emitBroadcast</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">eventName</span><span style="color:#eff1f5;">, </span><span>...</span><span style="color:#bf616a;">args</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 初始化内部状态
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">initState</span><span>(</span><span style="color:#bf616a;">stateName</span><span>: </span><span style="color:#eff1f5;">string, </span><span style="color:#bf616a;">value</span><span>: </span><span style="color:#eff1f5;">any, </span><span style="color:#bf616a;">isPrivate</span><span>: </span><span style="color:#eff1f5;">boolean </span><span>= </span><span style="color:#d08770;">false</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">] </span><span>!== </span><span style="color:#d08770;">undefined</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">throw </span><span style="color:#eff1f5;">(</span><span>new </span><span style="color:#eff1f5;">Error(</span><span style="color:#bf616a;">Errors</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">duplicatedInitial</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">)));
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">value </span><span>=== </span><span style="color:#d08770;">undefined</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">throw </span><span style="color:#eff1f5;">(</span><span>new </span><span style="color:#eff1f5;">Error(</span><span style="color:#bf616a;">Errors</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">initialStateAsUndefined</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">)));
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">value</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">        owner: </span><span style="color:#bf616a;">isPrivate </span><span>? </span><span style="color:#bf616a;">this </span><span>: </span><span style="color:#d08770;">null
+</span><span style="color:#eff1f5;">      };
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 初始化完成后将会触发一个指定的多播事件
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">broadcast</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">$state-initial</span><span>&#39;</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 获取状态
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">getState</span><span>(</span><span style="color:#bf616a;">stateName</span><span>: </span><span style="color:#eff1f5;">string, </span><span style="color:#bf616a;">arg</span><span>: </span><span style="color:#eff1f5;">any</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 这里会将内部的 state 转化为 { [key]: state[key].value } 这样的形势
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">mappedState </span><span>= </span><span style="color:#8fa1b3;">getMappedState</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 这里的 get 类似于 lodash 的 get 方法， 主要通过键名获取嵌套对象的值
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// getStateNameLink 方法会将字符串，比如 &#39;a.b.c&#39; 转化为 [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]，然后就可以获取到 obj[a][b][c] 的值
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">get</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">mappedState</span><span style="color:#eff1f5;">, </span><span style="color:#8fa1b3;">getStateNameLink</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 更新状态
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">setState</span><span>(</span><span style="color:#bf616a;">stateName</span><span>: </span><span style="color:#eff1f5;">string, </span><span style="color:#bf616a;">arg</span><span>: </span><span style="color:#eff1f5;">any</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 这里的逻辑比较复杂，稍微简化一下，方便阅读
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 记录当前状态
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">oldState </span><span>= </span><span style="color:#8fa1b3;">getMappedState</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">resolvedStatesOldValues </span><span>= </span><span style="color:#eff1f5;">{};
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">resolvedStates</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">index</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">notifiedStateNameLink </span><span>= </span><span style="color:#bf616a;">resolvedStateNameLinks</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">index</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">resolvedStatesOldValues</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#8fa1b3;">get</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">oldState</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">notifiedStateNameLink</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    });
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 更新状态
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">isFunctionArg </span><span>= typeof </span><span style="color:#bf616a;">arg </span><span>=== &#39;</span><span style="color:#a3be8c;">function</span><span>&#39;</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">oldValue </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">getState</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">newValue </span><span>= </span><span style="color:#bf616a;">isFunctionArg </span><span>? </span><span style="color:#8fa1b3;">arg</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">oldValue</span><span style="color:#eff1f5;">) </span><span>: </span><span style="color:#bf616a;">arg</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 这里分两种情况进行更新
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stateNameLink</span><span style="color:#eff1f5;">.length </span><span>=== </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 正常状态更新
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">].value </span><span>= </span><span style="color:#bf616a;">newValue</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 嵌套状态更新, 如 &#39;a.b.c&#39; 等的 key 值， 需要更新 rootState.a.b.c 的值
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">subStateNameLink </span><span>= </span><span style="color:#bf616a;">stateNameLink</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">slice</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">].value </span><span>=== </span><span style="color:#d08770;">null </span><span>|| </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">].value </span><span>=== </span><span style="color:#d08770;">undefined</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">switch </span><span style="color:#eff1f5;">(</span><span>typeof </span><span style="color:#bf616a;">subStateNameLink</span><span style="color:#eff1f5;">[</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">]) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">number</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">].value </span><span>= </span><span style="color:#eff1f5;">[];
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">break</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">string</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">].value </span><span>= </span><span style="color:#eff1f5;">{};
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">break</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">default</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">isSuccess </span><span>= </span><span style="color:#8fa1b3;">set</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">rootStateName</span><span style="color:#eff1f5;">].value, </span><span style="color:#bf616a;">subStateNameLink</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">newValue</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">isSuccess</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">     
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 获取更新后的状态
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">newState </span><span>= </span><span style="color:#8fa1b3;">getMappedState</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">_state</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">resolvedStatesNewValues </span><span>= </span><span style="color:#eff1f5;">{};
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">resolvedStates</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">index</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">notifiedStateNameLink </span><span>= </span><span style="color:#bf616a;">resolvedStateNameLinks</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">index</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">resolvedStatesNewValues</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#8fa1b3;">get</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">newState</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">notifiedStateNameLink</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    });
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 触发状态更新事件
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">resolvedStates</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">name</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">broadcast</span><span style="color:#eff1f5;">(</span><span>`</span><span style="color:#a3be8c;">$state-${</span><span style="color:#bf616a;">name</span><span style="color:#a3be8c;">}-change</span><span>`</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">resolvedStatesNewValues</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">], </span><span style="color:#bf616a;">resolvedStatesOldValues</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">]);
+</span><span style="color:#eff1f5;">    });
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 监听状态改变
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">watchState</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">stateNameLink </span><span>= </span><span style="color:#8fa1b3;">getStateNameLink</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stateName</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">rootStateName </span><span>= </span><span style="color:#bf616a;">stateNameLink</span><span style="color:#eff1f5;">[</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">as </span><span style="color:#eff1f5;">string;
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 因为状态更新后会触发相应的事件， 这里直接监听事件即可
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">eventEmitter</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">addBroadcastEventListener</span><span style="color:#eff1f5;">(</span><span>`</span><span style="color:#a3be8c;">$state-${</span><span style="color:#bf616a;">stateName</span><span style="color:#a3be8c;">}-change</span><span>`</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">callback</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>通过源码分析，我们可以得知 obvious 的 socket 模块主要是通过 event emitter，封装了状态和事件的逻辑，开发者可以利用此模块进行事件通信、状态的存储和分享。</p>
+<h3 id="app">app</h3>
+<p>app 用于表示一个应用服务及其依赖列表，同时支持监听 app 的生命周期。</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// ./src/lib/app.ts
+</span><span>
+</span><span style="color:#b48ead;">export class </span><span style="color:#ebcb8b;">App </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">dependenciesReady</span><span>: </span><span style="color:#eff1f5;">boolean </span><span>= </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// app 是否准备好
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">bootstrapped</span><span>: </span><span style="color:#eff1f5;">boolean </span><span>= </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// app 的依赖
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">dependencies</span><span>: </span><span style="color:#eff1f5;">DependenciesType </span><span>= </span><span style="color:#eff1f5;">[];
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 生命周期回调函数  
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">doBootstrap</span><span>?: </span><span style="color:#eff1f5;">LifecyleCallbackType;
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">doActivate</span><span>?: </span><span style="color:#eff1f5;">LifecyleCallbackType;
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">doDestroy</span><span>?: </span><span style="color:#eff1f5;">LifecyleCallbackType;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor</span><span>(</span><span style="color:#b48ead;">public </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#eff1f5;">string</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.name </span><span>= </span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">   
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 指定依赖列表
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">relyOn</span><span>(</span><span style="color:#bf616a;">dependencies</span><span>: </span><span style="color:#eff1f5;">DependenciesType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencies </span><span>= </span><span style="color:#bf616a;">dependencies</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 指定 bootstrap 回调
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">bootstrap</span><span>(</span><span style="color:#bf616a;">callback</span><span>: </span><span style="color:#eff1f5;">LifecyleCallbackType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doBootstrap </span><span>= </span><span style="color:#bf616a;">callback</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 指定 activate 回调
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">activate</span><span>(</span><span style="color:#bf616a;">callback</span><span>: </span><span style="color:#eff1f5;">LifecyleCallbackType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doActivate </span><span>= </span><span style="color:#bf616a;">callback</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 指定 destroy 回调
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">destroy</span><span>(</span><span style="color:#bf616a;">callback</span><span>: </span><span style="color:#eff1f5;">LifecyleCallbackType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doDestroy </span><span>= </span><span style="color:#bf616a;">callback</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 启动所有依赖
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public async </span><span style="color:#8fa1b3;">activateDependenciesApp</span><span>(
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">activateApp</span><span>: (</span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">CustomCtxType, </span><span style="color:#bf616a;">config</span><span>?: </span><span style="color:#eff1f5;">any</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">Promise&lt;void&gt;
+</span><span style="color:#eff1f5;">  </span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependenciesReady </span><span>&amp;&amp; </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencies</span><span style="color:#eff1f5;">.length </span><span>!== </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">dependence </span><span>of </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencies</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 遍历每一个依赖，然后利用 activeApp 函数启动依赖， 该函数由 bus 模块负责传入
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>typeof </span><span style="color:#bf616a;">dependence </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">await </span><span style="color:#8fa1b3;">activateApp</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dependence</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        } </span><span style="color:#b48ead;">else if </span><span style="color:#eff1f5;">(</span><span style="color:#8fa1b3;">isObject</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">dependence</span><span style="color:#eff1f5;">)) {
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{ </span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">config </span><span style="color:#eff1f5;">} </span><span>= </span><span style="color:#bf616a;">dependence</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">await </span><span style="color:#8fa1b3;">activateApp</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">config</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 表示依赖启动完成
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependenciesReady </span><span>= </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h3 id="bus">bus</h3>
+<p>bus 模块负责编排、加载和管理等，是 obvious 的核心模块，obvious 默认会在全局作用域注册一个 bus 实例，当然，我们也可以手动创建多个 bus 实例。</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// ./src/lib/bus.ts
+</span><span>
+</span><span style="color:#b48ead;">export class </span><span style="color:#ebcb8b;">Bus </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// bus 名称
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#eff1f5;">string;
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// bus 注册的 app列表
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">apps</span><span>: </span><span style="color:#eff1f5;">Record&lt;string, App </span><span>| </span><span style="color:#eff1f5;">boolean&gt; </span><span>= </span><span style="color:#eff1f5;">{};
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 防止循环引用的依赖错误，超过设定的阈值后抛出错误
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">dependencyDepth </span><span>= </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 应用加载配置
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">conf</span><span>: </span><span style="color:#eff1f5;">ConfType </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 上面提到的阈值
+</span><span style="color:#eff1f5;">    maxDependencyDepth: </span><span style="color:#d08770;">100</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">    loadScriptByFetch: </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">    assets: {} 
+</span><span style="color:#eff1f5;">  };
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 中间件
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#bf616a;">middlewares</span><span>: </span><span style="color:#eff1f5;">MiddlewareFnType[] </span><span>= </span><span style="color:#eff1f5;">[];
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 将中间件组装后的生成的函数
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#8fa1b3;">composedMiddlewareFn</span><span>: (</span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">ContextType, </span><span style="color:#bf616a;">next</span><span>: </span><span style="color:#eff1f5;">NextFnType</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">Promise&lt;any&gt;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor</span><span>(</span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#eff1f5;">string</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.name </span><span>= </span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 此处的 compose 函数是将所有中间件组装在一起，其原理与 koa 的洋葱模型一致
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">composedMiddlewareFn </span><span>= </span><span style="color:#8fa1b3;">compose</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">middlewares</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 添加中间件
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">middleware</span><span>: </span><span style="color:#eff1f5;">MiddlewareFnType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">middlewares</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">push</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">middleware</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 重新生成函数
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">composedMiddlewareFn </span><span>= </span><span style="color:#8fa1b3;">compose</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">middlewares</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 返回实例，方便链式调用
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 生成中间件函数的上下文参数：context
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private </span><span style="color:#8fa1b3;">createContext</span><span>(</span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">CustomCtxType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">context</span><span>: </span><span style="color:#eff1f5;">ContextType </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      name: </span><span>&#39;&#39;</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      conf: </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">conf</span><span style="color:#eff1f5;">，
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 这些是加载 js 和 css 的方法
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">loadJs</span><span style="color:#eff1f5;">: </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">loadJs</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      loadCss: </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">loadCss</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      fetchJs: </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">fetchJs</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 执行 js 源代码的函数
+</span><span style="color:#eff1f5;">      excuteCode: </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">excuteCode</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">    };
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>typeof </span><span style="color:#bf616a;">ctx </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">.name </span><span>= </span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">.name) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">context </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span>...</span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">        </span><span>...</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      };
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">throw </span><span>new </span><span style="color:#eff1f5;">Error(</span><span style="color:#bf616a;">Errors</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">wrongContextType</span><span style="color:#eff1f5;">());
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">   
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 创建一个 app
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public </span><span style="color:#8fa1b3;">createApp</span><span>(</span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#eff1f5;">string</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= new </span><span style="color:#eff1f5;">App(</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">apps</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 加载 app
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public async </span><span style="color:#8fa1b3;">loadApp</span><span>(</span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">CustomCtxType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">context </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">createContext</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// obvious 这里通过中间件的形式去加载 app，给予开发者很大的操作空间，去控制 app 加载的流程，这一点实现的还是不错的
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// loadResourcesFromAssetsConfig 函数被当作 `next` 函数传入了中间件模型中
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">composedMiddlewareFn</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">loadResourcesFromAssetsConfig</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">bind</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 加载 js 和 css 文件
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">private async </span><span style="color:#8fa1b3;">loadResourcesFromAssetsConfig</span><span>(</span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">ContextType</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">loadJs </span><span>= </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">loadJs</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">loadCss </span><span>= </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">loadCss</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">fetchJs </span><span>= </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">fetchJs</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">excuteCode </span><span>= </span><span style="color:#bf616a;">loader</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">excuteCode</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">conf </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">conf
+</span><span style="color:#eff1f5;">    } </span><span>= </span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{ </span><span style="color:#bf616a;">assets</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">loadScriptByFetch </span><span style="color:#eff1f5;">} </span><span>= </span><span style="color:#bf616a;">conf</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 加载 css 文件
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">assets</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">].</span><span style="color:#bf616a;">css</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">assets</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">].</span><span style="color:#bf616a;">css</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">asset</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">href </span><span>= typeof </span><span style="color:#bf616a;">asset </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39; ? </span><span style="color:#bf616a;">asset </span><span>: </span><span style="color:#bf616a;">asset</span><span style="color:#eff1f5;">.href;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>/</span><span style="color:#b48ead;">^</span><span style="color:#d08770;">.</span><span>+</span><span style="color:#96b5b4;">\.css</span><span style="color:#b48ead;">$</span><span>/</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">test</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">href</span><span style="color:#eff1f5;">)) {
+</span><span style="color:#eff1f5;">          </span><span style="color:#8fa1b3;">loadCss</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">asset</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">      });
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 加载 js 文件
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">assets</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">].</span><span style="color:#bf616a;">js</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">for </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">asset </span><span>of </span><span style="color:#bf616a;">assets</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">].</span><span style="color:#bf616a;">js</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">src </span><span>= typeof </span><span style="color:#bf616a;">asset </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39; ? </span><span style="color:#bf616a;">asset </span><span>: </span><span style="color:#bf616a;">asset</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">src</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>/</span><span style="color:#b48ead;">^</span><span style="color:#d08770;">.</span><span>+</span><span style="color:#96b5b4;">\.js</span><span style="color:#b48ead;">$</span><span>/</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">test</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">src</span><span style="color:#eff1f5;">)) {
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">loadScriptByFetch</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#65737e;">// 通过 fetch(xhr) 获取 js 文件
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">code </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#8fa1b3;">fetchJs</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">src</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">            </span><span style="color:#65737e;">// 手动执行
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">code </span><span>&amp;&amp; </span><span style="color:#8fa1b3;">excuteCode</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">code</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">          } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">           </span><span style="color:#65737e;">// 通过 scripts 标签加载 js 文件
+</span><span style="color:#eff1f5;">           </span><span style="color:#b48ead;">await </span><span style="color:#8fa1b3;">loadJs</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">asset</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">          }
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">   
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 启动 app
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public async </span><span style="color:#8fa1b3;">activateApp</span><span>(</span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">CustomCtxType, </span><span style="color:#bf616a;">config</span><span>?: </span><span style="color:#eff1f5;">any</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">context </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">createContext</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{ </span><span style="color:#bf616a;">name </span><span style="color:#eff1f5;">} </span><span>= </span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 如果还没有加载该 app， 先加载 app 资源
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">apps</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">]) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">loadApp</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">apps</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">] </span><span style="color:#b48ead;">as </span><span style="color:#eff1f5;">App;
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 如果该 app 还没有准备好，意味着该 app 的依赖还没加载好，所以先加载 app 的依赖
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">bootstrapped</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 控制 app 依赖深度，主要是避免循环引用的情况
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencyDepth </span><span>&gt; </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">conf</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">maxDependencyDepth</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencyDepth </span><span>= </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">throw </span><span>new </span><span style="color:#eff1f5;">Error(</span><span style="color:#bf616a;">Errors</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">bootstrapNumberOverflow</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">conf</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">maxDependencyDepth</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencyDepth</span><span>++</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 调用 app 的加载方法，将 activateApp 传进去
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 前面我们分析过了，activateDependenciesApp 方法将会遍历 app 的依赖列表，使用传入的方法，即 activateApp 进行加载
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 因此可以得知，app 的依赖也应该是一个 app
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">activateDependenciesApp</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">activateApp</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">bind</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">        
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 调用对应的生命周期回调
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doBootstrap</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">doBootstrap</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">config</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">      } </span><span style="color:#b48ead;">else if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doActivate</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">doActivate</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">config</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 修改状态
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">bootstrapped </span><span>= </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependencyDepth</span><span>--</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// app 已经准备好了，直接调用对应的生命周期回调，通知 app 已经可以启动了
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doActivate </span><span>&amp;&amp; </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">doActivate</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">config</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 销毁 app
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">public async </span><span style="color:#8fa1b3;">destroyApp</span><span>(</span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#eff1f5;">string, </span><span style="color:#bf616a;">config</span><span>?: </span><span style="color:#eff1f5;">any</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">apps</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">];
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">app </span><span>&amp;&amp; typeof </span><span style="color:#bf616a;">app </span><span>!== &#39;</span><span style="color:#a3be8c;">boolean</span><span>&#39;</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 调用对应的生命周期回调
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">doDestroy </span><span>&amp;&amp; </span><span style="color:#eff1f5;">(</span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">doDestroy</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">config</span><span style="color:#eff1f5;">));
+</span><span style="color:#eff1f5;">      
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 修改 app 的状态
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">bootstrapped </span><span>= </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">app</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">dependenciesReady </span><span>= </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">busProxy </span><span>= {};
+</span><span style="color:#b48ead;">export const </span><span style="color:#bf616a;">DEFAULT_BUS_NAME </span><span>= &#39;</span><span style="color:#a3be8c;">__DEFAULT_BUS__</span><span>&#39;;
+</span><span>
+</span><span style="color:#65737e;">// 创建 bus
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">createBus </span><span>= (</span><span style="color:#bf616a;">name</span><span>: string = </span><span style="color:#bf616a;">DEFAULT_BUS_NAME</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if</span><span>(</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">__Bus__ </span><span>=== </span><span style="color:#d08770;">undefined</span><span>) {
+</span><span>    </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#8fa1b3;">defineProperty</span><span>(</span><span style="color:#bf616a;">self</span><span>, &#39;</span><span style="color:#a3be8c;">__Bus__</span><span>&#39;, {
+</span><span>      value: </span><span style="color:#bf616a;">busProxy</span><span>,
+</span><span>      writable: </span><span style="color:#d08770;">false
+</span><span>    });
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">__Bus__</span><span>[</span><span style="color:#bf616a;">name</span><span>]) {
+</span><span>    </span><span style="color:#b48ead;">throw </span><span>new Error(`</span><span style="color:#a3be8c;">[obvious] the bus named ${</span><span style="color:#bf616a;">name</span><span style="color:#a3be8c;">} has been defined before, please rename your bus</span><span>`);
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">bus </span><span>= new Bus(</span><span style="color:#bf616a;">name</span><span>);
+</span><span>    </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#8fa1b3;">defineProperty</span><span>(</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">__Bus__</span><span>, </span><span style="color:#bf616a;">name</span><span>, {
+</span><span>      value: </span><span style="color:#bf616a;">bus</span><span>,
+</span><span>      writable: </span><span style="color:#d08770;">false
+</span><span>    });
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">bus</span><span>;
+</span><span>  }
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 获取指定 bus，如果没有指定名称，则获取默认的 bus
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">getBus </span><span>= (</span><span style="color:#bf616a;">name</span><span>: string = </span><span style="color:#bf616a;">DEFAULT_BUS_NAME</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">__Bus__ </span><span>&amp;&amp; </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">__Bus__</span><span>[</span><span style="color:#bf616a;">name</span><span>];
+</span><span>};
+</span></code></pre>
+<p>bus 模块的逻辑稍微有点复杂，我们可以画一个简单的流程图来帮助理解：</p>
+<p><img src="https://naecoo.github.io/obvious/./1631440133758.png" alt="image-20210912174853332" /></p>
+<p>最后，我们看一下加载静态资源的逻辑：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// ./src/lib/loader.ts
+</span><span>
+</span><span style="color:#65737e;">// 加载 js 文件
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">loadJs </span><span>= </span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">scriptDeclare</span><span>: ScriptType) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">promise</span><span>: Promise&lt;void&gt; = new Promise(</span><span style="color:#bf616a;">resolve </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">scriptAttrs</span><span>: ScriptType = {
+</span><span>      type: &#39;</span><span style="color:#a3be8c;">text/javascript</span><span>&#39;
+</span><span>    };
+</span><span>    </span><span style="color:#65737e;">// 参数拼接
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">scriptDeclare </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;) {
+</span><span>      </span><span style="color:#bf616a;">scriptAttrs </span><span>= {
+</span><span>        ...</span><span style="color:#bf616a;">scriptAttrs</span><span>,
+</span><span>        src: </span><span style="color:#bf616a;">scriptDeclare
+</span><span>      };
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>      </span><span style="color:#bf616a;">scriptAttrs </span><span>= { 
+</span><span>        ...</span><span style="color:#bf616a;">scriptAttrs</span><span>,
+</span><span>        ...</span><span style="color:#bf616a;">scriptDeclare
+</span><span>      };
+</span><span>    }
+</span><span>    </span><span style="color:#65737e;">// 创建 script 标签
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">script </span><span>= document.</span><span style="color:#96b5b4;">createElement</span><span>(&#39;</span><span style="color:#a3be8c;">script</span><span>&#39;);
+</span><span>    </span><span style="color:#65737e;">// html 元素赋值 attr
+</span><span>    </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#96b5b4;">entries</span><span>(</span><span style="color:#bf616a;">scriptAttrs</span><span>).</span><span style="color:#96b5b4;">forEach</span><span>(([</span><span style="color:#bf616a;">attr</span><span>, </span><span style="color:#bf616a;">value</span><span>]) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#bf616a;">script</span><span>[</span><span style="color:#bf616a;">attr</span><span>] = </span><span style="color:#bf616a;">value</span><span>;
+</span><span>    });
+</span><span>    </span><span style="color:#bf616a;">script</span><span>.</span><span style="color:#bf616a;">onload </span><span>= </span><span style="color:#bf616a;">script</span><span>.</span><span style="color:#8fa1b3;">onerror </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#8fa1b3;">resolve</span><span>();
+</span><span>    };
+</span><span>    </span><span style="color:#65737e;">// 添加到 html 文档中
+</span><span>    document.body.</span><span style="color:#96b5b4;">appendChild</span><span>(</span><span style="color:#bf616a;">script</span><span>);
+</span><span>  });
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">promise</span><span>;
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 加载 css 文件
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">loadCss </span><span>= (</span><span style="color:#bf616a;">linkDeclare</span><span>: LinkType) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">linkAttrs</span><span>: LinkType = {
+</span><span>    rel: &#39;</span><span style="color:#a3be8c;">stylesheet</span><span>&#39;,
+</span><span>    type: &#39;</span><span style="color:#a3be8c;">text/css</span><span>&#39;
+</span><span>  };
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">linkDeclare </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;) {
+</span><span>    </span><span style="color:#bf616a;">linkAttrs </span><span>= {
+</span><span>      ...</span><span style="color:#bf616a;">linkAttrs</span><span>,
+</span><span>      href: </span><span style="color:#bf616a;">linkDeclare
+</span><span>    };
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#bf616a;">linkAttrs </span><span>= {
+</span><span>      ...</span><span style="color:#bf616a;">linkAttrs</span><span>,
+</span><span>      ...</span><span style="color:#bf616a;">linkDeclare
+</span><span>    };
+</span><span>  }
+</span><span>  </span><span style="color:#65737e;">// 创建 link 标签
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">link </span><span>= document.</span><span style="color:#96b5b4;">createElement</span><span>(&#39;</span><span style="color:#a3be8c;">link</span><span>&#39;);
+</span><span>  </span><span style="color:#65737e;">// html 元素赋值 attr
+</span><span>  </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#96b5b4;">entries</span><span>(</span><span style="color:#bf616a;">linkAttrs</span><span>).</span><span style="color:#96b5b4;">forEach</span><span>(([</span><span style="color:#bf616a;">attr</span><span>, </span><span style="color:#bf616a;">value</span><span>]) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#bf616a;">link</span><span>[</span><span style="color:#bf616a;">attr</span><span>] = </span><span style="color:#bf616a;">value</span><span>;
+</span><span>  });
+</span><span>  </span><span style="color:#65737e;">// 添加到 html 文档中
+</span><span>  document.</span><span style="color:#bf616a;">head</span><span>.</span><span style="color:#96b5b4;">appendChild</span><span>(</span><span style="color:#bf616a;">link</span><span>);
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 远程拉取 js 文件
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">fetchJs </span><span>= </span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">src</span><span>: string) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">try </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 通过 fetch 方法拉取 js 文件
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">res </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#8fa1b3;">fetch</span><span>(</span><span style="color:#bf616a;">src</span><span>);
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">code </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">res</span><span>.</span><span style="color:#8fa1b3;">text</span><span>();
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">code</span><span>;
+</span><span>  } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#bf616a;">err</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>&#39;&#39;;
+</span><span>  }
+</span><span>    
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 执行 js 源代码
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">excuteCode </span><span>= (</span><span style="color:#bf616a;">code</span><span>: string) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">fn </span><span>= new Function(</span><span style="color:#bf616a;">code</span><span>);
+</span><span>  </span><span style="color:#8fa1b3;">fn</span><span>();
+</span><span>};
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span>{
+</span><span>  </span><span style="color:#bf616a;">loadJs</span><span>,
+</span><span>  </span><span style="color:#bf616a;">loadCss</span><span>,
+</span><span>  </span><span style="color:#bf616a;">fetchJs</span><span>,
+</span><span>  </span><span style="color:#bf616a;">excuteCode
+</span><span>};
+</span></code></pre>
+<h2 id="zong-jie">总结</h2>
+<p>分析完所有代码后，我们来总结一下 obvious 的优缺点，首先是优点：</p>
+<ol>
+<li>简单、轻量级、易上手</li>
+<li>灵活，易于扩展</li>
+<li>支持中文文档</li>
+</ol>
+<p>然后是缺点：</p>
+<ol>
+<li>注册应用的逻辑比较割裂，需要在多个入口声明应用，API设计的不够优雅</li>
+<li>比较原始，需要手动管理全部静态资源，不太适合大型项目</li>
+<li>不支持沙箱，所有 app 都是在同一个作用域下，所以有很大可能会出现作用域冲突。换句话说，需要开发者自己完成不同 app 之间的作用域隔离</li>
+<li>生态比较差</li>
+</ol>
+<p>总体来说，obvious 目前阶段只能称为是一个玩具项目，很难真正地应用于生产环境，希望作者能够早日开发，抓紧时间迭代，期待能追上 <code>qiankun</code> 和 <code>single-spa</code> 等框架的水平，丰富前端微服务的社区生态，提供更多的选择可能性。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;tailwindcss&#x2F;"
+    ><span class="mr-1.5">←</span><span>对tailwindcss的一些简单看法</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;brainfuck-interpreter&#x2F;"
+    ><span>用 JavaScript 实现一个 简单的 brainfuck 解释器</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

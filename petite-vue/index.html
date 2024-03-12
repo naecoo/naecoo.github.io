@@ -1,0 +1,1320 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    petite-vue 框架分析 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="petite-vue 框架分析" />
+  <meta name="author" content="petite-vue 框架分析" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;petite-vue&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">petite-vue 框架分析</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2022-08-01</time>
+  <span class="mx-1">&middot;</span>
+  <span>25min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#petite-vue-jie-shao"
+            >petite-vue 介绍</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#petite-vue-shi-yong"
+            >petite-vue 使用</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#ji-ben-yong-fa"
+                >基本用法</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#sheng-ming-zhou-qi"
+                >生命周期</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#zu-jian"
+                >组件</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#zhi-ling"
+                >指令</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#petite-vue-yuan-li"
+            >petite-vue 原理</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#xiang-ying-shi"
+                >响应式</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#mo-ban-jie-xi"
+                >模板解析</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#petite-vue-yuan-ma-fen-xi"
+            >petite-vue 源码分析</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#chuang-jian-ying-yong"
+                >创建应用</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#context"
+                >Context</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#block"
+                >Block</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#walk"
+                >walk</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#zhi-ling-1"
+                >指令</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/petite-vue/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="petite-vue-jie-shao">petite-vue 介绍</h2>
+<p><a href="https://github.com/vuejs/petite-vue">petite-vue</a> 是基于 DOM 和 [@vue/reactivity](<a href="https://www.npmjs.com/package/@vue/reactivity">@vue/reactivity - npm (npmjs.com)</a>) 驱动的 MVVM框架，提供了和 Vue 框架相似的语法和响应式模型，由 Vue 作者 Evan You 开发，编译后的大小只有 6kb，十分适合小项目的使用。<code>petite-vue</code> 并不是为了替代 Vue，不能用于生产环境，<code>petite-vue</code> 的作用是提供一种渐进式增强的框架给开发者使用，无需构建和编译，也不需要复杂的配置文件，只需要一个 <code>script</code> 标签，引入 CDN 文件，便能使用该框架来构造我们的视图：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">https://unpkg.com/petite-vue</span><span>&quot; </span><span style="color:#d08770;">defer init</span><span>&gt;&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>
+</span><span style="color:#65737e;">&lt;!-- anywhere on the page --&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-scope</span><span>=&quot;</span><span style="color:#a3be8c;">{ count: 0 }</span><span>&quot;&gt;
+</span><span>  {{ count }}
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">count++</span><span>&quot;&gt;inc&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>怎么样？是不是很简单...</p>
+<h2 id="petite-vue-shi-yong">petite-vue 使用</h2>
+<h3 id="ji-ben-yong-fa">基本用法</h3>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">module</span><span>&quot;&gt;
+</span><span>  </span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">petite-vue</span><span>&#39;;
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">createApp</span><span>({
+</span><span>    count: </span><span style="color:#d08770;">0</span><span>,
+</span><span>    </span><span style="color:#8fa1b3;">increment</span><span>() {
+</span><span>      </span><span style="color:#bf616a;">this</span><span>.count++;
+</span><span>    },
+</span><span>    </span><span style="color:#8fa1b3;">decrement</span><span>() {
+</span><span>      </span><span style="color:#bf616a;">this</span><span>.count--;
+</span><span>    }
+</span><span>  }).</span><span style="color:#bf616a;">mount</span><span>(&#39;</span><span style="color:#a3be8c;">#app</span><span>&#39;);
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#8fa1b3;">id</span><span>=&quot;</span><span style="color:#a3be8c;">app</span><span>&quot; </span><span style="color:#d08770;">v-scope</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ count }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">decrement</span><span>&quot;&gt; - &lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">increment</span><span>&quot;&gt; + &lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>语法其实很简单，<code>createApp</code> 用于创建一个应用，传入一个对象，可以传入响应式的数据和方法，这里为了简单，并没有Vue 的 data 和 methods 等选项，所有数据都是混在一起的。</p>
+<p>然后，在 dom 元素中指定 <code>v-scope</code>，表明有 <code>petite-vue</code> 控制，<code>mount</code> 的时候就会从该节点开始递归解析，包括所有子孙节点，渲染数据和绑定事件。</p>
+<h3 id="sheng-ming-zhou-qi">生命周期</h3>
+<p><code>petite-vue</code> 只支持 mount 和 unmount 生命周期：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">div
+</span><span>  </span><span style="color:#d08770;">@vue:mounted</span><span>=&quot;</span><span style="color:#a3be8c;">console.log(&#39;mounted on: &#39;, $el)</span><span>&quot;
+</span><span>  </span><span style="color:#d08770;">@vue:unmounted</span><span>=&quot;</span><span style="color:#a3be8c;">console.log(&#39;unmounted: &#39;, $el)</span><span>&quot;
+</span><span>&gt;
+</span><span>  {{ msg }}
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<h3 id="zu-jian">组件</h3>
+<p><code>petite-vue</code> 的组件和我们所理解的组件不太一样，更多的是逻辑上的封装：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">module</span><span>&quot;&gt;
+</span><span>  </span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">petite-vue</span><span>&#39;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// Counter 组件
+</span><span>  </span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">Counter</span><span>(props) {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>{
+</span><span>      count: </span><span style="color:#bf616a;">props</span><span>.initialCount ?? </span><span style="color:#d08770;">0</span><span>,
+</span><span>      </span><span style="color:#8fa1b3;">increment</span><span>() {
+</span><span>        </span><span style="color:#bf616a;">this</span><span>.count++
+</span><span>      },
+</span><span>      </span><span style="color:#8fa1b3;">mounted</span><span>() {
+</span><span>        console.</span><span style="color:#96b5b4;">log</span><span>(`</span><span style="color:#a3be8c;">I&#39;m mounted!</span><span>`)
+</span><span>      }
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">createApp</span><span>({
+</span><span>    </span><span style="color:#bf616a;">Counter
+</span><span>  }).</span><span style="color:#bf616a;">mount</span><span>()
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>
+</span><span style="color:#65737e;">&lt;!-- 使用组件 --&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-scope</span><span>=&quot;</span><span style="color:#a3be8c;">Counter({ initialCount: 1 })</span><span>&quot; </span><span style="color:#d08770;">@vue:mounted</span><span>=&quot;</span><span style="color:#a3be8c;">mounted</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ count }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">increment</span><span>&quot;&gt;increment&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span style="color:#65737e;">&lt;!-- 使用组件 --&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-scope</span><span>=&quot;</span><span style="color:#a3be8c;">Counter({ initialCount: 2 })</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ count }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">increment</span><span>&quot;&gt;increment&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>组件同样支持模板：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">module</span><span>&quot;&gt;
+</span><span>  </span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">petite-vue</span><span>&#39;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// Counter 组件
+</span><span>  </span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">Counter</span><span>(props) {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>{
+</span><span>      template: &#39;</span><span style="color:#a3be8c;">#counter-template</span><span>&#39;
+</span><span>      count: </span><span style="color:#bf616a;">props</span><span>.initialCount ?? </span><span style="color:#d08770;">0</span><span>,
+</span><span>      </span><span style="color:#8fa1b3;">increment</span><span>() {
+</span><span>        </span><span style="color:#bf616a;">this</span><span>.count++
+</span><span>      }
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">createApp</span><span>({
+</span><span>    </span><span style="color:#bf616a;">Counter
+</span><span>  }).</span><span style="color:#bf616a;">mount</span><span>()
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>
+</span><span style="color:#65737e;">&lt;!-- 定义模板 --&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">template </span><span style="color:#8fa1b3;">id</span><span>=&quot;</span><span style="color:#a3be8c;">counter-template</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ count }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">increment</span><span>&quot;&gt;increment&lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span style="color:#65737e;">&lt;!-- 使用组件 --&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-scope</span><span>=&quot;</span><span style="color:#a3be8c;">Counter({ initialCount: 1 })</span><span>&quot;&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">v-scope</span><span>=&quot;</span><span style="color:#a3be8c;">Counter({ initialCount: 2 })</span><span>&quot;&gt;
+</span></code></pre>
+<h3 id="zhi-ling">指令</h3>
+<p><code>petite-vue</code> 提供了 v-if、v-show、v-for、v-bind、v-on、v-html、v-model 等指令：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">module</span><span>&quot; </span><span style="color:#d08770;">defer</span><span>&gt;
+</span><span>  </span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./petite-vue.es.js</span><span>&#39;
+</span><span>  
+</span><span>  </span><span style="color:#bf616a;">createApp</span><span>({
+</span><span>    count: </span><span style="color:#d08770;">1</span><span>,
+</span><span>    msg: &#39;</span><span style="color:#a3be8c;">Hello World!</span><span>&#39;,
+</span><span>    htmlMsg: &#39;</span><span style="color:#a3be8c;">&lt;b&gt;Hello&lt;/b&gt; World!</span><span>&#39;
+</span><span>  }).</span><span style="color:#bf616a;">mount</span><span>()
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#8fa1b3;">id</span><span>=&quot;</span><span style="color:#a3be8c;">app</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ msg }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">v-text</span><span>=&quot;</span><span style="color:#a3be8c;">htmlMsg</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">v-html</span><span>=&quot;</span><span style="color:#a3be8c;">htmlMsg</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">input </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">text</span><span>&quot; </span><span style="color:#d08770;">v-bind:value</span><span>=&quot;</span><span style="color:#a3be8c;">msg</span><span>&quot; &gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">v-if</span><span>=&quot;</span><span style="color:#a3be8c;">count &gt; 1</span><span>&quot;&gt;count &gt; 1&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">v-else</span><span>&gt;count &lt;= 1&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">input </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">number</span><span>&quot; </span><span style="color:#d08770;">v-model</span><span>=&quot;</span><span style="color:#a3be8c;">count</span><span>&quot; &gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>支持自定义指令，可以使用 <code>directive</code> 方法配置指令。比如，实现一个 <code>v-red</code> 指令，将文本变为红色：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">module</span><span>&quot; </span><span style="color:#d08770;">defer</span><span>&gt;
+</span><span>  </span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./petite-vue.es.js</span><span>&#39;
+</span><span>  
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#bf616a;">createApp</span><span>({
+</span><span>    msg: &#39;</span><span style="color:#a3be8c;">Hello World!</span><span>&#39;
+</span><span>  })
+</span><span>  </span><span style="color:#65737e;">// 定义指令
+</span><span>  </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#bf616a;">directive</span><span>(&#39;</span><span style="color:#a3be8c;">red</span><span>&#39;, ({ el, get, effect }) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#bf616a;">effect</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#bf616a;">el</span><span>.innerHTML = `</span><span style="color:#a3be8c;">&lt;span style=&quot;color: red;&quot;&gt;</span><span>${</span><span style="color:#bf616a;">get</span><span>()}</span><span style="color:#a3be8c;">&lt;/span&gt;</span><span>`
+</span><span>    })
+</span><span>  });
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">app</span><span>.</span><span style="color:#bf616a;">mount</span><span>()
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#8fa1b3;">id</span><span>=&quot;</span><span style="color:#a3be8c;">app</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ msg }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">v-red</span><span>=&quot;</span><span style="color:#a3be8c;">msg</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<h2 id="petite-vue-yuan-li">petite-vue 原理</h2>
+<p>大家是不是很好奇，<code>petite-vue</code> 是如何实现的呢，这么多功能，是不是需要很复杂的代码和模块？其实不然，<code>petite-vue</code> 源代码不到 1000 行，只依赖 <code>@vue/reactivity</code> 一个库，代码实现非常简单。</p>
+<p>简而言之，<code>petite-vue</code> 就是<strong>基于 Vue3 提供的响应式能力，创建组件的上下文，然后在挂载的时候，直接遍历 DOM 节点，解析DOM节点上的属性和表达式，注册成一系列的指令，使用 Vue3 的 effect API 订阅数据变更，从而驱动视图变更</strong>。</p>
+<h3 id="xiang-ying-shi">响应式</h3>
+<p><code>@vue/reactivity</code> 是 Vue 3.0 提供的响应式模块，对外暴露了 <code>ref</code>、<code>reactive</code>、<code>watch</code>、<code>computed</code> 和 <code>effect</code> 等 API。在这些 API 中，比较关键的是 <a href="https://github.com/vuejs/core/blob/main/packages/reactivity/src/effect.ts"><code>effect</code></a>，这个 API 接受一个函数，当函数执行的时候，会自动收集依赖，当这些依赖更新时，会再次执行函数。watch、computed等API也是基于 effect 实现的，感兴趣的读者可以阅读 vue3 的 <a href="https://github.com/vuejs/core/blob/main/packages/reactivity/src/computed.ts">源码</a>。</p>
+<p>effect 的使用可以参照下面的例子：</p>
+<pre data-lang="js" style="background-color:#2b303b;color:#c0c5ce;" class="language-js "><code class="language-js" data-lang="js"><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">effect</span><span>, </span><span style="color:#bf616a;">ref </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">@vue/reactivity</span><span>&#39; 
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">count </span><span>= </span><span style="color:#8fa1b3;">ref</span><span>(</span><span style="color:#d08770;">0</span><span>);
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">foo </span><span>= </span><span style="color:#8fa1b3;">ref</span><span>(&#39;&#39;)
+</span><span style="color:#8fa1b3;">effect</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">count</span><span>.value);
+</span><span>});
+</span><span style="color:#65737e;">// 0
+</span><span>
+</span><span style="color:#bf616a;">count</span><span>.value++;
+</span><span style="color:#65737e;">// 1
+</span><span>
+</span><span style="color:#bf616a;">foo</span><span>.value = &#39;&#39;; </span><span style="color:#65737e;">// 这里就不会影响到effect里面的函数，因为没有收集到这个依赖
+</span></code></pre>
+<p>基于 effect，<code>petite-vue</code> 可以感知到数据的变更，从而驱动视图重新进行渲染。</p>
+<h3 id="mo-ban-jie-xi">模板解析</h3>
+<p><code>petite-vue</code> 和 vue 最大的不同在于这里，vue 是基于虚拟 DOM 设计的，而 <code>petite-vue</code> 没有虚拟 DOM，直接操作 DOM 结构。所以模板解析的逻辑非常简单，但相对的，性能也降低了很多，不支持服务端渲染。</p>
+<p><code>petite-vue</code> 解析模板的逻辑也很简单，采用了深度优先遍历的方式遍历DOM节点，逐个解析指令、属性、props和表达式，比方说下面的代码结构：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#8fa1b3;">id</span><span>=&quot;</span><span style="color:#a3be8c;">app</span><span>&quot; </span><span style="color:#d08770;">v-scope</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p</span><span>&gt;{{ count }}&lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">decrement</span><span>&quot;&gt; - &lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">button </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">increment</span><span>&quot;&gt; + &lt;/</span><span style="color:#bf616a;">button</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>渲染成DOM结构就是这样子：</p>
+<p><img src="https://naecoo.github.io/petite-vue/./1660489410197.png" alt="image-20220814230329082" /></p>
+<p>解析的步骤就是：</p>
+<ol>
+<li>div#app 节点，识别到v-scope关键词，创建上下文</li>
+<li>解析 p 节点，没有属性，解析p的子节点</li>
+<li>解析文本节点，识别到表达式，自动绑定v-text指令</li>
+<li>解析button节点，识别到click事件，绑定decrement事件</li>
+<li>解析文本节点，不是表达式，无需绑定指令</li>
+<li>解析button接待你，识别到click事件，绑定increment事件</li>
+<li>解析文本节点...</li>
+</ol>
+<h2 id="petite-vue-yuan-ma-fen-xi">petite-vue 源码分析</h2>
+<h3 id="chuang-jian-ying-yong">创建应用</h3>
+<p>了解了大概的原理后，就可以分析源代码了，首先看一下创建应用的过程：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/index.ts
+</span><span>
+</span><span style="color:#b48ead;">export </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./app</span><span>&#39;
+</span><span style="color:#b48ead;">export </span><span>{ </span><span style="color:#bf616a;">nextTick </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./scheduler</span><span>&#39;
+</span><span style="color:#b48ead;">export </span><span>{ </span><span style="color:#bf616a;">reactive </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">@vue/reactivity</span><span>&#39;
+</span><span>
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">createApp </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./app</span><span>&#39;
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">s </span><span>= document.</span><span style="color:#bf616a;">currentScript
+</span><span style="color:#65737e;">// petite-vue 会自动挂载，如果 script 标签带有 init 属性
+</span><span style="color:#65737e;">// 比如：&lt;script src=&quot;https://unpkg.com/petite-vue&quot; init&gt;&lt;/script&gt;
+</span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">s </span><span>&amp;&amp; </span><span style="color:#bf616a;">s</span><span>.</span><span style="color:#96b5b4;">hasAttribute</span><span>(&#39;</span><span style="color:#a3be8c;">init</span><span>&#39;)) {
+</span><span>  </span><span style="color:#8fa1b3;">createApp</span><span>().</span><span style="color:#8fa1b3;">mount</span><span>()
+</span><span>}
+</span><span>
+</span></code></pre>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/app.ts
+</span><span>
+</span><span style="color:#65737e;">// ...
+</span><span>
+</span><span style="color:#65737e;">// 创建应用，笼统来说，应用就是一个组件
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">createApp </span><span>= (</span><span style="color:#bf616a;">initialData</span><span>?: any) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 创建组件上下文
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ctx </span><span>= </span><span style="color:#8fa1b3;">createContext</span><span>()
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 对传入的数据做处理，使其变成响应式的数据
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">initialData</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">ctx</span><span>.scope = </span><span style="color:#8fa1b3;">reactive</span><span>(</span><span style="color:#bf616a;">initialData</span><span>)
+</span><span>    </span><span style="color:#65737e;">// 绑定方法的上下文
+</span><span>    </span><span style="color:#8fa1b3;">bindContextMethods</span><span>(</span><span style="color:#bf616a;">ctx</span><span>.scope)
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// ...
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 创建block
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">rootBlocks</span><span>: Block[]
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 返回一个对象，对外暴露新建指令、挂载和卸载方法
+</span><span>  </span><span style="color:#b48ead;">return </span><span>{
+</span><span>    </span><span style="color:#8fa1b3;">directive</span><span>(</span><span style="color:#bf616a;">name</span><span>: string, </span><span style="color:#bf616a;">def</span><span>?: Directive) {
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">def</span><span>) {
+</span><span>        </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">dirs</span><span>[</span><span style="color:#bf616a;">name</span><span>] = </span><span style="color:#bf616a;">def
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this
+</span><span>      } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">dirs</span><span>[</span><span style="color:#bf616a;">name</span><span>]
+</span><span>      }
+</span><span>    },
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">mount</span><span>(</span><span style="color:#bf616a;">el</span><span>?: string | Element | null) {
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">el </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;) {
+</span><span>        </span><span style="color:#bf616a;">el </span><span>= document.</span><span style="color:#96b5b4;">querySelector</span><span>(</span><span style="color:#bf616a;">el</span><span>)
+</span><span>      }
+</span><span>
+</span><span>      </span><span style="color:#bf616a;">el </span><span>= </span><span style="color:#bf616a;">el </span><span>|| document.documentElement
+</span><span>      </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">roots</span><span>: Element[]
+</span><span>
+</span><span>      </span><span style="color:#65737e;">// 寻找带有 v-scope 属性的元素
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#96b5b4;">hasAttribute</span><span>(&#39;</span><span style="color:#a3be8c;">v-scope</span><span>&#39;)) {
+</span><span>        </span><span style="color:#bf616a;">roots </span><span>= [</span><span style="color:#bf616a;">el</span><span>]
+</span><span>      } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>        </span><span style="color:#bf616a;">roots </span><span>= [...</span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#96b5b4;">querySelectorAll</span><span>(`</span><span style="color:#a3be8c;">[v-scope]</span><span>`)].</span><span style="color:#8fa1b3;">filter</span><span>(
+</span><span>          (</span><span style="color:#bf616a;">root</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>!root.</span><span style="color:#96b5b4;">matches</span><span>(`</span><span style="color:#a3be8c;">[v-scope] [v-scope]</span><span>`)
+</span><span>        )
+</span><span>      }
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">roots</span><span>.length) {
+</span><span>        </span><span style="color:#bf616a;">roots </span><span>= [</span><span style="color:#bf616a;">el</span><span>]
+</span><span>      }
+</span><span>
+</span><span>      </span><span style="color:#65737e;">// 生成block
+</span><span>      </span><span style="color:#bf616a;">rootBlocks </span><span>= </span><span style="color:#bf616a;">roots</span><span>.</span><span style="color:#8fa1b3;">map</span><span>((</span><span style="color:#bf616a;">el</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>new Block(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">ctx</span><span>, </span><span style="color:#d08770;">true</span><span>))
+</span><span>      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this
+</span><span>    },
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">unmount</span><span>() {
+</span><span>      </span><span style="color:#65737e;">// 逐个卸载block
+</span><span>      </span><span style="color:#bf616a;">rootBlocks</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>((</span><span style="color:#bf616a;">block</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">block</span><span>.</span><span style="color:#8fa1b3;">teardown</span><span>())
+</span><span>    }
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>创建应用的过程非常简单：</p>
+<ol>
+<li>
+<p>创建上下文，初始化响应式数据</p>
+</li>
+<li>
+<p>调用 mount 方法的时候，生成 block</p>
+</li>
+</ol>
+<p>那么问题又来了，这里的上下文(Context)和 block 到底是啥？</p>
+<h3 id="context">Context</h3>
+<p>在 <code>petite-vue</code> 中 context 就是组件的上下文：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/context.ts
+</span><span>
+</span><span style="color:#b48ead;">interface </span><span>Context {
+</span><span>  </span><span style="color:#bf616a;">key</span><span>?: any </span><span style="color:#65737e;">// 组件key
+</span><span>  </span><span style="color:#bf616a;">scope</span><span>: Record&lt;string, any&gt; </span><span style="color:#65737e;">// 响应式数据和方法
+</span><span>  </span><span style="color:#bf616a;">dirs</span><span>: Record&lt;string, Directive&gt; </span><span style="color:#65737e;">// 指令
+</span><span>  </span><span style="color:#bf616a;">blocks</span><span>: Block[] </span><span style="color:#65737e;">// blocks
+</span><span>  </span><span style="color:#bf616a;">effect</span><span>: typeof rawEffect </span><span style="color:#65737e;">// effect函数
+</span><span>  </span><span style="color:#bf616a;">effects</span><span>: ReactiveEffectRunner[] </span><span style="color:#65737e;">// 组件产生的effect函数集合
+</span><span>  </span><span style="color:#bf616a;">cleanups</span><span>: (() </span><span style="color:#b48ead;">=&gt; </span><span>void)[] </span><span style="color:#65737e;">// 调用指令后的清理函数，卸载组件的时候会调用
+</span><span>}
+</span></code></pre>
+<p>创建上下文：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/context.ts
+</span><span>
+</span><span style="color:#65737e;">// 创建上下文
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">createContext </span><span>= (</span><span style="color:#bf616a;">parent</span><span>?: Context): Context </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ctx</span><span>: Context = {
+</span><span>    ...</span><span style="color:#bf616a;">parent</span><span>, </span><span style="color:#65737e;">// 父组件
+</span><span>    </span><span style="color:#65737e;">// 如果有父组件，直接引用父组件的数据
+</span><span>    scope: </span><span style="color:#bf616a;">parent </span><span>? </span><span style="color:#bf616a;">parent</span><span>.scope : </span><span style="color:#8fa1b3;">reactive</span><span>({}),
+</span><span>    dirs: </span><span style="color:#bf616a;">parent </span><span>? </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#bf616a;">dirs </span><span>: {},
+</span><span>    effects: [],
+</span><span>    blocks: [],
+</span><span>    cleanups: [],
+</span><span>    </span><span style="color:#65737e;">// 组件effect实际上是 vue effect函数的封装
+</span><span>    </span><span style="color:#8fa1b3;">effect</span><span>: (</span><span style="color:#bf616a;">fn</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#65737e;">// v-once 指令处理，渲染后就不会再更新，哪怕响应式数据修改了
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">inOnce</span><span>) {
+</span><span>        </span><span style="color:#8fa1b3;">queueJob</span><span>(</span><span style="color:#bf616a;">fn</span><span>)
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">fn </span><span style="color:#b48ead;">as </span><span>any
+</span><span>      }
+</span><span>      </span><span style="color:#65737e;">// 调用 vue3 的effect函数
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">e</span><span>: ReactiveEffectRunner = </span><span style="color:#8fa1b3;">rawEffect</span><span>(</span><span style="color:#bf616a;">fn</span><span>, {
+</span><span>        </span><span style="color:#8fa1b3;">scheduler</span><span>: () </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">queueJob</span><span>(</span><span style="color:#bf616a;">e</span><span>)
+</span><span>      })
+</span><span>      </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">effects</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">e</span><span>)
+</span><span>      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">e
+</span><span>    }
+</span><span>  }
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">ctx
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>queueJob就是一个调度的程序，和vue2的机制差不多：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/scheduler.ts
+</span><span>
+</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">queued </span><span>= </span><span style="color:#d08770;">false
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">queue</span><span>: Function[] = []
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">p </span><span>= </span><span style="color:#ebcb8b;">Promise</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>()
+</span><span>
+</span><span style="color:#65737e;">// 简单nextTick实现，就是创建一个微任务程序
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">nextTick </span><span>= (</span><span style="color:#8fa1b3;">fn</span><span>: () </span><span style="color:#b48ead;">=&gt; </span><span>void) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">p</span><span>.</span><span style="color:#96b5b4;">then</span><span>(</span><span style="color:#bf616a;">fn</span><span>)
+</span><span>
+</span><span style="color:#65737e;">// 如果不存在该任务，添加新的任务到任务队列
+</span><span style="color:#65737e;">// 然后调用 nextTick 清空任务队列
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">queueJob </span><span>= (</span><span style="color:#8fa1b3;">job</span><span>: Function) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">queue</span><span>.</span><span style="color:#8fa1b3;">includes</span><span>(</span><span style="color:#bf616a;">job</span><span>)) </span><span style="color:#bf616a;">queue</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">job</span><span>)
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">queued</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">queued </span><span>= </span><span style="color:#d08770;">true
+</span><span>    </span><span style="color:#8fa1b3;">nextTick</span><span>(</span><span style="color:#bf616a;">flushJobs</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">flushJobs </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 这里和 vue2 的机制不一样，执行任务的过程中创建了新的任务也会再一个时机同时清空
+</span><span>  </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">job </span><span>of </span><span style="color:#bf616a;">queue</span><span>) {
+</span><span>    </span><span style="color:#8fa1b3;">job</span><span>() </span><span style="color:#65737e;">// 执行任务
+</span><span>  }
+</span><span>    
+</span><span>  </span><span style="color:#65737e;">// 初始化任务队列
+</span><span>  </span><span style="color:#bf616a;">queue</span><span>.length = </span><span style="color:#d08770;">0
+</span><span>  </span><span style="color:#bf616a;">queued </span><span>= </span><span style="color:#d08770;">false
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>总结一下：</p>
+<ol>
+<li>上下文其实就是 <code>petite-vue</code> 的实例，保持了scope 响应式数据、refs、指令、blocks等数据</li>
+<li><code>petite-vue</code> 内部响应式数据更新依赖 vue3 的 effect API，同时内部也有类似 vue2 的微任务队列，所以 <code>petite-vue</code> 也是异步更新的</li>
+<li>创建上下文后不会主动渲染，需要手动调用 mount 方法进行block的实例化，然后挂载元素</li>
+</ol>
+<h3 id="block">Block</h3>
+<p>当调用 mount 函数的时候，应用会生成block，渲染页面。block其实就是 dom节点模板，在 <code>petite-vue</code> 中就是组件的 template、v-scope挂载的节点、v-if （v-else、v-else-if等）节点或者是v-for指令创建的分支。</p>
+<p>block的定义如下：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">/// /src/block.ts
+</span><span>
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">Context</span><span>, </span><span style="color:#bf616a;">createContext </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./context</span><span>&#39;
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">walk </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./walk</span><span>&#39;
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">remove </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">@vue/shared</span><span>&#39;
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">stop </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">@vue/reactivity</span><span>&#39;
+</span><span>
+</span><span style="color:#65737e;">// Block 对象
+</span><span style="color:#b48ead;">export class </span><span style="color:#ebcb8b;">Block </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">template</span><span>: </span><span style="color:#eff1f5;">Element </span><span>| </span><span style="color:#eff1f5;">DocumentFragment </span><span style="color:#65737e;">// 模板  
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">ctx</span><span>: </span><span style="color:#eff1f5;">Context </span><span style="color:#65737e;">// block所对应组件的实例
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">key</span><span>?: </span><span style="color:#eff1f5;">any </span><span style="color:#65737e;">// 对应的key，用于v-for
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">parentCtx</span><span>?: </span><span style="color:#eff1f5;">Context </span><span style="color:#65737e;">// 父组件实例，如果有
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">isFragment</span><span>: </span><span style="color:#eff1f5;">boolean </span><span style="color:#65737e;">// 是否为 template 元素
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">start</span><span>?: </span><span style="color:#eff1f5;">Text </span><span style="color:#65737e;">// 文本节点，用于定位插入位置（模板需要）
+</span><span style="color:#eff1f5;">  </span><span style="color:#bf616a;">end</span><span>?: </span><span style="color:#eff1f5;">Text </span><span style="color:#65737e;">// 文本节点，用于定位插入位置（模板需要）
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor</span><span>(</span><span style="color:#bf616a;">template</span><span>: </span><span style="color:#eff1f5;">Element, </span><span style="color:#bf616a;">parentCtx</span><span>: </span><span style="color:#eff1f5;">Context, </span><span style="color:#bf616a;">isRoot </span><span>= </span><span style="color:#d08770;">false</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">isFragment </span><span>= </span><span style="color:#bf616a;">template </span><span>instanceof </span><span style="color:#eff1f5;">HTMLTemplateElement
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 获取模板
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">isRoot</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#bf616a;">template
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">isFragment</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">template </span><span style="color:#b48ead;">as </span><span style="color:#eff1f5;">HTMLTemplateElement).content.</span><span style="color:#96b5b4;">cloneNode</span><span style="color:#eff1f5;">(
+</span><span style="color:#eff1f5;">        </span><span style="color:#d08770;">true
+</span><span style="color:#eff1f5;">      ) </span><span style="color:#b48ead;">as </span><span style="color:#eff1f5;">DocumentFragment
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template </span><span>= </span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">cloneNode</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">as </span><span style="color:#eff1f5;">Element
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">isRoot</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ctx </span><span>= </span><span style="color:#bf616a;">parentCtx
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// create child context
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">parentCtx </span><span>= </span><span style="color:#bf616a;">parentCtx
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">parentCtx</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">blocks</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">push</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 创建block的上下文
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ctx </span><span>= </span><span style="color:#8fa1b3;">createContext</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">parentCtx</span><span style="color:#eff1f5;">) 
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 开始遍历模板
+</span><span style="color:#eff1f5;">    </span><span style="color:#8fa1b3;">walk</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 插入元素
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">insert</span><span>(</span><span style="color:#bf616a;">parent</span><span>: </span><span style="color:#eff1f5;">Element, </span><span style="color:#bf616a;">anchor</span><span>: </span><span style="color:#eff1f5;">Node </span><span>| </span><span style="color:#eff1f5;">null </span><span>= </span><span style="color:#d08770;">null</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">isFragment</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 已经插入了，相当于移动位置
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">node</span><span>: </span><span style="color:#eff1f5;">Node </span><span>| </span><span style="color:#eff1f5;">null </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">next</span><span>: </span><span style="color:#eff1f5;">Node </span><span>| </span><span style="color:#eff1f5;">null
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">          </span><span style="color:#bf616a;">next </span><span>= </span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.nextSibling
+</span><span style="color:#eff1f5;">          </span><span style="color:#bf616a;">parent</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">insertBefore</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">anchor</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node </span><span>=== </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">break
+</span><span style="color:#eff1f5;">          </span><span style="color:#bf616a;">node </span><span>= </span><span style="color:#bf616a;">next
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">      } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 首次插入
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 先插入定位的元素
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start </span><span>= new </span><span style="color:#eff1f5;">Text(</span><span>&#39;&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">end </span><span>= new </span><span style="color:#eff1f5;">Text(</span><span>&#39;&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">parent</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">insertBefore</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">anchor</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">parent</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">insertBefore</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">parent</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">insertBefore</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 如果不是模板， 直接插入父元素中即可
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">parent</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">insertBefore</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">anchor</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 移除元素
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">remove</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">parentCtx</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#8fa1b3;">remove</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">parentCtx</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">blocks</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">parent </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start.parentNode</span><span>!
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">node</span><span>: </span><span style="color:#eff1f5;">Node </span><span>| </span><span style="color:#eff1f5;">null </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.start
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">next</span><span>: </span><span style="color:#eff1f5;">Node </span><span>| </span><span style="color:#eff1f5;">null
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">while </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">next </span><span>= </span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.nextSibling
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">parent</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">removeChild</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node </span><span>=== </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">end</span><span style="color:#eff1f5;">) </span><span style="color:#b48ead;">break
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">node </span><span>= </span><span style="color:#bf616a;">next
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">.parentNode</span><span>!</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">removeChild</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">template</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">teardown</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 卸载block
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">teardown</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">blocks</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">child</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">child</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">teardown</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">effects</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">stop</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">ctx</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">cleanups</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">fn</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">fn</span><span style="color:#eff1f5;">())
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span><span>
+</span></code></pre>
+<p>总结一下：</p>
+<ol>
+<li>block就是组件、v-if、v-for等指令所对应的dom节点，<code>petite-vue</code> 封装了Block对象，用于插入、更新、删除这些dom节点</li>
+</ol>
+<h3 id="walk">walk</h3>
+<p>创建 block 之后，就开始遍历 block 对应的模板，这里基本上就是 DOM 节点的遍历了，具体操作有解析节点上的属性、时间、指令和渲染数据。对应的逻辑是：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/walk.ts
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">dirRE </span><span>= /</span><span style="color:#b48ead;">^</span><span style="color:#96b5b4;">(?:v-</span><span>|</span><span style="color:#96b5b4;">:</span><span>|</span><span style="color:#96b5b4;">@)</span><span>/
+</span><span style="color:#b48ead;">export let </span><span style="color:#bf616a;">inOnce </span><span>= </span><span style="color:#d08770;">false
+</span><span style="color:#65737e;">// 遍历模板
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">walk </span><span>= (</span><span style="color:#bf616a;">node</span><span>: Node, </span><span style="color:#bf616a;">ctx</span><span>: Context): ChildNode | null | void </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">type </span><span>= </span><span style="color:#bf616a;">node</span><span>.nodeType
+</span><span>  </span><span style="color:#65737e;">// 识别 dom 元素类型
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">type </span><span>=== </span><span style="color:#d08770;">1</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// 普通元素
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">el </span><span>= </span><span style="color:#bf616a;">node </span><span style="color:#b48ead;">as </span><span>Element
+</span><span>    </span><span style="color:#65737e;">// v-pre 指令的元素不解析
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#96b5b4;">hasAttribute</span><span>(&#39;</span><span style="color:#a3be8c;">v-pre</span><span>&#39;)) {
+</span><span>      </span><span style="color:#b48ead;">return
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">exp</span><span>: string | null
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// v-if 指令
+</span><span>    </span><span style="color:#b48ead;">if </span><span>((</span><span style="color:#bf616a;">exp </span><span>= </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">el</span><span>, &#39;</span><span style="color:#a3be8c;">v-if</span><span>&#39;))) {
+</span><span>      </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">_if</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">exp</span><span>, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// v-for 指令
+</span><span>    </span><span style="color:#b48ead;">if </span><span>((</span><span style="color:#bf616a;">exp </span><span>= </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">el</span><span>, &#39;</span><span style="color:#a3be8c;">v-for</span><span>&#39;))) {
+</span><span>      </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">_for</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">exp</span><span>, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// v-scope 指令, 可以读取表达式执行（适用于函数组件）
+</span><span>    </span><span style="color:#b48ead;">if </span><span>((</span><span style="color:#bf616a;">exp </span><span>= </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">el</span><span>, &#39;</span><span style="color:#a3be8c;">v-scope</span><span>&#39;)) || </span><span style="color:#bf616a;">exp </span><span>=== &#39;&#39;) {
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">scope </span><span>= </span><span style="color:#bf616a;">exp </span><span>? </span><span style="color:#8fa1b3;">evaluate</span><span>(</span><span style="color:#bf616a;">ctx</span><span>.scope, </span><span style="color:#bf616a;">exp</span><span>) : {}
+</span><span>      </span><span style="color:#65737e;">// 创建嵌套的上下文
+</span><span>      </span><span style="color:#bf616a;">ctx </span><span>= </span><span style="color:#8fa1b3;">createScopedContext</span><span>(</span><span style="color:#bf616a;">ctx</span><span>, </span><span style="color:#bf616a;">scope</span><span>)
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">scope</span><span>.</span><span style="color:#bf616a;">$template</span><span>) {
+</span><span>        </span><span style="color:#65737e;">// 解析模板
+</span><span>        </span><span style="color:#8fa1b3;">resolveTemplate</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">scope</span><span>.</span><span style="color:#bf616a;">$template</span><span>)
+</span><span>      }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// v-once 指令
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">hasVOnce </span><span>= </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">el</span><span>, &#39;</span><span style="color:#a3be8c;">v-once</span><span>&#39;) != </span><span style="color:#d08770;">null
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">hasVOnce</span><span>) {
+</span><span>      </span><span style="color:#65737e;">// 只解析一次，不做响应式的处理，创建上下文的时候会用到
+</span><span>      </span><span style="color:#bf616a;">inOnce </span><span>= </span><span style="color:#d08770;">true
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 解析 ref
+</span><span>    </span><span style="color:#b48ead;">if </span><span>((</span><span style="color:#bf616a;">exp </span><span>= </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">el</span><span>, &#39;</span><span style="color:#a3be8c;">ref</span><span>&#39;))) {
+</span><span>      </span><span style="color:#8fa1b3;">applyDirective</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">ref</span><span>, `</span><span style="color:#a3be8c;">&quot;${</span><span style="color:#bf616a;">exp</span><span style="color:#a3be8c;">}&quot;</span><span>`, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 解析子节点
+</span><span>    </span><span style="color:#8fa1b3;">walkChildren</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">deferred</span><span>: [string, string][] = []
+</span><span>    </span><span style="color:#65737e;">// 解析其它指令，包括v-bind、v-on、v-html、v-text等，遍历所有节点的所有属性
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">value </span><span>} of [...</span><span style="color:#bf616a;">el</span><span>.attributes]) {
+</span><span>      </span><span style="color:#65737e;">// 用正则判断是否为指令
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dirRE</span><span>.</span><span style="color:#96b5b4;">test</span><span>(</span><span style="color:#bf616a;">name</span><span>) &amp;&amp; </span><span style="color:#bf616a;">name </span><span>!== &#39;</span><span style="color:#a3be8c;">v-cloak</span><span>&#39;) {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">name </span><span>=== &#39;</span><span style="color:#a3be8c;">v-model</span><span>&#39;) {
+</span><span>		  </span><span style="color:#65737e;">// v-model 依赖 v-bind 指令，所以放到后面再解析
+</span><span>          </span><span style="color:#bf616a;">deferred</span><span>.</span><span style="color:#96b5b4;">unshift</span><span>([</span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">value</span><span>])
+</span><span>        } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">name</span><span>[</span><span style="color:#d08770;">0</span><span>] === &#39;</span><span style="color:#a3be8c;">@</span><span>&#39; || /</span><span style="color:#b48ead;">^</span><span style="color:#96b5b4;">v-on</span><span style="color:#b48ead;">\b</span><span>/.</span><span style="color:#96b5b4;">test</span><span>(</span><span style="color:#bf616a;">name</span><span>)) {
+</span><span>          </span><span style="color:#65737e;">// v-on 事件指令同理，但后于 v-model 指令
+</span><span>          </span><span style="color:#bf616a;">deferred</span><span>.</span><span style="color:#96b5b4;">push</span><span>([</span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">value</span><span>])
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>          </span><span style="color:#65737e;">// 其它的指令
+</span><span>          </span><span style="color:#8fa1b3;">processDirective</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">value</span><span>, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>        }
+</span><span>      }
+</span><span>    }
+</span><span> 
+</span><span>    </span><span style="color:#65737e;">// 解析延迟的指令
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">const </span><span>[</span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">value</span><span>] of </span><span style="color:#bf616a;">deferred</span><span>) {  
+</span><span>      </span><span style="color:#8fa1b3;">processDirective</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">value</span><span>, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>    }
+</span><span>
+</span><span>   	</span><span style="color:#65737e;">// 重置 flag
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">hasVOnce</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">inOnce </span><span>= </span><span style="color:#d08770;">false
+</span><span>    }
+</span><span>  } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">type </span><span>=== </span><span style="color:#d08770;">3</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// 文本节点，主要是 {{}} 这种文本
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">data </span><span>= (</span><span style="color:#bf616a;">node </span><span style="color:#b48ead;">as </span><span>Text).data
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">data</span><span>.</span><span style="color:#8fa1b3;">includes</span><span>(</span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">delimiters</span><span>[</span><span style="color:#d08770;">0</span><span>])) {
+</span><span>      </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">segments</span><span>: string[] = []
+</span><span>      </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">lastIndex </span><span>= </span><span style="color:#d08770;">0
+</span><span>      </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">match
+</span><span>      </span><span style="color:#b48ead;">while </span><span>((</span><span style="color:#bf616a;">match </span><span>= </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">delimitersRE</span><span>.</span><span style="color:#96b5b4;">exec</span><span>(</span><span style="color:#bf616a;">data</span><span>))) {
+</span><span>        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">leading </span><span>= </span><span style="color:#bf616a;">data</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#bf616a;">lastIndex</span><span>, </span><span style="color:#bf616a;">match</span><span>.index)
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">leading</span><span>) </span><span style="color:#bf616a;">segments</span><span>.</span><span style="color:#96b5b4;">push</span><span>(JSON.</span><span style="color:#96b5b4;">stringify</span><span>(</span><span style="color:#bf616a;">leading</span><span>))
+</span><span>        </span><span style="color:#65737e;">// $s = displayString 函数
+</span><span>        </span><span style="color:#bf616a;">segments</span><span>.</span><span style="color:#96b5b4;">push</span><span>(`</span><span style="color:#a3be8c;">$s(${</span><span style="color:#bf616a;">match</span><span style="color:#a3be8c;">[</span><span style="color:#d08770;">1</span><span style="color:#a3be8c;">]})</span><span>`)
+</span><span>        </span><span style="color:#bf616a;">lastIndex </span><span>= </span><span style="color:#bf616a;">match</span><span>.index + </span><span style="color:#bf616a;">match</span><span>[</span><span style="color:#d08770;">0</span><span>].length
+</span><span>      }
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">lastIndex </span><span>&lt; </span><span style="color:#bf616a;">data</span><span>.length) {
+</span><span>        </span><span style="color:#bf616a;">segments</span><span>.</span><span style="color:#96b5b4;">push</span><span>(JSON.</span><span style="color:#96b5b4;">stringify</span><span>(</span><span style="color:#bf616a;">data</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#bf616a;">lastIndex</span><span>)))
+</span><span>      }
+</span><span>      </span><span style="color:#65737e;">// 应用文本指令
+</span><span>      </span><span style="color:#8fa1b3;">applyDirective</span><span>(</span><span style="color:#bf616a;">node</span><span>, </span><span style="color:#bf616a;">text</span><span>, </span><span style="color:#bf616a;">segments</span><span>.</span><span style="color:#96b5b4;">join</span><span>(&#39;</span><span style="color:#a3be8c;">+</span><span>&#39;), </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>    }
+</span><span>  } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">type </span><span>=== </span><span style="color:#d08770;">11</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// fragment 类型，跳过该节点，直接解析其子节点
+</span><span>    </span><span style="color:#8fa1b3;">walkChildren</span><span>(</span><span style="color:#bf616a;">node </span><span style="color:#b48ead;">as </span><span>DocumentFragment, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 遍历子节点列表
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">walkChildren </span><span>= (</span><span style="color:#bf616a;">node</span><span>: Element | DocumentFragment, </span><span style="color:#bf616a;">ctx</span><span>: Context) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">child </span><span>= </span><span style="color:#bf616a;">node</span><span>.firstChild
+</span><span>  </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#bf616a;">child</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">child </span><span>= </span><span style="color:#8fa1b3;">walk</span><span>(</span><span style="color:#bf616a;">child</span><span>, </span><span style="color:#bf616a;">ctx</span><span>) || </span><span style="color:#bf616a;">child</span><span>.nextSibling
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 解析组件模板
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">resolveTemplate </span><span>= (</span><span style="color:#bf616a;">el</span><span>: Element, </span><span style="color:#bf616a;">template</span><span>: string) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">template</span><span>[</span><span style="color:#d08770;">0</span><span>] === &#39;</span><span style="color:#a3be8c;">#</span><span>&#39;) {
+</span><span>    </span><span style="color:#65737e;">// #开头，说明是传入的是节点id
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">templateEl </span><span>= document.</span><span style="color:#96b5b4;">querySelector</span><span>(</span><span style="color:#bf616a;">template</span><span>)
+</span><span>    </span><span style="color:#65737e;">// 模板内容深拷贝一份，插入 el 中
+</span><span>    </span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#96b5b4;">appendChild</span><span>((</span><span style="color:#bf616a;">templateEl </span><span style="color:#b48ead;">as </span><span>HTMLTemplateElement).content.</span><span style="color:#96b5b4;">cloneNode</span><span>(</span><span style="color:#d08770;">true</span><span>))
+</span><span>    </span><span style="color:#b48ead;">return
+</span><span>  }
+</span><span>  </span><span style="color:#65737e;">// 其它情况，直接当作富文本处理
+</span><span>  </span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#bf616a;">innerHTML </span><span>= </span><span style="color:#bf616a;">template
+</span><span>}
+</span></code></pre>
+<p>然后是指令的处理</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/walk.ts
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">modifierRE </span><span>= /</span><span style="color:#96b5b4;">\.(</span><span style="color:#d08770;">[\w-]</span><span>+</span><span style="color:#96b5b4;">)</span><span>/</span><span style="color:#b48ead;">g
+</span><span>
+</span><span style="color:#65737e;">// 处理指令
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">processDirective </span><span>= (
+</span><span>  </span><span style="color:#bf616a;">el</span><span>: Element,
+</span><span>  </span><span style="color:#bf616a;">raw</span><span>: string,
+</span><span>  </span><span style="color:#bf616a;">exp</span><span>: string,
+</span><span>  </span><span style="color:#bf616a;">ctx</span><span>: Context
+</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">dir</span><span>: Directive
+</span><span>  
+</span><span>  </span><span style="color:#65737e;">// 指令的参数
+</span><span>  </span><span style="color:#65737e;">// 比如v-bind:value =&gt; value
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">arg</span><span>: string | undefined
+</span><span>  </span><span style="color:#65737e;">// 指令的修饰符，v-bind.sync =&gt; sync
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">modifiers</span><span>: Record&lt;string, true&gt; | undefined
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 获取修饰符
+</span><span>  </span><span style="color:#bf616a;">raw </span><span>= </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">replace</span><span>(</span><span style="color:#bf616a;">modifierRE</span><span>, (</span><span style="color:#bf616a;">_</span><span>, </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    ;(</span><span style="color:#bf616a;">modifiers </span><span>|| (</span><span style="color:#bf616a;">modifiers </span><span>= {}))[</span><span style="color:#bf616a;">m</span><span>] = </span><span style="color:#d08770;">true
+</span><span>    </span><span style="color:#b48ead;">return </span><span>&#39;&#39;
+</span><span>  })
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">raw</span><span>[</span><span style="color:#d08770;">0</span><span>] === &#39;</span><span style="color:#a3be8c;">:</span><span>&#39;) {
+</span><span>    </span><span style="color:#65737e;">// 第一个为“:”，v-bind指令
+</span><span>    </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">bind
+</span><span>    </span><span style="color:#bf616a;">arg </span><span>= </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#d08770;">1</span><span>)
+</span><span>  } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">raw</span><span>[</span><span style="color:#d08770;">0</span><span>] === &#39;</span><span style="color:#a3be8c;">@</span><span>&#39;) {
+</span><span>    </span><span style="color:#65737e;">// 第一个字符为“@”，v-on指令
+</span><span>    </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">on
+</span><span>    </span><span style="color:#bf616a;">arg </span><span>= </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#d08770;">1</span><span>)
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">argIndex </span><span>= </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">indexOf</span><span>(&#39;</span><span style="color:#a3be8c;">:</span><span>&#39;)
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">dirName </span><span>= </span><span style="color:#bf616a;">argIndex </span><span>&gt; </span><span style="color:#d08770;">0 </span><span>? </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#d08770;">2</span><span>, </span><span style="color:#bf616a;">argIndex</span><span>) : </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#d08770;">2</span><span>)
+</span><span>    </span><span style="color:#65737e;">// 获取指令函数，首先是从内置的指令中获取，其次是组件定义的指令
+</span><span>    </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">builtInDirectives</span><span>[</span><span style="color:#bf616a;">dirName</span><span>] || </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">dirs</span><span>[</span><span style="color:#bf616a;">dirName</span><span>]
+</span><span>    </span><span style="color:#bf616a;">arg </span><span>= </span><span style="color:#bf616a;">argIndex </span><span>&gt; </span><span style="color:#d08770;">0 </span><span>? </span><span style="color:#bf616a;">raw</span><span>.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#bf616a;">argIndex </span><span>+ </span><span style="color:#d08770;">1</span><span>) : </span><span style="color:#d08770;">undefined
+</span><span>  }
+</span><span>  
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dir</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// :ref 是 ref 指令
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dir </span><span>=== </span><span style="color:#bf616a;">bind </span><span>&amp;&amp; </span><span style="color:#bf616a;">arg </span><span>=== &#39;</span><span style="color:#a3be8c;">ref</span><span>&#39;) </span><span style="color:#bf616a;">dir </span><span>= </span><span style="color:#bf616a;">ref
+</span><span>    
+</span><span>    </span><span style="color:#65737e;">// 应用指令
+</span><span>    </span><span style="color:#8fa1b3;">applyDirective</span><span>(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">dir</span><span>, </span><span style="color:#bf616a;">exp</span><span>, </span><span style="color:#bf616a;">ctx</span><span>, </span><span style="color:#bf616a;">arg</span><span>, </span><span style="color:#bf616a;">modifiers</span><span>)
+</span><span>    </span><span style="color:#65737e;">// 指令处理完毕，移除属性
+</span><span>    </span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#96b5b4;">removeAttribute</span><span>(</span><span style="color:#bf616a;">raw</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 应用指令
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">applyDirective </span><span>= (
+</span><span>  </span><span style="color:#bf616a;">el</span><span>: Node, </span><span style="color:#65737e;">// 指令对应的节点
+</span><span>  </span><span style="color:#bf616a;">dir</span><span>: Directive&lt;any&gt;, </span><span style="color:#65737e;">// 指令函数
+</span><span>  </span><span style="color:#bf616a;">exp</span><span>: string, </span><span style="color:#65737e;">// 指令表达式
+</span><span>  </span><span style="color:#bf616a;">ctx</span><span>: Context, </span><span style="color:#65737e;">// 指令对应的组件上下文
+</span><span>  </span><span style="color:#bf616a;">arg</span><span>?: string, </span><span style="color:#65737e;">// 指令参数
+</span><span>  </span><span style="color:#bf616a;">modifiers</span><span>?: Record&lt;string, true&gt; </span><span style="color:#65737e;">// 指令修饰符
+</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 封装 get 方法，get函数是exp表达式的求值
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">get </span><span>= (</span><span style="color:#bf616a;">e </span><span>= </span><span style="color:#bf616a;">exp</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">evaluate</span><span>(</span><span style="color:#bf616a;">ctx</span><span>.scope, </span><span style="color:#bf616a;">e</span><span>, </span><span style="color:#bf616a;">el</span><span>)
+</span><span>  </span><span style="color:#65737e;">// 执行指令函数
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">cleanup </span><span>= </span><span style="color:#8fa1b3;">dir</span><span>({
+</span><span>    </span><span style="color:#bf616a;">el</span><span>,
+</span><span>    </span><span style="color:#bf616a;">get</span><span>,
+</span><span>    effect: </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">effect</span><span>,
+</span><span>    </span><span style="color:#bf616a;">ctx</span><span>,
+</span><span>    </span><span style="color:#bf616a;">exp</span><span>,
+</span><span>    </span><span style="color:#bf616a;">arg</span><span>,
+</span><span>    </span><span style="color:#bf616a;">modifiers
+</span><span>  })
+</span><span>  </span><span style="color:#65737e;">// 保持指令返回的cleanup函数
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">cleanup</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#bf616a;">cleanups</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">cleanup</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>指令的处理其实很简单，指令由<strong>指令名称+修饰符+参数+表达式</strong>组成，首先需要解析出这四个结构，然后调用具体的指令函数即可。特别的，看一下 <code>evaluate</code> 函数：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/eval.ts
+</span><span>
+</span><span style="color:#65737e;">// 缓存
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">evalCache</span><span>: Record&lt;string, Function&gt; = </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#8fa1b3;">create</span><span>(</span><span style="color:#d08770;">null</span><span>)
+</span><span>
+</span><span style="color:#65737e;">// 将表达式转化为函数
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">toFunction </span><span>= (</span><span style="color:#bf616a;">exp</span><span>: string): Function </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">try </span><span>{
+</span><span>    </span><span style="color:#b48ead;">return </span><span>new Function(`</span><span style="color:#a3be8c;">$data</span><span>`, `</span><span style="color:#a3be8c;">$el</span><span>`, `</span><span style="color:#a3be8c;">with($data){${</span><span style="color:#bf616a;">exp</span><span style="color:#a3be8c;">}}</span><span>`)
+</span><span>  } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#bf616a;">e</span><span>) {
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">error</span><span>(`</span><span style="color:#a3be8c;">${(</span><span style="color:#bf616a;">e </span><span style="color:#b48ead;">as </span><span style="color:#a3be8c;">Error).</span><span style="color:#bf616a;">message</span><span style="color:#a3be8c;">} in expression: ${</span><span style="color:#bf616a;">exp</span><span style="color:#a3be8c;">}</span><span>`)
+</span><span>    </span><span style="color:#b48ead;">return </span><span>() </span><span style="color:#b48ead;">=&gt; </span><span>{}
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 在 scope 作用域下执行 exp 表达式
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">execute </span><span>= (</span><span style="color:#bf616a;">scope</span><span>: any, </span><span style="color:#bf616a;">exp</span><span>: string, </span><span style="color:#bf616a;">el</span><span>?: Node) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 首先检查缓存，没有才新建一个
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">fn </span><span>= </span><span style="color:#bf616a;">evalCache</span><span>[</span><span style="color:#bf616a;">exp</span><span>] || (</span><span style="color:#bf616a;">evalCache</span><span>[</span><span style="color:#bf616a;">exp</span><span>] = </span><span style="color:#8fa1b3;">toFunction</span><span>(</span><span style="color:#bf616a;">exp</span><span>))
+</span><span>  </span><span style="color:#b48ead;">try </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 直接执行函数，返回结果
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">fn</span><span>(</span><span style="color:#bf616a;">scope</span><span>, </span><span style="color:#bf616a;">el</span><span>)
+</span><span>  } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#bf616a;">e</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#b48ead;">import</span><span>.meta.</span><span style="color:#bf616a;">env</span><span>.</span><span style="color:#bf616a;">DEV</span><span>) {
+</span><span>      </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">warn</span><span>(`</span><span style="color:#a3be8c;">Error when evaluating expression &quot;${</span><span style="color:#bf616a;">exp</span><span style="color:#a3be8c;">}&quot;:</span><span>`)
+</span><span>    }
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">error</span><span>(</span><span style="color:#bf616a;">e</span><span>)
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 表达式求值
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">evaluate </span><span>= (</span><span style="color:#bf616a;">scope</span><span>: any, </span><span style="color:#bf616a;">exp</span><span>: string, </span><span style="color:#bf616a;">el</span><span>?: Node) </span><span style="color:#b48ead;">=&gt;
+</span><span>	</span><span style="color:#8fa1b3;">execute</span><span>(</span><span style="color:#bf616a;">scope</span><span>, `</span><span style="color:#a3be8c;">return(${</span><span style="color:#bf616a;">exp</span><span style="color:#a3be8c;">})</span><span>`, </span><span style="color:#bf616a;">el</span><span>)
+</span><span>
+</span></code></pre>
+<p>通过 evaluate，指令和 &quot;{{}}&quot; 里面的表达式可以绑定组件上下文进行求值，比如 <code>v-if=&quot;visible&quot;</code> 会被封装成这样的 get 函数：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">fn</span><span>(</span><span style="color:#bf616a;">$data</span><span>, </span><span style="color:#bf616a;">$el</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">with</span><span>(</span><span style="color:#bf616a;">$data</span><span>) {
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">visible</span><span>;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">get </span><span>= (</span><span style="color:#bf616a;">ctx</span><span>, </span><span style="color:#bf616a;">el</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#8fa1b3;">fn</span><span>(</span><span style="color:#bf616a;">ctx</span><span>, </span><span style="color:#bf616a;">el</span><span>); 
+</span></code></pre>
+<p>ok，我们终于知道 <code>petite-vue</code> 执行模板中的表达式的原理了，其实都是封装成了函数，绑定了组件的上下文。</p>
+<p>最后总结一下：</p>
+<ol>
+<li>walk 其实就是对 dom 节点的深度优先遍历，会解析每个节点的属性和内容，再应用指令来接管渲染的流程</li>
+<li>v-if 和 v-for 和一般的指令不一样，涉及到 dom 节点的变更，需要特殊处理</li>
+<li>模板中的表达式都是通过 <code>evaluate</code> 转化成函数再执行的，从而绑定了对应组件的上下文</li>
+</ol>
+<h3 id="zhi-ling-1">指令</h3>
+<p>指令也是 <code>petite-vue</code> 的一个核心机制，本质上指令是一个函数，在 walk 阶段，会检查 dom 节点上的属性，执行对应的指令函数。然后，指令就可以通过 effect 函数，在数据更新后，执行对应的操作。</p>
+<p>指令的定义：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// 指令函数
+</span><span style="color:#b48ead;">export interface </span><span>Directive&lt;T = Element&gt; {
+</span><span>  (</span><span style="color:#bf616a;">ctx</span><span>: DirectiveContext&lt;T&gt;): (() </span><span style="color:#b48ead;">=&gt; </span><span>void) | void
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 指令函数的参数
+</span><span style="color:#b48ead;">export interface </span><span>DirectiveContext&lt;T = Element&gt; {
+</span><span>  </span><span style="color:#bf616a;">el</span><span>: T </span><span style="color:#65737e;">// 指令所对应的 dom 节点
+</span><span>  </span><span style="color:#8fa1b3;">get</span><span>: (</span><span style="color:#bf616a;">exp</span><span>?: string) </span><span style="color:#b48ead;">=&gt; </span><span>any </span><span style="color:#65737e;">// 指令的表达式所转化成的函数，已经绑定上下文
+</span><span>  </span><span style="color:#bf616a;">effect</span><span>: typeof rawEffect </span><span style="color:#65737e;">// 组件封装好的 effect 函数，响应式数据更新后会调用
+</span><span>  </span><span style="color:#bf616a;">exp</span><span>: string </span><span style="color:#65737e;">// raw 表达式
+</span><span>  </span><span style="color:#bf616a;">arg</span><span>?: string </span><span style="color:#65737e;">// 指令参数
+</span><span>  </span><span style="color:#bf616a;">modifiers</span><span>?: Record&lt;string, true&gt; </span><span style="color:#65737e;">// 指令修饰符
+</span><span>  </span><span style="color:#bf616a;">ctx</span><span>: Context </span><span style="color:#65737e;">// 指令对应组件实例
+</span><span>}
+</span><span>
+</span></code></pre>
+<p><code>petite-vue</code> 提供了一些内置指令，我们简单介绍一下：</p>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#b48ead;">export const </span><span style="color:#bf616a;">builtInDirectives</span><span>: Record&lt;string, Directive&lt;any&gt;&gt; = {
+</span><span>  </span><span style="color:#bf616a;">bind</span><span>, </span><span style="color:#65737e;">// v-on :value=&quot;value&quot;  props 或者属性绑定
+</span><span>  </span><span style="color:#bf616a;">on</span><span>, </span><span style="color:#65737e;">// v-bind @click=&quot;xxx&quot; 事件绑定
+</span><span>  </span><span style="color:#bf616a;">show</span><span>, </span><span style="color:#65737e;">// v-show
+</span><span>  </span><span style="color:#bf616a;">text</span><span>, </span><span style="color:#65737e;">// v-text, {{}} 双引号表达式处理
+</span><span>  </span><span style="color:#bf616a;">html</span><span>, </span><span style="color:#65737e;">// v-html
+</span><span>  </span><span style="color:#bf616a;">model</span><span>, </span><span style="color:#65737e;">// v-model
+</span><span>  </span><span style="color:#bf616a;">effect </span><span style="color:#65737e;">// v-effect
+</span><span>}
+</span><span>
+</span></code></pre>
+<h4 id="show">show</h4>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/directives/show.ts
+</span><span>
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">show</span><span>: Directive&lt;HTMLElement&gt; = ({ </span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">get</span><span>, </span><span style="color:#bf616a;">effect </span><span>}) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 获取原始的 display 属性
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">initialDisplay </span><span>= </span><span style="color:#bf616a;">el</span><span>.style.display
+</span><span>  </span><span style="color:#8fa1b3;">effect</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 根据表达式执行的结果判断，如果为false，则设置dispaly为none
+</span><span>    </span><span style="color:#bf616a;">el</span><span>.style.display = </span><span style="color:#8fa1b3;">get</span><span>() ? </span><span style="color:#bf616a;">initialDisplay </span><span>: &#39;</span><span style="color:#a3be8c;">none</span><span>&#39;
+</span><span>  })
+</span><span>}
+</span><span>
+</span></code></pre>
+<h4 id="ref">ref</h4>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/directives/ref.ts
+</span><span>
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">ref</span><span>: Directive = ({
+</span><span>  </span><span style="color:#bf616a;">el</span><span>,
+</span><span>  ctx: {
+</span><span>    scope: { </span><span style="color:#bf616a;">$refs </span><span>}
+</span><span>  },
+</span><span>  </span><span style="color:#bf616a;">get</span><span>,
+</span><span>  </span><span style="color:#bf616a;">effect
+</span><span>}) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">prevRef</span><span>: any
+</span><span>  </span><span style="color:#8fa1b3;">effect</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 获取 ref key
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ref </span><span>= </span><span style="color:#8fa1b3;">get</span><span>()
+</span><span>    </span><span style="color:#65737e;">// 在组件上下文中设置 ref
+</span><span>    </span><span style="color:#bf616a;">$refs</span><span>[</span><span style="color:#bf616a;">ref</span><span>] = </span><span style="color:#bf616a;">el
+</span><span>    </span><span style="color:#65737e;">// 如果和之前设置的值不一样，删除之前设置的值
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">prevRef </span><span>&amp;&amp; </span><span style="color:#bf616a;">ref </span><span>!== </span><span style="color:#bf616a;">prevRef</span><span>) {
+</span><span>      delete </span><span style="color:#bf616a;">$refs</span><span>[</span><span style="color:#bf616a;">prevRef</span><span>]
+</span><span>    }
+</span><span>    </span><span style="color:#bf616a;">prevRef </span><span>= </span><span style="color:#bf616a;">ref
+</span><span>  })
+</span><span>  </span><span style="color:#65737e;">// cleanup 函数，组件卸载后执行，删除设置的 ref
+</span><span>  </span><span style="color:#b48ead;">return </span><span>() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#bf616a;">prevRef </span><span>&amp;&amp; delete </span><span style="color:#bf616a;">$refs</span><span>[</span><span style="color:#bf616a;">prevRef</span><span>]
+</span><span>  }
+</span><span>}
+</span><span>
+</span></code></pre>
+<h4 id="if">if</h4>
+<pre data-lang="typescript" style="background-color:#2b303b;color:#c0c5ce;" class="language-typescript "><code class="language-typescript" data-lang="typescript"><span style="color:#65737e;">// /src/directives/if.ts
+</span><span>
+</span><span style="color:#65737e;">// v-if、v-else-if、v-else 对应的节点和表达式
+</span><span style="color:#b48ead;">interface </span><span>Branch {
+</span><span>  </span><span style="color:#bf616a;">exp</span><span>?: string | null
+</span><span>  </span><span style="color:#bf616a;">el</span><span>: Element
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// v-if 指令函数
+</span><span style="color:#b48ead;">export const </span><span style="color:#8fa1b3;">_if </span><span>= (</span><span style="color:#bf616a;">el</span><span>: Element, </span><span style="color:#bf616a;">exp</span><span>: string, </span><span style="color:#bf616a;">ctx</span><span>: Context) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">parent </span><span>= </span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#bf616a;">parentElement</span><span>! </span><span style="color:#65737e;">// 父节点
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">anchor </span><span>= new Comment(&#39;</span><span style="color:#a3be8c;">v-if</span><span>&#39;) </span><span style="color:#65737e;">// 锚点，用于定位
+</span><span>  </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#96b5b4;">insertBefore</span><span>(</span><span style="color:#bf616a;">anchor</span><span>, </span><span style="color:#bf616a;">el</span><span>) </span><span style="color:#65737e;">// 插入锚点
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 分支列表
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">branches</span><span>: Branch[] = [
+</span><span>    {
+</span><span>      </span><span style="color:#bf616a;">exp</span><span>,
+</span><span>      </span><span style="color:#bf616a;">el
+</span><span>    }
+</span><span>  ]
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 在后续的兄弟节点中，寻找 v-else-if 或者 v-else
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">elseEl</span><span>: Element | null
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">elseExp</span><span>: string | null
+</span><span>  </span><span style="color:#b48ead;">while </span><span>((</span><span style="color:#bf616a;">elseEl </span><span>= </span><span style="color:#bf616a;">el</span><span>.</span><span style="color:#bf616a;">nextElementSibling</span><span>)) {
+</span><span>    </span><span style="color:#bf616a;">elseExp </span><span>= </span><span style="color:#d08770;">null
+</span><span>    </span><span style="color:#65737e;">// 找到 v-else-if 或者 v-else（v-else的表达式为空字符串）
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(
+</span><span>      </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">elseEl</span><span>, &#39;</span><span style="color:#a3be8c;">v-else</span><span>&#39;) === &#39;&#39; ||
+</span><span>      (</span><span style="color:#bf616a;">elseExp </span><span>= </span><span style="color:#8fa1b3;">checkAttr</span><span>(</span><span style="color:#bf616a;">elseEl</span><span>, &#39;</span><span style="color:#a3be8c;">v-else-if</span><span>&#39;))
+</span><span>    ) {
+</span><span>      </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#96b5b4;">removeChild</span><span>(</span><span style="color:#bf616a;">elseEl</span><span>)
+</span><span>      </span><span style="color:#bf616a;">branches</span><span>.</span><span style="color:#96b5b4;">push</span><span>({ exp: </span><span style="color:#bf616a;">elseExp</span><span>, el: </span><span style="color:#bf616a;">elseEl </span><span>})
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>      </span><span style="color:#65737e;">// 如果找不到，退出，v-if、v-else-if、v-else 节点必须相邻，中间不能有其它节点
+</span><span>      </span><span style="color:#b48ead;">break
+</span><span>    }
+</span><span>  }
+</span><span>  
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">nextNode </span><span>= </span><span style="color:#bf616a;">el</span><span>.nextSibling
+</span><span>  
+</span><span>  </span><span style="color:#65737e;">// 移除v-if节点，因为需要判别表达式是否为真值
+</span><span>  </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#96b5b4;">removeChild</span><span>(</span><span style="color:#bf616a;">el</span><span>)
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 当前命中分支对应的 block
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">block</span><span>: Block | undefined
+</span><span>  </span><span style="color:#65737e;">// 保持当前命中分支索引
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">activeBranchIndex</span><span>: number = -</span><span style="color:#d08770;">1
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 移除当前命中的分支 block
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">removeActiveBlock </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">block</span><span>) {
+</span><span>      </span><span style="color:#65737e;">// 先插入锚点
+</span><span>      </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#96b5b4;">insertBefore</span><span>(</span><span style="color:#bf616a;">anchor</span><span>, </span><span style="color:#bf616a;">block</span><span>.</span><span style="color:#bf616a;">el</span><span>)
+</span><span>      </span><span style="color:#bf616a;">block</span><span>.</span><span style="color:#96b5b4;">remove</span><span>()
+</span><span>      </span><span style="color:#bf616a;">block </span><span>= </span><span style="color:#d08770;">undefined
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#bf616a;">ctx</span><span>.</span><span style="color:#8fa1b3;">effect</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 遍历分支
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">i </span><span>= </span><span style="color:#d08770;">0</span><span>; </span><span style="color:#bf616a;">i </span><span>&lt; </span><span style="color:#bf616a;">branches</span><span>.length; </span><span style="color:#bf616a;">i</span><span>++) {
+</span><span>      </span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">exp</span><span>, </span><span style="color:#bf616a;">el </span><span>} = </span><span style="color:#bf616a;">branches</span><span>[</span><span style="color:#bf616a;">i</span><span>]
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">exp </span><span>|| </span><span style="color:#8fa1b3;">evaluate</span><span>(</span><span style="color:#bf616a;">ctx</span><span>.scope, </span><span style="color:#bf616a;">exp</span><span>)) {
+</span><span>        </span><span style="color:#65737e;">// 命中该分支
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">i </span><span>!== </span><span style="color:#bf616a;">activeBranchIndex</span><span>) {
+</span><span>          </span><span style="color:#65737e;">// 清除之前命中的分支
+</span><span>          </span><span style="color:#8fa1b3;">removeActiveBlock</span><span>()
+</span><span>          </span><span style="color:#65737e;">// 实例化新的分支所对应的 block
+</span><span>          </span><span style="color:#bf616a;">block </span><span>= new Block(</span><span style="color:#bf616a;">el</span><span>, </span><span style="color:#bf616a;">ctx</span><span>)
+</span><span>          </span><span style="color:#65737e;">// 插入元素
+</span><span>          </span><span style="color:#bf616a;">block</span><span>.</span><span style="color:#8fa1b3;">insert</span><span>(</span><span style="color:#bf616a;">parent</span><span>, </span><span style="color:#bf616a;">anchor</span><span>)
+</span><span>          </span><span style="color:#65737e;">// 删除锚点
+</span><span>          </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#96b5b4;">removeChild</span><span>(</span><span style="color:#bf616a;">anchor</span><span>)
+</span><span>          </span><span style="color:#65737e;">// 保存索引
+</span><span>          </span><span style="color:#bf616a;">activeBranchIndex </span><span>= </span><span style="color:#bf616a;">i
+</span><span>        }
+</span><span>        </span><span style="color:#65737e;">// 命中一个分支就可以介绍流程
+</span><span>        </span><span style="color:#b48ead;">return
+</span><span>      }
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="color:#65737e;">// 没有命中的分支
+</span><span>    </span><span style="color:#bf616a;">activeBranchIndex </span><span>= -</span><span style="color:#d08770;">1
+</span><span>    </span><span style="color:#8fa1b3;">removeActiveBlock</span><span>()
+</span><span>  })
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">nextNode
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>关于指令的源码分析就到这里吧，还有一部分指令，譬如 v-on、v-bind、v-for 原理都大同小异，都是基于 effect API，侦测响应式数据变更，执行对应 DOM 变更，感兴趣的读者可以自行去阅读。</p>
+<h2 id="zong-jie">总结</h2>
+<p>通过源码分析，我们了解了 <code>petite-vue</code> 内部的工作机制，内部实现虽然简单，但是很巧妙，非常值得我们学习。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/vue/"
+      >vue</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;yarn-workspaces&#x2F;"
+    ><span class="mr-1.5">←</span><span>yarn workspaces 简单介绍</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vue-debug&#x2F;"
+    ><span>如何在生产环境排查 Vue 应用问题</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

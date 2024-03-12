@@ -1,0 +1,924 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    dayjs 分析 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="dayjs 分析" />
+  <meta name="author" content="dayjs 分析" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;dayjs&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">dayjs 分析</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2024-01-15</time>
+  <span class="mx-1">&middot;</span>
+  <span>17min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#dayjs-jie-shao"
+            >dayjs 介绍</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#dayjs-debug"
+            >dayjs debug</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#dayjs-fen-xi"
+            >dayjs 分析</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#jie-xi"
+                >解析</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#xian-shi"
+                >显示</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#cao-zuo"
+                >操作</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#cha-xun"
+                >查询</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/dayjs/#cha-jian"
+                >插件</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="dayjs-jie-shao">dayjs 介绍</h2>
+<p><a href="https://dayjs.gitee.io/zh-CN/">dayjs</a> 是一个热门的时间日期库，npm 每周下载量超过千万。</p>
+<p>dayjs 的卖点是：</p>
+<ol>
+<li>代码体积小；打包后仅 2kb</li>
+<li>简单；API 和 Moment.js 保持一致</li>
+<li>不可变数据；每次操作都会返回新的对象，避免 bug 产生，方便调试</li>
+<li>国家化支持良好；</li>
+</ol>
+<p>工作中时常使用 dayjs，十分好奇其中的实现细节，趁着有时间，赶紧做一期源码分析，here we go！</p>
+<h2 id="dayjs-debug">dayjs debug</h2>
+<p>要调试 dayjs 代码，首先要在 github 上把代码拉取下来。</p>
+<p>然后安装依赖，构建代码</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> install
+</span><span style="color:#bf616a;">npm</span><span> run build
+</span></code></pre>
+<p>用 vscode 打开，创建一个 js 文件和调试配置</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">touch</span><span> debug.js .vscode/launch.json
+</span></code></pre>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// debug.js
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">dayjs </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&quot;</span><span style="color:#a3be8c;">./dayjs.min</span><span>&quot;);
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">d1 </span><span>= </span><span style="color:#8fa1b3;">dayjs</span><span>();
+</span></code></pre>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#65737e;">// launch.json
+</span><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">version</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">0.2.0</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">configurations</span><span>&quot;: [
+</span><span>    {
+</span><span>      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">node</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">request</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">launch</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Launch Program</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">skipFiles</span><span>&quot;: [&quot;</span><span style="color:#a3be8c;">&lt;node_internals&gt;/**</span><span>&quot;],
+</span><span>      &quot;</span><span style="color:#a3be8c;">program</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">${workspaceFolder}/debug.js</span><span>&quot;
+</span><span>    }
+</span><span>  ]
+</span><span>}
+</span></code></pre>
+<p>这样就可以调试了，但是设置断点查看 dayjs 代码，我们看到的都是混淆后的代码，不利于阅读和分析，所以我们需要 sourcemap 文件映射回原来的代码。</p>
+<p>改一下构建的配置，配置文件在 build 目录的 rollup.config.js 文件中：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// rollup.config.js
+</span><span>
+</span><span>module.exports = (</span><span style="color:#bf616a;">config</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  ...
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">return </span><span>{
+</span><span>    ...
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">output</span><span>: {
+</span><span>      ...
+</span><span>      </span><span style="color:#65737e;">// 其它代码不用修改，加上下面这一行
+</span><span>      </span><span style="color:#bf616a;">sourcemap</span><span>: </span><span style="color:#d08770;">true
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>再构建一次：</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npm</span><span> run build
+</span></code></pre>
+<p>最后，就可以愉快地进行调试了。</p>
+<h2 id="dayjs-fen-xi">dayjs 分析</h2>
+<h3 id="jie-xi">解析</h3>
+<p>调用 dayjs 时，支持用多种类型初始化</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 不传参数，表示当前时间
+</span><span style="color:#8fa1b3;">dayjs</span><span>();
+</span><span>
+</span><span style="color:#65737e;">// 使用 ISO 8601 格式的字符串
+</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2018-04-13 19:18:17.040+02:00</span><span>&quot;);
+</span><span style="color:#65737e;">// 使用字符串 + 格式 (依赖 CustomParseFormat 插件)
+</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">12-25-1995</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">MM-DD-YYYY</span><span>&quot;);
+</span><span>
+</span><span style="color:#65737e;">// 使用时间戳
+</span><span style="color:#8fa1b3;">dayjs</span><span>(</span><span style="color:#d08770;">1318781876406</span><span>);
+</span><span>
+</span><span style="color:#65737e;">// JS Date对象
+</span><span style="color:#8fa1b3;">dayjs</span><span>(new Date(</span><span style="color:#d08770;">2024</span><span>, </span><span style="color:#d08770;">1</span><span>, </span><span style="color:#d08770;">15</span><span>));
+</span></code></pre>
+<p>我们来分析一下 dayjs 这个方法：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">dayjs </span><span>= </span><span style="color:#b48ead;">function </span><span>(</span><span style="color:#bf616a;">date</span><span>, </span><span style="color:#bf616a;">c</span><span>) {
+</span><span>  </span><span style="color:#65737e;">// 首先判断是否为Dayjs实例，如果是，直接返回一份克隆（深拷贝）
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#8fa1b3;">isDayjs</span><span>(</span><span style="color:#bf616a;">date</span><span>)) {
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">date</span><span>.</span><span style="color:#8fa1b3;">clone</span><span>();
+</span><span>  }
+</span><span>  </span><span style="color:#65737e;">// 参数统一化
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">cfg </span><span>= typeof </span><span style="color:#bf616a;">c </span><span>=== &quot;</span><span style="color:#a3be8c;">object</span><span>&quot; ? </span><span style="color:#bf616a;">c </span><span>: {};
+</span><span>  </span><span style="color:#bf616a;">cfg</span><span>.</span><span style="color:#bf616a;">date </span><span>= </span><span style="color:#bf616a;">date</span><span>;
+</span><span>  </span><span style="color:#bf616a;">cfg</span><span>.</span><span style="color:#bf616a;">args </span><span>= </span><span style="color:#bf616a;">arguments</span><span>;
+</span><span>  </span><span style="color:#65737e;">// 返回dayjs的实例
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">newdayjs</span><span>(</span><span style="color:#bf616a;">cfg</span><span>);
+</span><span>};
+</span></code></pre>
+<p>dayjs 方法的逻辑比较简单，规范了输入参数，返回一份 Dayjs 实例。这里要强调一下，要区分开 dayjs 和 Dayjs：</p>
+<p>1.dayjs 是对外暴露的调用入口，用于生成 Dayjs 实例，除此之外，dayjs 上也挂载了一系列辅助方法。
+2.Dayjs 才是真正的日期时间对象，对日期时间的各种操作都是基于 Dayjs 的实例。</p>
+<p>我们来分析 Dayjs 对象（由于代码比较长，采取分段分析，并省略一部分代码）：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Dayjs</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor</span><span>(</span><span style="color:#bf616a;">cfg</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 解析地区
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$L </span><span>= </span><span style="color:#8fa1b3;">parseLocale</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">cfg</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">locale</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">null</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 开始解析
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">parse</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">cfg</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$x </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$x </span><span>|| </span><span style="color:#bf616a;">cfg</span><span style="color:#eff1f5;">.x </span><span>|| </span><span style="color:#eff1f5;">{};
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 标识这是一个Dayjs实例
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">IS_DAYJS</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">parse</span><span>(</span><span style="color:#bf616a;">cfg</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 解析参数，获取Date实例
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$d </span><span>= </span><span style="color:#8fa1b3;">parseDate</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">cfg</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 初始化
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">init</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">init</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// $d是Date是实例
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{ </span><span style="color:#bf616a;">$d </span><span style="color:#eff1f5;">} </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 初始化年、月、日、星期、小时、分、秒、毫秒等信息
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$y </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getFullYear</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$M </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getMonth</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$D </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getDate</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$W </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getDay</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$H </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getHours</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$m </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getMinutes</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$s </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getSeconds</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$ms </span><span>= </span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getMilliseconds</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>可以看出，关键逻辑是 parseDate 方法，该方法将输入参数转化为 Date 实例的，我们来分析一下：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">parseDate </span><span>= (</span><span style="color:#bf616a;">cfg</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">date </span><span>} = </span><span style="color:#bf616a;">cfg</span><span>;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 非法参数
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">date </span><span>=== </span><span style="color:#d08770;">null</span><span>) </span><span style="color:#b48ead;">return </span><span>new Date(</span><span style="color:#d08770;">NaN</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// Utils.u是判断值是否为undefined的。传入undefeind将返回当前时间
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">Utils</span><span>.</span><span style="color:#8fa1b3;">u</span><span>(</span><span style="color:#bf616a;">date</span><span>)) </span><span style="color:#b48ead;">return </span><span>new Date();
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 传入Date实例
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">date </span><span>instanceof Date) </span><span style="color:#b48ead;">return </span><span>new Date(</span><span style="color:#bf616a;">date</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 传入字符串
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">date </span><span>=== &quot;</span><span style="color:#a3be8c;">string</span><span>&quot; &amp;&amp; !/</span><span style="color:#96b5b4;">Z</span><span style="color:#b48ead;">$</span><span>/</span><span style="color:#b48ead;">i</span><span>.</span><span style="color:#96b5b4;">test</span><span>(</span><span style="color:#bf616a;">date</span><span>)) {
+</span><span>    </span><span style="color:#65737e;">// REGEX_PARSE = /^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[Tt\s]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?[.:]?(\d+)?$/
+</span><span>    </span><span style="color:#65737e;">// 用上面的正则表达式，匹配特定格式的字符串
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">d </span><span>= </span><span style="color:#bf616a;">date</span><span>.</span><span style="color:#96b5b4;">match</span><span>(</span><span style="color:#bf616a;">C</span><span>.</span><span style="color:#bf616a;">REGEX_PARSE</span><span>);
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">d</span><span>) {
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">m </span><span>= </span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">2</span><span>] - </span><span style="color:#d08770;">1 </span><span>|| </span><span style="color:#d08770;">0</span><span>;
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ms </span><span>= (</span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">7</span><span>] || &quot;</span><span style="color:#a3be8c;">0</span><span>&quot;).</span><span style="color:#96b5b4;">substring</span><span>(</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">3</span><span>);
+</span><span>      </span><span style="color:#b48ead;">return </span><span>new Date(</span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">1</span><span>], </span><span style="color:#bf616a;">m</span><span>, </span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">3</span><span>] || </span><span style="color:#d08770;">1</span><span>, </span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">4</span><span>] || </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">5</span><span>] || </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#bf616a;">d</span><span>[</span><span style="color:#d08770;">6</span><span>] || </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#bf616a;">ms</span><span>);
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">return </span><span>new Date(</span><span style="color:#bf616a;">date</span><span>);
+</span><span>};
+</span></code></pre>
+<p>parseDate 方法将解析输入的参数，生成对应的 Date 实例。因此，整体解析流程是：</p>
+<pre class="mermaid bg-white">
+  flowchart TB
+A[dayjs] --&gt; B{isDayjs}
+B --&gt;|Yes| C[Dayjs clone]
+B --&gt;|No| D[new Dayjs]
+D --&gt; E[parse]
+E --&gt; F[parseDate]
+F --&gt; G[init]
+</pre>
+<h3 id="xian-shi">显示</h3>
+<p>解析完成后，我们通常需要将 Dayjs 实例展示成特定的格式，最常用的就是 format 方法，这个方法根据传入的占位符返回格式化后的日期</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2019-01-25</span><span>&quot;).</span><span style="color:#8fa1b3;">format</span><span>(&quot;</span><span style="color:#a3be8c;">DD/MM/YYYY</span><span>&quot;); </span><span style="color:#65737e;">// &#39;25/01/2019&#39;
+</span></code></pre>
+<p>format 方法代码分析：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Dayjs </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">format</span><span>(</span><span style="color:#bf616a;">formatStr</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">locale </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">$locale</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 设置默认参数
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">str </span><span>= </span><span style="color:#bf616a;">formatStr </span><span>|| </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">FORMAT_DEFAULT
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">zoneStr </span><span>= </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">z</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 初始化时得到的时间信息
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{ </span><span style="color:#bf616a;">$H</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$m</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$M </span><span style="color:#eff1f5;">} </span><span>= </span><span style="color:#bf616a;">this
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 不同的地区，周、月和上下午，定义或顺序不一样
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">weekdays</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">months</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">meridiem
+</span><span style="color:#eff1f5;">    } </span><span>= </span><span style="color:#bf616a;">locale
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">getShort </span><span>= (</span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">index</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">full</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">length</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">(
+</span><span style="color:#eff1f5;">      (</span><span style="color:#bf616a;">arr </span><span>&amp;&amp; </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">arr</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">index</span><span style="color:#eff1f5;">] </span><span>|| </span><span style="color:#8fa1b3;">arr</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">str</span><span style="color:#eff1f5;">))) </span><span>|| </span><span style="color:#bf616a;">full</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">index</span><span style="color:#eff1f5;">].</span><span style="color:#96b5b4;">slice</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">length</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    )
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">get$H </span><span>= </span><span style="color:#bf616a;">num </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">(
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$H </span><span>% </span><span style="color:#d08770;">12 </span><span>|| </span><span style="color:#d08770;">12</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">num</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    )
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">meridiemFunc </span><span>= </span><span style="color:#bf616a;">meridiem </span><span>|| </span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">hour</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">minute</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">isLowercase</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">m </span><span>= </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">hour </span><span>&lt; </span><span style="color:#d08770;">12 </span><span>? &#39;</span><span style="color:#a3be8c;">AM</span><span>&#39; : &#39;</span><span style="color:#a3be8c;">PM</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">isLowercase </span><span>? </span><span style="color:#bf616a;">m</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">toLowerCase</span><span style="color:#eff1f5;">() </span><span>: </span><span style="color:#bf616a;">m
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 这个方法是format实现的关键，将会匹配占位符，替换成真实日期
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">matches </span><span>= (</span><span style="color:#bf616a;">match</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">switch </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">match</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 年
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">YY</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$y</span><span style="color:#eff1f5;">).</span><span style="color:#96b5b4;">slice</span><span style="color:#eff1f5;">(</span><span>-</span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">YYYY</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$y</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">4</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 月份
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">M</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">$M </span><span>+ </span><span style="color:#d08770;">1
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">MM</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$M </span><span>+ </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">MMM</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">getShort</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">locale</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">monthsShort</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$M</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">months</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">3</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">MMMM</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">getShort</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">months</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$M</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 天
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">D</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$D
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">DD</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$D</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 星期
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">d</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">dd</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">getShort</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">locale</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">weekdaysMin</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">weekdays</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">ddd</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">getShort</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">locale</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">weekdaysShort</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">weekdays</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">3</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">dddd</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">weekdays</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 小时
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">H</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$H</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">HH</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$H</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 小时（12小时制）
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">h</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">get$H</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">hh</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">get$H</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// am pm
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">a</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">meridiemFunc</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$H</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$m</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// AM PM
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">A</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">meridiemFunc</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$H</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$m</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 分钟
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">m</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$m</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">mm</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$m</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 秒
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">s</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$s</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">ss</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$s</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">SSS</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">s</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$ms</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">3</span><span style="color:#eff1f5;">, </span><span>&#39;</span><span style="color:#a3be8c;">0</span><span>&#39;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// UTC 的偏移量
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">Z</span><span>&#39;</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">zoneStr </span><span style="color:#65737e;">// &#39;ZZ&#39; logic below
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">default</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">          </span><span style="color:#b48ead;">break
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">null
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// C.REGEX_FORMAT = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 用正则匹配 formatStr，匹配项将会由matches方法处理
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">str</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">replace</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">REGEX_FORMAT</span><span style="color:#eff1f5;">, </span><span>(</span><span style="color:#bf616a;">match</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$1</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">$1 </span><span>|| </span><span style="color:#8fa1b3;">matches</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">match</span><span style="color:#eff1f5;">) </span><span>|| </span><span style="color:#bf616a;">zoneStr</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">replace</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">:</span><span>&#39;</span><span style="color:#eff1f5;">, </span><span>&#39;&#39;</span><span style="color:#eff1f5;">)) </span><span style="color:#65737e;">// &#39;ZZ&#39;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">}
+</span><span>
+</span></code></pre>
+<p>上面的代码比较繁琐，但是逻辑比较简单，简而言之就是用一个正则表达式匹配输入的占位符，分别用数据来填充。比方说，我们这样格式化 <code>dayjs().format('YYYY-MM-DD')</code>，处理过程将是：</p>
+<pre class="mermaid bg-white">
+  flowchart LR
+A[YYYY-MM-DD]
+A --&gt; B[YYYY]
+B --&gt; B1[&quot;String(this.$y).slice(-2)&quot;]
+B1 --&gt; B2[2024]
+A --&gt; C[MM]
+C --&gt; C1[&quot;Utils.s($M + 1, 2, &#x27;0&#x27;)&quot;]
+C1 --&gt; C2[01]
+A --&gt; D[DD]
+D --&gt; D1[&quot;Utils.s(this.$D, 2, &#x27;0&#x27;)&quot;]
+D1 --&gt; D2[15]
+B2 --&gt; E[2024-01-15]
+C2 --&gt; E
+D2 --&gt; E
+</pre>
+<p>除了格式化字符串之外，dayjs 还支持显示 unix 时间戳</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 毫秒
+</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2019-01-25</span><span>&quot;).</span><span style="color:#96b5b4;">valueOf</span><span>() + </span><span style="color:#65737e;">// 1548381600000
+</span><span>  </span><span style="color:#8fa1b3;">dayjs</span><span>(</span><span style="color:#d08770;">1548381600000</span><span>); </span><span style="color:#65737e;">// 1548381600000
+</span><span style="color:#65737e;">// 秒
+</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2019-01-25</span><span>&quot;).</span><span style="color:#8fa1b3;">unix</span><span>();
+</span></code></pre>
+<p>相关代码：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Dayjs </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">valueOf</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 直接调用date实例getTime方法，返回unix时间戳（毫秒）
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getTime</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">unix</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 返回unix时间戳（秒）
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#eff1f5;">Math.</span><span style="color:#96b5b4;">floor</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">valueOf</span><span style="color:#eff1f5;">() </span><span>/ </span><span style="color:#d08770;">1000</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h3 id="cao-zuo">操作</h3>
+<p>dayjs 支持对 Dayjs 实例进行操作，修改日期</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 增加1天
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#96b5b4;">add</span><span>(</span><span style="color:#d08770;">1</span><span>, &quot;</span><span style="color:#a3be8c;">day</span><span>&quot;);
+</span><span style="color:#65737e;">// 先增加1天，然后减少一个月
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#96b5b4;">add</span><span>(</span><span style="color:#d08770;">1</span><span>, &quot;</span><span style="color:#a3be8c;">day</span><span>&quot;).</span><span style="color:#8fa1b3;">subtract</span><span>(</span><span style="color:#d08770;">1</span><span>, &quot;</span><span style="color:#a3be8c;">month</span><span>&quot;);
+</span><span style="color:#65737e;">// 日期设置为当月的开始
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#8fa1b3;">startOf</span><span>(&quot;</span><span style="color:#a3be8c;">month</span><span>&quot;);
+</span><span style="color:#65737e;">// 日期设置为当周的末尾
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#8fa1b3;">endOf</span><span>(&quot;</span><span style="color:#a3be8c;">week</span><span>&quot;);
+</span></code></pre>
+<p>这些方法也在 Dayjs 类中：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Dayjs</span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 内部方法，用于设置新数据
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">$set</span><span>(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">int</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 这里会处理一下数据单位的缩写，比如将d转化为day，w转化为week，诸如此类
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">unit </span><span>= </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">p</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 不考虑用UTC时间的情况，this.$u === false，utcPad === &#39;&#39;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">utcPad </span><span>= `</span><span style="color:#a3be8c;">set${</span><span style="color:#bf616a;">this</span><span style="color:#a3be8c;">.</span><span style="color:#bf616a;">$u </span><span>? &#39;</span><span style="color:#a3be8c;">UTC</span><span>&#39; : &#39;&#39;</span><span style="color:#a3be8c;">}</span><span>`
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 获取数据在Date实例上的字段名
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">name </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">D</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Date</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DATE</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Date</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">M</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Month</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Y</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}FullYear</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">H</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Hours</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MIN</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Minutes</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">S</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Seconds</span><span>`</span><span style="color:#eff1f5;">,
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MS</span><span style="color:#eff1f5;">]: </span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Milliseconds</span><span>`
+</span><span style="color:#eff1f5;">    }[</span><span style="color:#bf616a;">unit</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 获取新数据
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">arg </span><span>= </span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">D </span><span>? </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$D </span><span>+ </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">int </span><span>- </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">) </span><span>: </span><span style="color:#bf616a;">int
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">M </span><span>|| </span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Y</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 设置年或月
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// clone is for badMutable plugin
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">date </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">clone</span><span style="color:#eff1f5;">().</span><span style="color:#96b5b4;">set</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DATE</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 修改数据
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">date</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">](</span><span style="color:#bf616a;">arg</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">date</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">init</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 年月变更后，天数也要修改（月份总天数不一样，有30天的，有31天的，还有28、29天的）
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$d </span><span>= </span><span style="color:#bf616a;">date</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">set</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DATE</span><span style="color:#eff1f5;">, Math.</span><span style="color:#96b5b4;">min</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$D</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">date</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">daysInMonth</span><span style="color:#eff1f5;">())).</span><span style="color:#bf616a;">$d
+</span><span style="color:#eff1f5;">    } </span><span style="color:#b48ead;">else if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 其它情况，直接操作Date实例修改数据
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">name</span><span style="color:#eff1f5;">](</span><span style="color:#bf616a;">arg</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 因为Date实例被修改了，所以重新初始化
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">init</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 返回实例自身，方便链式操作
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 对$set方法的封装
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">set</span><span>(</span><span style="color:#bf616a;">string</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">int</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 每次操作都会返回一个新的实例，保证数据的不可变性
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">clone</span><span style="color:#eff1f5;">().</span><span style="color:#8fa1b3;">$set</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">string</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">int</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">add</span><span>(</span><span style="color:#bf616a;">number</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">units</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">number </span><span>= </span><span style="color:#ebcb8b;">Number</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">number</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">unit </span><span>= </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">p</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 修改天和周的逻辑
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">instanceFactorySet </span><span>= (</span><span style="color:#bf616a;">n</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">d </span><span>= </span><span style="color:#8fa1b3;">dayjs</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">w</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">date</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">date</span><span style="color:#eff1f5;">() </span><span>+ </span><span style="color:#eff1f5;">Math.</span><span style="color:#96b5b4;">round</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">n </span><span>* </span><span style="color:#bf616a;">number</span><span style="color:#eff1f5;">)), </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 设置月份
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">M</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">set</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">M</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$M </span><span>+ </span><span style="color:#bf616a;">number</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 设置年份
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Y</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">set</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Y</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$y </span><span>+ </span><span style="color:#bf616a;">number</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 设置天数
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">D</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactorySet</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 设置周数
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">unit </span><span>=== </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">W</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactorySet</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">7</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 获取对应单位的基准毫秒
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">step </span><span>= </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">S</span><span style="color:#eff1f5;">]: </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MILLISECONDS_A_SECOND </span><span style="color:#65737e;">// 1000
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MIN</span><span style="color:#eff1f5;">]: </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MILLISECONDS_A_MINUTE</span><span style="color:#eff1f5;">, </span><span style="color:#65737e;">// 1000 * 60
+</span><span style="color:#eff1f5;">      [</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">H</span><span style="color:#eff1f5;">]: </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MILLISECONDS_A_HOUR</span><span style="color:#eff1f5;">, </span><span style="color:#65737e;">// 1000 * 60 * 60
+</span><span style="color:#eff1f5;">    }[</span><span style="color:#bf616a;">unit</span><span style="color:#eff1f5;">] </span><span>|| </span><span style="color:#d08770;">1 </span><span style="color:#65737e;">// ms
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 计算新时间戳（毫秒）
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">nextTimeStamp </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$d</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">getTime</span><span style="color:#eff1f5;">() </span><span>+ </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">number </span><span>* </span><span style="color:#bf616a;">step</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 以新时间戳为输入参数，生成新的Dayjs实例
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">w</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">nextTimeStamp</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">subtract</span><span>(</span><span style="color:#bf616a;">number</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">string</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 相当于add的反操作
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">add</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">number </span><span>* -</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">string</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">startOf</span><span>(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">startOf</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 是否为调用 startOf，默认为true，除非手动传入false
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">isStartOf </span><span>= !</span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">u</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">startOf</span><span style="color:#eff1f5;">) </span><span>? </span><span style="color:#bf616a;">startOf </span><span>: </span><span style="color:#d08770;">true
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">unit </span><span>= </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">p</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 修改天数和月数
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">instanceFactory </span><span>= (</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 返回新的实例
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ins </span><span>= </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">w</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$u </span><span>?
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">Date</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">UTC</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$y</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">m</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">) </span><span>: new </span><span style="color:#eff1f5;">Date(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">$y</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">m</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">isStartOf </span><span>? </span><span style="color:#bf616a;">ins </span><span>: </span><span style="color:#bf616a;">ins</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">endOf</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">D</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 修改一天内的时间
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">instanceFactorySet </span><span>= (</span><span style="color:#bf616a;">method</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">slice</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 分别对应天、小时、分钟和秒
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">argumentStart </span><span>= </span><span style="color:#eff1f5;">[</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">argumentEnd </span><span>= </span><span style="color:#eff1f5;">[</span><span style="color:#d08770;">23</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">59</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">59</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">999</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 返回新的实例
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">Utils</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">w</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">toDate</span><span style="color:#eff1f5;">()[</span><span style="color:#bf616a;">method</span><span style="color:#eff1f5;">].</span><span style="color:#96b5b4;">apply</span><span style="color:#eff1f5;">(
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">toDate</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">s</span><span>&#39;</span><span style="color:#eff1f5;">),
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 天 -&gt; [0,0,0,0] or [23,59,59,999]
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 小时 -&gt; [0,0,0] or [59,59,999]
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// ...
+</span><span style="color:#eff1f5;">        (</span><span style="color:#bf616a;">isStartOf </span><span>? </span><span style="color:#bf616a;">argumentStart </span><span>: </span><span style="color:#bf616a;">argumentEnd</span><span style="color:#eff1f5;">).</span><span style="color:#96b5b4;">slice</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">slice</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      ), </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#eff1f5;">{ </span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$M</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$D </span><span style="color:#eff1f5;">} </span><span>= </span><span style="color:#bf616a;">this
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 不考虑用UTC时间的情况，this.$u === false，utcPad === &#39;&#39;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">utcPad </span><span>= `</span><span style="color:#a3be8c;">set${</span><span style="color:#bf616a;">this</span><span style="color:#a3be8c;">.</span><span style="color:#bf616a;">$u </span><span>? &#39;</span><span style="color:#a3be8c;">UTC</span><span>&#39; : &#39;&#39;</span><span style="color:#a3be8c;">}</span><span>`
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">switch </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">unit</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 年
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">Y</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// startOf 修改为当年的第一个月的第一天，endOf 修改为最后一个月的最后一天
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">isStartOf </span><span>? </span><span style="color:#8fa1b3;">instanceFactory</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">) </span><span>:
+</span><span style="color:#eff1f5;">          </span><span style="color:#8fa1b3;">instanceFactory</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">31</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">11</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 月
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">M</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// startOf 修改当月的第一天，endOf 修改当月的最后一天
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">isStartOf </span><span>? </span><span style="color:#8fa1b3;">instanceFactory</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$M</span><span style="color:#eff1f5;">) </span><span>:
+</span><span style="color:#eff1f5;">          </span><span style="color:#8fa1b3;">instanceFactory</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">$M </span><span>+ </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 周
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">W</span><span style="color:#eff1f5;">: {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">// 有的地区第一天是周日
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">weekStart </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">$locale</span><span style="color:#eff1f5;">().</span><span style="color:#bf616a;">weekStart </span><span>|| </span><span style="color:#d08770;">0
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">gap </span><span>= </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">$W </span><span>&lt; </span><span style="color:#bf616a;">weekStart </span><span>? </span><span style="color:#bf616a;">$W </span><span>+ </span><span style="color:#d08770;">7 </span><span>: </span><span style="color:#bf616a;">$W</span><span style="color:#eff1f5;">) </span><span>- </span><span style="color:#bf616a;">weekStart
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactory</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">isStartOf </span><span>? </span><span style="color:#bf616a;">$D </span><span>- </span><span style="color:#bf616a;">gap </span><span>: </span><span style="color:#bf616a;">$D </span><span>+ </span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">6 </span><span>- </span><span style="color:#bf616a;">gap</span><span style="color:#eff1f5;">), </span><span style="color:#bf616a;">$M</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 天
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">D</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">DATE</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactorySet</span><span style="color:#eff1f5;">(</span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Hours</span><span>`</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 小时
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">H</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactorySet</span><span style="color:#eff1f5;">(</span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Minutes</span><span>`</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 分钟
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">MIN</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactorySet</span><span style="color:#eff1f5;">(</span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Seconds</span><span>`</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">2</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 秒
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">C</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">S</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">instanceFactorySet</span><span style="color:#eff1f5;">(</span><span>`</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">utcPad</span><span style="color:#a3be8c;">}Milliseconds</span><span>`</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">3</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">      </span><span style="color:#b48ead;">default</span><span style="color:#eff1f5;">:
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">clone</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">endOf</span><span>(</span><span style="color:#bf616a;">arg</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 表示调用endOf
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">startOf</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">arg</span><span style="color:#eff1f5;">, </span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>上面的代码比较复杂，但是大部分都是转换单位和计算变更数值，case by case。本质上就是根据单位和数值生成新的 Date 实例，然后用新 Date 实例生成新的 Dayjs 实例。</p>
+<pre class="mermaid bg-white">
+  flowchart TB
+A[add、subtract、startOf、endOf] --&gt; B[转换单位]
+B --&gt; C[计算变更后的数据]
+C --&gt; D[用新数据生成新的 Date 实例]
+D --&gt; E[生成新的 Dayjs 实例]
+</pre>
+<h3 id="cha-xun">查询</h3>
+<p>Day.js 对象还有很多查询的方法</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 表示 Day.js 对象是否在另一个提供的日期时间之前（默认毫秒）
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#8fa1b3;">isBefore</span><span>(</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2011-01-01</span><span>&quot;));
+</span><span style="color:#65737e;">// 还支持传入单位，在这种情况下，会使用传入的单位以及比其范围大的单位进行比较
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#8fa1b3;">isBefore</span><span>(&quot;</span><span style="color:#a3be8c;">2011-01-01</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">month</span><span>&quot;);
+</span><span>
+</span><span style="color:#65737e;">// 表示 Day.js 对象是否在另一个提供的日期时间之后
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#8fa1b3;">isAfter</span><span>(</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2011-01-01</span><span>&quot;));
+</span><span>
+</span><span style="color:#65737e;">// 表示 Day.js 对象是否和另一个提供的日期时间相同
+</span><span style="color:#8fa1b3;">dayjs</span><span>().</span><span style="color:#8fa1b3;">isSame</span><span>(</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2011-01-01</span><span>&quot;));
+</span></code></pre>
+<p>我们来分析一下其中实现：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Dayjs </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">isBefore</span><span>(</span><span style="color:#bf616a;">that</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">units</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 1. 生成新的Dayjs对象，调用endOf将日期设置到该单位的末尾，相当于将时间调后（当前日期 &lt;= 当前日期endOf）
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 2. 用要对比日期生成新的Dayjs对象
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 3. 调用valueOf方法获取时间戳，对比大小，时间戳小的在前（JS在进行数值操作或隐式转换时会自动调用对象的valueOf方法）
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">endOf</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">) </span><span>&lt; </span><span style="color:#8fa1b3;">dayjs</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">that</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">isAfter</span><span>(</span><span style="color:#bf616a;">that</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">units</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 与isBefore逻辑类似，区别是调用startOf将日期设置到该单位的开始，如果这个日期都在对比日期后面，那么当前日期必然也在对比日期后面
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 对比日期 &lt; 当前日期startOf &lt;= 当前日期
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#8fa1b3;">dayjs</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">that</span><span style="color:#eff1f5;">) </span><span>&lt; </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">startOf</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">isSame</span><span>(</span><span style="color:#bf616a;">that</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">units</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">other </span><span>= </span><span style="color:#8fa1b3;">dayjs</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">that</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// isBefore和isSame的反操作，同时成立
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">startOf</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">) </span><span>&lt;= </span><span style="color:#bf616a;">other </span><span>&amp;&amp; </span><span style="color:#bf616a;">other </span><span>&lt;= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">endOf</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">units</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  </span><span>...
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<h3 id="cha-jian">插件</h3>
+<p>dayjs 自身代码比较精简，只保留了核心逻辑，不超过 1000 行。除此之外的功能都通过插件来实现，内置了 20 多个插件。
+插件使用非常简单：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 引入插件（判断日期的年份是不是闰年）
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">isLeapYear </span><span style="color:#b48ead;">from </span><span>&quot;</span><span style="color:#a3be8c;">dayjs/plugin/isLeapYear</span><span>&quot;;
+</span><span>
+</span><span style="color:#65737e;">// 安装插件
+</span><span style="color:#bf616a;">dayjs</span><span>.</span><span style="color:#8fa1b3;">extend</span><span>(</span><span style="color:#bf616a;">isLeapYear</span><span>);
+</span><span>
+</span><span style="color:#8fa1b3;">dayjs</span><span>(&quot;</span><span style="color:#a3be8c;">2024-01-01</span><span>&quot;).</span><span style="color:#8fa1b3;">isLeapYear</span><span>(); </span><span style="color:#65737e;">// true
+</span></code></pre>
+<p>如果要自定义插件，dayjs 插件模版如下：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// option是插件选项
+</span><span style="color:#65737e;">// dayjsClass是Dayjs对象
+</span><span style="color:#65737e;">// dayjsFactory是dayjs方法
+</span><span style="color:#b48ead;">export default </span><span>(</span><span style="color:#bf616a;">option</span><span>, </span><span style="color:#bf616a;">dayjsClass</span><span>, </span><span style="color:#bf616a;">dayjsFactory</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// extend dayjs()
+</span><span>  </span><span style="color:#65737e;">// e.g. add dayjs().isSameOrBefore()
+</span><span>  </span><span style="color:#ebcb8b;">dayjsClass</span><span>.prototype.</span><span style="color:#8fa1b3;">isSameOrBefore </span><span>= </span><span style="color:#b48ead;">function </span><span>(</span><span style="color:#bf616a;">arguments</span><span>) {};
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// extend dayjs
+</span><span>  </span><span style="color:#65737e;">// e.g. add dayjs.utc()
+</span><span>  </span><span style="color:#bf616a;">dayjsFactory</span><span>.</span><span style="color:#8fa1b3;">utc </span><span>= (</span><span style="color:#bf616a;">arguments</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{};
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// overriding existing API
+</span><span>  </span><span style="color:#65737e;">// e.g. extend dayjs().format()
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">oldFormat </span><span>= </span><span style="color:#ebcb8b;">dayjsClass</span><span>.prototype.</span><span style="color:#bf616a;">format</span><span>;
+</span><span>  </span><span style="color:#ebcb8b;">dayjsClass</span><span>.prototype.</span><span style="color:#8fa1b3;">format </span><span>= </span><span style="color:#b48ead;">function </span><span>(</span><span style="color:#bf616a;">arguments</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// original format result
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">result </span><span>= </span><span style="color:#bf616a;">oldFormat</span><span>.</span><span style="color:#8fa1b3;">bind</span><span>(</span><span style="color:#bf616a;">this</span><span>)(</span><span style="color:#bf616a;">arguments</span><span>);
+</span><span>    </span><span style="color:#65737e;">// return modified result
+</span><span>  };
+</span><span>};
+</span></code></pre>
+<p>我们可以分析一下 isLeapYear 插件的实现方式</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">export default </span><span>(</span><span style="color:#bf616a;">o</span><span>, </span><span style="color:#bf616a;">c</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 获取Dayjs对象的原型
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">proto </span><span>= </span><span style="color:#ebcb8b;">c</span><span>.prototype;
+</span><span>  </span><span style="color:#65737e;">// 在原型上加一个方法，这样所有的Dayjs实例都可以使用
+</span><span>  </span><span style="color:#bf616a;">proto</span><span>.</span><span style="color:#8fa1b3;">isLeapYear </span><span>= </span><span style="color:#b48ead;">function </span><span>() {
+</span><span>    </span><span style="color:#65737e;">// 获取年份判断是否为闰年
+</span><span>    </span><span style="color:#b48ead;">return </span><span>(</span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">$y </span><span>% </span><span style="color:#d08770;">4 </span><span>=== </span><span style="color:#d08770;">0 </span><span>&amp;&amp; </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">$y </span><span>% </span><span style="color:#d08770;">100 </span><span>!== </span><span style="color:#d08770;">0</span><span>) || </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">$y </span><span>% </span><span style="color:#d08770;">400 </span><span>=== </span><span style="color:#d08770;">0</span><span>;
+</span><span>  };
+</span><span>};
+</span></code></pre>
+<p>可以看出来，dayjs 插件机制十分简单粗暴，直接在原型上面进行操作，扩展或者重写方法。</p>
+<p>dayjs.extend 实现分析：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#bf616a;">dayjs</span><span>.</span><span style="color:#8fa1b3;">extend </span><span>= (</span><span style="color:#bf616a;">plugin</span><span>, </span><span style="color:#bf616a;">option</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">plugin</span><span>.</span><span style="color:#bf616a;">$i</span><span>) {
+</span><span>    </span><span style="color:#65737e;">// 调用插件函数，传入参数，Dayjs对象和dayjs方法
+</span><span>    </span><span style="color:#8fa1b3;">plugin</span><span>(</span><span style="color:#bf616a;">option</span><span>, </span><span style="color:#bf616a;">Dayjs</span><span>, </span><span style="color:#bf616a;">dayjs</span><span>);
+</span><span>    </span><span style="color:#65737e;">// 避免重复安装插件
+</span><span>    </span><span style="color:#bf616a;">plugin</span><span>.</span><span style="color:#bf616a;">$i </span><span>= </span><span style="color:#d08770;">true</span><span>;
+</span><span>  }
+</span><span>  </span><span style="color:#65737e;">// 方便链式操作 dayjs.extend(plugin1).extend(plugin2)...
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">dayjs</span><span>;
+</span><span>};
+</span></code></pre>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;headless-ui&#x2F;"
+    ><span class="mr-1.5">←</span><span>headless UI 的哲学</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;nodejs-esm&#x2F;"
+    ><span>Node.js 中使用 ESM 模块</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

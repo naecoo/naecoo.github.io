@@ -1,0 +1,640 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    懒加载原理 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="懒加载原理" />
+  <meta name="author" content="懒加载原理" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;lazy-load&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">懒加载原理</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-08-26</time>
+  <span class="mx-1">&middot;</span>
+  <span>21min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#shen-me-shi-lan-jia-zai"
+            >什么是懒加载？</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#wei-shen-me-yao-lan-jia-zai-er-bu-zhi-jie-jia-zai"
+            >为什么要懒加载而不直接加载？</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#lan-jia-zai-tu-pian"
+            >懒加载图片</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#nei-lian-tu-pian"
+                >内联图片</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#li-yong-intersection-observer"
+                >利用intersection observer</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#li-yong-shi-jian"
+                >利用事件</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#csstu-xiang"
+                >CSS图像</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#lan-jia-zai-shi-pin"
+            >懒加载视频</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#shi-pin-bu-xu-yao-zi-dong-bo-fang"
+                >视频不需要自动播放</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#yong-shi-pin-mo-ni-gif"
+                >用视频模拟GIF</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#lan-jia-zai-ku"
+            >懒加载库</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#rong-yi-chu-cuo-de-di-fang"
+            >容易出错的地方</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#bu-ju-pian-yi-he-zhan-wei-fu"
+                >布局偏移和占位符</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#yan-chi-tu-pian-jie-ma"
+                >延迟图片解码</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#jia-zai-shi-bai"
+                >加载失败</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/lazy-load/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><blockquote>
+<p>特别声明：此篇文章内容来源于<a href="https://developers.google.com/web/resources/contributors/jeremywagner">@Jeremy Wagner</a>
+的<a href="https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/">《Lazy Loading Images and Video》</a>一文。著作权归作者所有。</p>
+</blockquote>
+<p>作为网页内容的一部分，图像和视频通常要消耗很多资源加载。要提高网页应用的性能，如何避免资源浪费在加载图像和视频上就很重要了。但是，很多时候我们都不愿意减少网页上的媒体资源，所以我们经常无从下手。幸运的是，我们有懒加载这个绝招，它可以帮助我们减少加载时间和降低负载，而不在内容上偷工减料。</p>
+<h3 id="shen-me-shi-lan-jia-zai">什么是懒加载？</h3>
+<p>懒加载是一种在页面加载时延迟加载一些非关键资源的技术，换句话说就是按需加载。对于图片来说，非关键通常意味着离屏。如果你有使用过Lighthouse并且做过一些性能调优，你可能已经见过一些离屏图片的应用。<a href="https://developers.google.com/web/tools/lighthouse/audits/offscreen-images">(offscreen-images)</a><img src="https://upload-images.jianshu.io/upload_images/5070211-a85350f6ac063ddc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />
+我们之前看到的懒加载一般是这样的形式：</p>
+<ol>
+<li>浏览一个网页，准备往下拖动滚动条</li>
+<li>拖动一个占位图片到视窗</li>
+<li>占位图片被瞬间替换成最终的图片</li>
+</ol>
+<p>我们可以在<a href="https://medium.com">Medium</a>中看到懒加载是如何使用的，网页首先用一张轻量级的图片占位，当占位图片被拖动到视窗，瞬间加载目标图片，然后替换占位图片。
+<img src="https://upload-images.jianshu.io/upload_images/5070211-b4120bdbd5933573.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
+<p>如果你不是很熟悉懒加载技术，你或许会疑问它有什么用，能为我们带来什么好处，下面我们将会探讨这个问题。</p>
+<h3 id="wei-shen-me-yao-lan-jia-zai-er-bu-zhi-jie-jia-zai">为什么要懒加载而不直接加载？</h3>
+<ul>
+<li>浪费流量。在不计流量收费的网络，这可能不重要；在按流量收费的网络中，毫无疑问，一次性加载大量图片就是在浪费用户的钱。</li>
+<li>消耗额外的电量和其他的系统资源，并且延长了浏览器解析的时间。因为媒体资源在被下载完成后，浏览器必须对它进行解码，然后渲染在视窗上，这些操作都需要一定的时间。</li>
+</ul>
+<p>懒加载图片和视频，可以减少页面加载的时间、页面的大小和降低系统资源的占用，这些对于性能都有显著地提升。在这里，我们将会提到一些懒加载技术和使用方法，还有一些常用的<a href="https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/#lazy_loading_libraries">懒加载库</a>。</p>
+<h3 id="lan-jia-zai-tu-pian">懒加载图片</h3>
+<p>图片懒加载在技术上实现很简单，不过对于细节要求比较严格。目前有很多实现懒加载的方法，先从懒加载内联图片说起吧。</p>
+<h6 id="nei-lian-tu-pian">内联图片</h6>
+<p>最常见的懒加载方式就是利用<img>标签。懒加载图片时，我们利用JavaScript检查<img>标签是否在视窗中。如果在，<img>的src（有时候是srcset）就会设置为目标图片的url。</p>
+<h6 id="li-yong-intersection-observer">利用intersection observer</h6>
+<p>如果你之前用过懒加载，你很可能是通过监听一些事件比如scroll或者resize来检测元素出现在视窗，这种方法很成熟，能够兼容大部分的浏览器。但是，现代浏览器提供了一个更好的方法给我们(<a href="https://developers.google.com/web/updates/2016/04/intersectionobserver">the intersection observer API</a>)
+&gt;<em>注意：Intersection observer目前只能在Chrome63+和firefox58+使用</em></p>
+<p>比起事件监听，IntersectionObserver用起来比较简单，可阅读性也大大提高。开发者只需要注册一个observer去监控元素而不是写一大堆乱七八糟的视窗检测代码。注册observer之后我们只需要做的就是当元素可见时改变它的行为。举个例子吧：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">img </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">lazy</span><span>&quot; </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">placeholder-image.jpg</span><span>&quot; </span><span style="color:#d08770;">data-src</span><span>=&quot;</span><span style="color:#a3be8c;">image-to-lazy-load-1x.jpg</span><span>&quot; </span><span style="color:#d08770;">data-srcset</span><span>=&quot;</span><span style="color:#a3be8c;">image-to-lazy-load-2x.jpg 2x, image-to-lazy-load-1x.jpg 1x</span><span>&quot; </span><span style="color:#d08770;">alt</span><span>=&quot;</span><span style="color:#a3be8c;">I&#39;m an image!</span><span>&quot;&gt;
+</span></code></pre>
+<p>需要注意三个相关的属性</p>
+<ul>
+<li>class：用于在JavaScript中关联元素</li>
+<li>src属性：指向了一张占位图片，图片在页面的第一次加载会显现</li>
+<li>data-src和data-srcset属性：这是占位属性，里面放的是目标图片的url</li>
+</ul>
+<p>ok，看一下怎么在JavaScript中使用Intersection observer吧：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">DOMContentLoaded</span><span>&quot;, </span><span style="color:#b48ead;">function</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">lazyImages </span><span>= [].</span><span style="color:#bf616a;">slice</span><span>.</span><span style="color:#96b5b4;">call</span><span>(document.</span><span style="color:#96b5b4;">querySelectorAll</span><span>(&quot;</span><span style="color:#a3be8c;">img.lazy</span><span>&quot;));
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(&quot;</span><span style="color:#a3be8c;">IntersectionObserver</span><span>&quot; in window) {
+</span><span>    </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">lazyImageObserver </span><span>= new IntersectionObserver(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">entries</span><span>, </span><span style="color:#bf616a;">observer</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">entries</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">entry</span><span>) {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">entry</span><span>.</span><span style="color:#bf616a;">isIntersecting</span><span>) {
+</span><span>          </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">lazyImage </span><span>= </span><span style="color:#bf616a;">entry</span><span>.target;
+</span><span>          </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">src </span><span>= </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">dataset</span><span>.</span><span style="color:#bf616a;">src</span><span>;
+</span><span>          </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">srcset </span><span>= </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">dataset</span><span>.</span><span style="color:#bf616a;">srcset</span><span>;
+</span><span>          </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">classList</span><span>.</span><span style="color:#96b5b4;">remove</span><span>(&quot;</span><span style="color:#a3be8c;">lazy</span><span>&quot;);
+</span><span>          </span><span style="color:#bf616a;">lazyImageObserver</span><span>.</span><span style="color:#8fa1b3;">unobserve</span><span>(</span><span style="color:#bf616a;">lazyImage</span><span>);
+</span><span>        }
+</span><span>      });
+</span><span>    });
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">lazyImages</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">lazyImage</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">lazyImageObserver</span><span>.</span><span style="color:#96b5b4;">observe</span><span>(</span><span style="color:#bf616a;">lazyImage</span><span>);
+</span><span>    });
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>    </span><span style="color:#65737e;">// Possibly fall back to a more compatible method here
+</span><span>  }
+</span><span>});
+</span></code></pre>
+<p>当DOMContentLoaded触发后，js会查询class为lazy的img元素。然后我们检测浏览器支不支持intersection observer，如果可以用，先创建一个observer，然后传入回调函数，回调函数将会在元素可见性变化时被调用。具体的代码可以在<a href="https://codepen.io/malchata/pen/YeMyrQ">这里</a>查看。
+最后比较麻烦的是处理兼容性，在不支持intersection observer的浏览器，你需要引入<a href="https://github.com/w3c/IntersectionObserver/tree/master/polyfill">polyfill</a>，或者回退到更安全的方法。</p>
+<h6 id="li-yong-shi-jian">利用事件</h6>
+<p>当你选择使用intersection observer来实现懒加载时，你要考虑它的兼容性，当然你可以使用polyfill，实际上这也非常简单。事实上你也可以针对低版本的浏览器使用事件来完成更安全地回退。你可以使用scroll、resize和orientationchange事件，再配合getBoundingClientRectAPI就可以实现懒加载了。
+和上面一样的例子，现在JavaScript程序变成了这样：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">DOMContentLoaded</span><span>&quot;, </span><span style="color:#b48ead;">function</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">lazyImages </span><span>= [].</span><span style="color:#bf616a;">slice</span><span>.</span><span style="color:#96b5b4;">call</span><span>(document.</span><span style="color:#96b5b4;">querySelectorAll</span><span>(&quot;</span><span style="color:#a3be8c;">img.lazy</span><span>&quot;));
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">active </span><span>= </span><span style="color:#d08770;">false</span><span>;
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">lazyLoad </span><span>= </span><span style="color:#b48ead;">function</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">active </span><span>=== </span><span style="color:#d08770;">false</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">active </span><span>= </span><span style="color:#d08770;">true</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#96b5b4;">setTimeout</span><span>(</span><span style="color:#b48ead;">function</span><span>() {
+</span><span>        </span><span style="color:#bf616a;">lazyImages</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">lazyImage</span><span>) {
+</span><span>          </span><span style="color:#b48ead;">if </span><span>((</span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#96b5b4;">getBoundingClientRect</span><span>().top &lt;= window.innerHeight &amp;&amp; </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#96b5b4;">getBoundingClientRect</span><span>().bottom &gt;= </span><span style="color:#d08770;">0</span><span>) &amp;&amp; </span><span style="color:#8fa1b3;">getComputedStyle</span><span>(</span><span style="color:#bf616a;">lazyImage</span><span>).display !== &quot;</span><span style="color:#a3be8c;">none</span><span>&quot;) {
+</span><span>            </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">src </span><span>= </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">dataset</span><span>.</span><span style="color:#bf616a;">src</span><span>;
+</span><span>            </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">srcset </span><span>= </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">dataset</span><span>.</span><span style="color:#bf616a;">srcset</span><span>;
+</span><span>            </span><span style="color:#bf616a;">lazyImage</span><span>.</span><span style="color:#bf616a;">classList</span><span>.</span><span style="color:#96b5b4;">remove</span><span>(&quot;</span><span style="color:#a3be8c;">lazy</span><span>&quot;);
+</span><span>
+</span><span>            </span><span style="color:#bf616a;">lazyImages </span><span>= </span><span style="color:#bf616a;">lazyImages</span><span>.</span><span style="color:#8fa1b3;">filter</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">image</span><span>) {
+</span><span>              </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">image </span><span>!== </span><span style="color:#bf616a;">lazyImage</span><span>;
+</span><span>            });
+</span><span>
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">lazyImages</span><span>.length === </span><span style="color:#d08770;">0</span><span>) {
+</span><span>              document.</span><span style="color:#96b5b4;">removeEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">scroll</span><span>&quot;, </span><span style="color:#bf616a;">lazyLoad</span><span>);
+</span><span>              window.</span><span style="color:#96b5b4;">removeEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">resize</span><span>&quot;, </span><span style="color:#bf616a;">lazyLoad</span><span>);
+</span><span>              window.</span><span style="color:#96b5b4;">removeEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">orientationchange</span><span>&quot;, </span><span style="color:#bf616a;">lazyLoad</span><span>);
+</span><span>            }
+</span><span>          }
+</span><span>        });
+</span><span>
+</span><span>        </span><span style="color:#bf616a;">active </span><span>= </span><span style="color:#d08770;">false</span><span>;
+</span><span>      }, </span><span style="color:#d08770;">200</span><span>);
+</span><span>    }
+</span><span>  };
+</span><span>
+</span><span>  document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">scroll</span><span>&quot;, </span><span style="color:#bf616a;">lazyLoad</span><span>);
+</span><span>  window.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">resize</span><span>&quot;, </span><span style="color:#bf616a;">lazyLoad</span><span>);
+</span><span>  window.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">orientationchange</span><span>&quot;, </span><span style="color:#bf616a;">lazyLoad</span><span>);
+</span><span>});
+</span></code></pre>
+<p>上面的代码用了getBoundingClientRect，在scroll事件中检测img是否在视窗。setTimeout用于延迟执行操作，active变量代表了处理状态防止同时响应。当图片被懒加载完成后，事件处理程序将被移除，具体请看<a href="https://codepen.io/malchata/pen/mXoZGx">这里</a>。
+尽管上面这段代码可以在绝大部分的浏览器上运行，但存在显著的性能损耗。在此示例中，无论在视口中是否存在图像，文档滚动或窗口大小调整时都会每200毫秒执行一次检查。 另外，跟踪有多少元素留给延迟加载和解除事件处理程序的繁琐工作也留给了开发者。
+&gt;<em>建议：尽可能使用intersection observer，如果应用要求兼容低版本的浏览器才考虑利用事件</em></p>
+<h6 id="csstu-xiang">CSS图像</h6>
+<p>展示图像不是<img>标签的特权，CSS利用background-image也可以做到。相比较而言，CSS加载图片比较容易控制。当文档对象模型、CSS对象模型和渲染树被构造完成后，开始请求外部资源之前，浏览器会检测CSS规则是怎么应用到DOM上的。如果浏览器检测到CSS引用的外部资源并没有应用到已存在的DOM节点上，浏览器就不会请求这些资源。
+这个行为可用于延迟CSS图片资源的加载，思路是通过JavaScript检测到元素处于视窗中时，加一个class类名，这个class就引用了外部图片资源。
+这可以实现图片按需加载而不是一次性全部加载。给个例子：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>&lt;</span><span style="color:#bf616a;">div class</span><span>=&quot;</span><span style="color:#a3be8c;">lazy-background</span><span>&quot;&gt;
+</span><span>  &lt;h1&gt;</span><span style="color:#bf616a;">Here</span><span>&#39;</span><span style="color:#a3be8c;">s a hero heading to get your attention!&lt;/h1</span><span style="background-color:#bf616a;color:#2b303b;">&gt;</span><span>
+</span><span>  &lt;p&gt;</span><span style="color:#bf616a;">Here</span><span>&#39;</span><span style="color:#a3be8c;">s hero copy to convince you to buy a thing!&lt;/p</span><span style="background-color:#bf616a;color:#2b303b;">&gt;</span><span>
+</span><span>  &lt;</span><span style="color:#bf616a;">a href</span><span>=&quot;</span><span style="color:#a3be8c;">/buy-a-thing</span><span>&quot;&gt;</span><span style="color:#bf616a;">Buy a thing</span><span>!&lt;/</span><span style="color:#bf616a;">a</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>这个div.lazy-background元素会正常地显示CSS规则加载的占位图片。当元素处于可见状态时，我们可以添加一个类名完成懒加载：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">lazy-background </span><span>{
+</span><span>  background-image: </span><span style="color:#96b5b4;">url</span><span>(&quot;</span><span style="color:#a3be8c;">hero-placeholder.jpg</span><span>&quot;); </span><span style="color:#65737e;">/* 占位图片 */
+</span><span>}
+</span><span>
+</span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">lazy-background</span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">visible </span><span>{
+</span><span>  background-image: </span><span style="color:#96b5b4;">url</span><span>(&quot;</span><span style="color:#a3be8c;">hero.jpg</span><span>&quot;); </span><span style="color:#65737e;">/* 真正的图片 */
+</span><span>}
+</span></code></pre>
+<p>下面是利用JavaScript去检测元素是否处于视窗（intersection observer），如果可见就为它加上一个visible的类名。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">DOMContentLoaded</span><span>&quot;, </span><span style="color:#b48ead;">function</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">lazyBackgrounds </span><span>= [].</span><span style="color:#bf616a;">slice</span><span>.</span><span style="color:#96b5b4;">call</span><span>(document.</span><span style="color:#96b5b4;">querySelectorAll</span><span>(&quot;</span><span style="color:#a3be8c;">.lazy-background</span><span>&quot;));
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(&quot;</span><span style="color:#a3be8c;">IntersectionObserver</span><span>&quot; in window) {
+</span><span>    </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">lazyBackgroundObserver </span><span>= new IntersectionObserver(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">entries</span><span>, </span><span style="color:#bf616a;">observer</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">entries</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">entry</span><span>) {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">entry</span><span>.</span><span style="color:#bf616a;">isIntersecting</span><span>) {
+</span><span>          </span><span style="color:#bf616a;">entry</span><span>.target.</span><span style="color:#bf616a;">classList</span><span>.</span><span style="color:#96b5b4;">add</span><span>(&quot;</span><span style="color:#a3be8c;">visible</span><span>&quot;);
+</span><span>          </span><span style="color:#bf616a;">lazyBackgroundObserver</span><span>.</span><span style="color:#8fa1b3;">unobserve</span><span>(</span><span style="color:#bf616a;">entry</span><span>.target);
+</span><span>        }
+</span><span>      });
+</span><span>    });
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">lazyBackgrounds</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">lazyBackground</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">lazyBackgroundObserver</span><span>.</span><span style="color:#96b5b4;">observe</span><span>(</span><span style="color:#bf616a;">lazyBackground</span><span>);
+</span><span>    });
+</span><span>  }
+</span><span>});
+</span></code></pre>
+<h3 id="lan-jia-zai-shi-pin">懒加载视频</h3>
+<p>就像图片一样，我们同样可以懒加载视频，播放视频会用到<video>标签。如何懒加载视频取决于特定的场景，先来讨论几个需要不同解决方案的场景。</p>
+<h6 id="shi-pin-bu-xu-yao-zi-dong-bo-fang">视频不需要自动播放</h6>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;video controls preload=&quot;none&quot; poster=&quot;one-does-not-simply-placeholder.jpg&quot;&gt;
+</span><span>  &lt;source src=&quot;one-does-not-simply.webm&quot; type=&quot;video/webm&quot;&gt;
+</span><span>  &lt;source src=&quot;one-does-not-simply.mp4&quot; type=&quot;video/mp4&quot;&gt;
+</span><span>&lt;/video&gt;
+</span></code></pre>
+<p>我们还需要添加一个poster属性给<video>标签，这相当于一个占位符。preload属性则规定是否在页面加载后载入视频。鉴于浏览器之间的preload默认值差异，显式定义会更具兼容性。在这种情况下，当用户点击播放视频时，视频才会被加载，预加载视频简单地实现了。不幸的是，当我们想用视频替代GIF动画时，这个方法就行不通了。</p>
+<h6 id="yong-shi-pin-mo-ni-gif">用视频模拟GIF</h6>
+<p>GIF在很多地方都不及视频，特别是文件大小方面。在相同质量下，视频的尺寸通常会比GIF文件小得多。当然，利用视频取代GIF并不是直接用<video>标签取代<img>标签那么简单。因为GIF图片有三种要注意的行为：</p>
+<ol>
+<li>加载完后自动播放</li>
+<li>不停地循环播放</li>
+<li>没有音轨
+要实现这些，HTML是这样的：</li>
+</ol>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">video </span><span style="color:#d08770;">autoplay muted loop playsinline</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">source </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">one-does-not-simply.webm</span><span>&quot; </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">video/webm</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">source </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">one-does-not-simply.mp4</span><span>&quot; </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">video/mp4</span><span>&quot;&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">video</span><span>&gt;
+</span></code></pre>
+<p>autoplay、muted和loop的作用是为了实现上述三个功能，playsinline是为了兼容IOS的autoplay。现在我们已经有了一个跨平台的视频模版用于取代GIF图片了。接下来怎么进行懒加载呢？Chrome会帮我们自动完成这项工作，但你不能保证所有浏览器都能做到这个。所以，还是动手实现一下吧。首先，修改<video>标签的属性：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">video </span><span style="color:#d08770;">autoplay muted loop playsinline width</span><span>=&quot;</span><span style="color:#a3be8c;">610</span><span>&quot; </span><span style="color:#d08770;">height</span><span>=&quot;</span><span style="color:#a3be8c;">254</span><span>&quot; </span><span style="color:#d08770;">poster</span><span>=&quot;</span><span style="color:#a3be8c;">one-does-not-simply.jpg</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">source </span><span style="color:#d08770;">data-src</span><span>=&quot;</span><span style="color:#a3be8c;">one-does-not-simply.webm</span><span>&quot; </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">video/webm</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">source </span><span style="color:#d08770;">data-src</span><span>=&quot;</span><span style="color:#a3be8c;">one-does-not-simply.mp4</span><span>&quot; </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">video/mp4</span><span>&quot;&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">video</span><span>&gt;
+</span></code></pre>
+<p>注意到了吗？有一个奇怪的poster属性。这个属性其实是一个占位符，在被懒加载之前，poster里面指定的内容会在<video>标签中显现。和之前的图片懒加载一样，我们指定真正的video url藏于每个<source>的data-src中。下一步，JavaScript程序该出场了：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>document.</span><span style="color:#96b5b4;">addEventListener</span><span>(&quot;</span><span style="color:#a3be8c;">DOMContentLoaded</span><span>&quot;, </span><span style="color:#b48ead;">function</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">lazyVideos </span><span>= [].</span><span style="color:#bf616a;">slice</span><span>.</span><span style="color:#96b5b4;">call</span><span>(document.</span><span style="color:#96b5b4;">querySelectorAll</span><span>(&quot;</span><span style="color:#a3be8c;">video.lazy</span><span>&quot;));
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(&quot;</span><span style="color:#a3be8c;">IntersectionObserver</span><span>&quot; in window) {
+</span><span>    </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">lazyVideoObserver </span><span>= new IntersectionObserver(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">entries</span><span>, </span><span style="color:#bf616a;">observer</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">entries</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">video</span><span>) {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">video</span><span>.</span><span style="color:#bf616a;">isIntersecting</span><span>) {
+</span><span>          </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">source </span><span>in </span><span style="color:#bf616a;">video</span><span>.target.</span><span style="color:#bf616a;">children</span><span>) {
+</span><span>            </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">videoSource </span><span>= </span><span style="color:#bf616a;">video</span><span>.target.</span><span style="color:#bf616a;">children</span><span>[</span><span style="color:#bf616a;">source</span><span>];
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">videoSource</span><span>.tagName === &quot;</span><span style="color:#a3be8c;">string</span><span>&quot; &amp;&amp; </span><span style="color:#bf616a;">videoSource</span><span>.tagName === &quot;</span><span style="color:#a3be8c;">SOURCE</span><span>&quot;) {
+</span><span>              </span><span style="color:#bf616a;">videoSource</span><span>.</span><span style="color:#bf616a;">src </span><span>= </span><span style="color:#bf616a;">videoSource</span><span>.</span><span style="color:#bf616a;">dataset</span><span>.</span><span style="color:#bf616a;">src</span><span>;
+</span><span>            }
+</span><span>          }
+</span><span>
+</span><span>          </span><span style="color:#bf616a;">video</span><span>.target.</span><span style="color:#96b5b4;">load</span><span>();
+</span><span>          </span><span style="color:#bf616a;">video</span><span>.target.</span><span style="color:#bf616a;">classList</span><span>.</span><span style="color:#96b5b4;">remove</span><span>(&quot;</span><span style="color:#a3be8c;">lazy</span><span>&quot;);
+</span><span>          </span><span style="color:#bf616a;">lazyVideoObserver</span><span>.</span><span style="color:#8fa1b3;">unobserve</span><span>(</span><span style="color:#bf616a;">video</span><span>.target);
+</span><span>        }
+</span><span>      });
+</span><span>    });
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">lazyVideos</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#b48ead;">function</span><span>(</span><span style="color:#bf616a;">lazyVideo</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">lazyVideoObserver</span><span>.</span><span style="color:#96b5b4;">observe</span><span>(</span><span style="color:#bf616a;">lazyVideo</span><span>);
+</span><span>    });
+</span><span>  }
+</span><span>});
+</span><span>
+</span><span style="color:#bf616a;">当懒加载一个视频的时</span><span>，</span><span style="color:#bf616a;">首先要迭代</span><span>&lt;</span><span style="color:#bf616a;">video</span><span>&gt;</span><span style="color:#bf616a;">标签里面的每一个</span><span>&lt;</span><span style="color:#bf616a;">source</span><span>&gt;，</span><span style="color:#bf616a;">然后将data</span><span>-</span><span style="color:#bf616a;">src中的url分配给src属性</span><span>。</span><span style="color:#bf616a;">然后调用元素的load方法</span><span>，</span><span style="color:#bf616a;">现在视频就可以自动播放了</span><span>。
+</span><span style="color:#bf616a;">通过这个方法</span><span>，</span><span style="color:#bf616a;">我们有了一个模拟GIF动画的视频解决方案</span><span>，</span><span style="color:#bf616a;">不会消耗带宽加载不必要的媒体资源</span><span>，</span><span style="color:#bf616a;">而且还能实现懒加载</span><span>。
+</span></code></pre>
+<h3 id="lan-jia-zai-ku">懒加载库</h3>
+<p>如果你不关心懒加载背后是如何实现的，你只是想找一个库去实现这个功能，可供选择的有：</p>
+<ul>
+<li><a href="https://github.com/aFarkas/lazysizes">lazysizes</a> 是一个功能十分强大的懒加载库，主要用于加载图片和iframes。你只需要指定data-src/data-srcset属性，lazysizes会帮你自动懒加载内容。值得注意的是，lazysizes基于intersection observer，因此你需要一个polyfill。你还可以通过一些插件扩展库的功能以用于懒加载视频。</li>
+<li><a href="https://github.com/ApoorvSaxena/lozad.js">lozad.js</a>是一个轻量级、高性能的懒加载库，基于intersection observer，你同样需要提供一个相关的polyfill。</li>
+<li><a href="https://github.com/dinbror/blazy">blazy</a>是一个轻量级的懒加载库，大小仅为1.4KB。相对于lazysizes，它不需要任何的外部依赖，并且兼容IE7+。你可能猜测到了，blazy不支持intersection observer，性能相对较差。</li>
+<li><a href="https://github.com/malchata/yall.js">yall.js</a>是作者本人写的一个懒加载库，基于IntersectionObserver和事件，兼容IE11和大部分的浏览器。</li>
+<li>如果你想寻找一个基于React的懒加载工具，<a href="https://github.com/jasonslyvia/react-lazyload">react-lazyload</a>可能是你的选择。</li>
+</ul>
+<p>上述每个懒加载库的文档都写得很好，同时提供了大量的标记模式。如果你不想深究懒加载的技术细节，就选择任意一个去使用，这能节省你很多的时间和功夫。</p>
+<h3 id="rong-yi-chu-cuo-de-di-fang">容易出错的地方</h3>
+<p>看到有那么多的库可以实现懒加载，你可能会以为这是一项很轻松的工作。但是，懒加载一旦出现错误，会导致意想不到的后果。为了避免出错，下面的建议你最好熟读于心：</p>
+<h6 id="bu-ju-pian-yi-he-zhan-wei-fu">布局偏移和占位符</h6>
+<p>如果你没有使用占位符，懒加载会导致页面布局的偏移。除了让用户感到困惑之外，还会导致不必要的浏览器reflow，性能大幅下降。因此，你至少也要使用一张固定的图片填充img标签，或者使用像<a href="http://www.guypo.com/introducing-lqip-low-quality-image-placeholders/">LQIP</a>和<a href="https://github.com/technopagan/sqip">SQIP</a>这样的技术在加载之前提示媒体资源的内容。
+对于<img>标签，src属性初始化应该指向一张占位图片，最终会被替换成目标图片。对于<video>，可以使用poster属性指定占位符。除此之外，对于<img>和<video>来说，显式声明其width和height属性都是十分必要的，这可以保证从占位符切换到目标资源的过程中不会导致浏览器reflow。</p>
+<h6 id="yan-chi-tu-pian-jie-ma">延迟图片解码</h6>
+<p>用JavaScript加载一些比较大的图片会阻塞线程，导致网页短暂地失去交互能力。如果你不乐意这样的情况出现，用decode方法异步解码图片是一个很好的选择，这可以避免阻塞线程，下面展示一下例子：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">var </span><span style="color:#bf616a;">newImage </span><span>= new Image();
+</span><span style="color:#bf616a;">newImage</span><span>.</span><span style="color:#bf616a;">src </span><span>= &quot;</span><span style="color:#a3be8c;">my-awesome-image.jpg</span><span>&quot;;
+</span><span>
+</span><span style="color:#b48ead;">if </span><span>(&quot;</span><span style="color:#a3be8c;">decode</span><span>&quot; in </span><span style="color:#bf616a;">newImage</span><span>) {
+</span><span>  </span><span style="color:#65737e;">// Fancy decoding logic
+</span><span>  </span><span style="color:#bf616a;">newImage</span><span>.</span><span style="color:#8fa1b3;">decode</span><span>().</span><span style="color:#96b5b4;">then</span><span>(</span><span style="color:#b48ead;">function</span><span>() {
+</span><span>    </span><span style="color:#bf616a;">imageContainer</span><span>.</span><span style="color:#96b5b4;">appendChild</span><span>(</span><span style="color:#bf616a;">newImage</span><span>);
+</span><span>  });
+</span><span>} </span><span style="color:#b48ead;">else </span><span>{
+</span><span>  </span><span style="color:#65737e;">// Regular image load
+</span><span>  </span><span style="color:#bf616a;">imageContainer</span><span>.</span><span style="color:#96b5b4;">appendChild</span><span>(</span><span style="color:#bf616a;">newImage</span><span>);
+</span><span>}
+</span></code></pre>
+<p>上面的代码主要是用了Image.decode()方法，具体的请看清这里(<a href="https://codepen.io/malchata/pen/WzeZGW">this CodePen link</a>)。如果你的图片不是太大，可以选择直接同步加载。</p>
+<h6 id="jia-zai-shi-bai">加载失败</h6>
+<p>有时候媒体资源会加载失败，假象有这种情况：一个网页设置了HTML短时间的缓存（大概5分钟），然后用户打开了一个tab几小时后再浏览这个网页。在这个过程的某个时间，缓存会重新部署，基于hash的版本号会改变或者丢失。如果这时候懒加载图片，会导致失败。
+虽然这种情况有点极端，但你必须要有策略来应对图片加载失败这种状况。比如你可以用一个按钮代替图片填充，用户可以点击这个按钮重新加载图片，或者提示用户发生了错误。
+无论多小概率的错误可能会出现，所以说不管怎样，及时提示用户网页加载错误或者提供一个重新加载的按钮总是值得的。</p>
+<h3 id="zong-jie">总结</h3>
+<p>懒加载可以减少页面加载的时间、降低页面负载。在用户浏览的时候，网页不会加载那些用户看不到的内容，但如果用户愿意，用户依然可以正常地浏览这些内容。
+就改进性能方面，懒加载是无可争议的，合理的一项技术。如果网页应用中出现了大量的图片，懒加载可以完美地限制不必要的加载，对于用户体验，这是巨大的提升，相信我，你的用户和老板会感谢你的。</p>
+<hr />
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vuebx&#x2F;"
+    ><span class="mr-1.5">←</span><span>60行代码实现一个状态管理库</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pseudo&#x2F;"
+    ><span>伪类和伪元素</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

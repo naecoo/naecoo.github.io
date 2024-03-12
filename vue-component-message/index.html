@@ -1,0 +1,496 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    从0开始手写一个Vue消息弹窗组件 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="从0开始手写一个Vue消息弹窗组件" />
+  <meta name="author" content="从0开始手写一个Vue消息弹窗组件" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vue-component-message&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">从0开始手写一个Vue消息弹窗组件</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-04-25</time>
+  <span class="mx-1">&middot;</span>
+  <span>7min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-component-message/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-component-message/#xiao-guo-yu-lan"
+            >效果预览</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-component-message/#dai-ma"
+            >代码</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-component-message/#hou-xu"
+            >后续</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="qian-yan">前言</h3>
+<p>近期闲来无事，就想折腾一点东西，无奈技术水平太低，做不了什么高深复杂的项目，所以还是先从简单的做起吧。平时我们做项目的时候或多或少都会用到一些组件库，比如element、muse之类的，所以这次我想自己手动写一个组件，封装成一个包，可以暴露到外部去调用。</p>
+<h3 id="xiao-guo-yu-lan">效果预览</h3>
+<p>废话不多说，这次写的是一个Vue的消息弹窗组建，借鉴了element的message组件，大家可以去看一看element的<a href="https://github.com/ElemeFE/element">源码</a>，里面一些组件的实现方式很巧妙，非常值得去学习。话不多说，先来看看最终的实现效果：</p>
+<blockquote>
+<p>图片迁移，暂时无法查看</p>
+</blockquote>
+<hr />
+<h3 id="dai-ma">代码</h3>
+<p>第一步应该是写一个模板：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">template</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">transition </span><span style="color:#d08770;">name</span><span>=&quot;</span><span style="color:#a3be8c;">msg-fade</span><span>&quot; </span><span style="color:#d08770;">@after-leave</span><span>=&quot;</span><span style="color:#a3be8c;">afterLeave</span><span>&quot;&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">:class</span><span>=&quot;</span><span style="color:#a3be8c;">classes</span><span>&quot; </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">msg-container</span><span>&quot; </span><span style="color:#d08770;">v-show</span><span>=&quot;</span><span style="color:#a3be8c;">visible</span><span>&quot; </span><span style="color:#d08770;">role</span><span>=&quot;</span><span style="color:#a3be8c;">alert</span><span>&quot; </span><span style="color:#d08770;">@mouseenter</span><span>=&quot;</span><span style="color:#a3be8c;">clearTimer</span><span>&quot; </span><span style="color:#d08770;">@mouseleave</span><span>=&quot;</span><span style="color:#a3be8c;">startTimer</span><span>&quot;&gt;
+</span><span>      &lt;</span><span style="color:#bf616a;">span</span><span>&gt;{{ message }}&lt;/</span><span style="color:#bf616a;">span</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#bf616a;">i </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">msg-icon-wrapper</span><span>&quot; </span><span style="color:#d08770;">v-if</span><span>=&quot;</span><span style="color:#a3be8c;">showCloseButton</span><span>&quot; </span><span style="color:#d08770;">@click</span><span>=&quot;</span><span style="color:#a3be8c;">close</span><span>&quot;&gt;
+</span><span>        &lt;</span><span style="color:#bf616a;">img </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">msg-icon</span><span>&quot; </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">./close.svg</span><span>&quot; </span><span style="color:#d08770;">alt</span><span>=&quot;</span><span style="color:#a3be8c;">close</span><span>&quot; /&gt;
+</span><span>      &lt;/</span><span style="color:#bf616a;">i</span><span>&gt;
+</span><span>    &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">transition</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">template</span><span>&gt;
+</span></code></pre>
+<p>可以看到，html内容是很简单的，主要是几个标签和一些props，还有几个事件，然后我们再来看js：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>&lt;script&gt;
+</span><span style="color:#b48ead;">export default </span><span>{
+</span><span>  name: &#39;</span><span style="color:#a3be8c;">Message</span><span>&#39;,
+</span><span>  props: {
+</span><span>    </span><span style="color:#65737e;">// 要显示的消息
+</span><span>    message: {
+</span><span>      type: </span><span style="color:#ebcb8b;">String</span><span>,
+</span><span>      require: </span><span style="color:#d08770;">true
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">// 主题
+</span><span>    type: {
+</span><span>      type: </span><span style="color:#ebcb8b;">String</span><span>,
+</span><span>      default: &#39;</span><span style="color:#a3be8c;">normal</span><span>&#39;
+</span><span>      </span><span style="color:#65737e;">// normal success error warning
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">// 是否显示关闭按钮
+</span><span>    showCloseButton: {
+</span><span>      type: </span><span style="color:#ebcb8b;">Boolean</span><span>,
+</span><span>      default: </span><span style="color:#d08770;">false
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">// 组件出现的位置
+</span><span>    location: {
+</span><span>      type: </span><span style="color:#ebcb8b;">String</span><span>,
+</span><span>      default: &#39;</span><span style="color:#a3be8c;">top-center</span><span>&#39;
+</span><span>      </span><span style="color:#65737e;">// top-center top-right top-left bottom-center bottom-right bottom-left
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">// 自定义样式名
+</span><span>    className: {
+</span><span>      type: </span><span style="color:#ebcb8b;">String</span><span>,
+</span><span>      default: &#39;&#39;
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">// 持续时间
+</span><span>    duration: {
+</span><span>      type: </span><span style="color:#ebcb8b;">Number</span><span>,
+</span><span>      default: </span><span style="color:#d08770;">2000
+</span><span>    }
+</span><span>  },
+</span><span>  </span><span style="color:#8fa1b3;">data </span><span>() {
+</span><span>    </span><span style="color:#b48ead;">return </span><span>{
+</span><span>      </span><span style="color:#65737e;">// 动态修改样式
+</span><span>      classes: [
+</span><span>        {
+</span><span>          &#39;</span><span style="color:#a3be8c;">msg-icon-padding</span><span>&#39;: </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">showCloseButton
+</span><span>        }, 
+</span><span>        `</span><span style="color:#a3be8c;">msg-${</span><span style="color:#bf616a;">this</span><span style="color:#a3be8c;">.type}</span><span>`,
+</span><span>        `</span><span style="color:#a3be8c;">msg-${</span><span style="color:#bf616a;">this</span><span style="color:#a3be8c;">.location}</span><span>`,
+</span><span>        </span><span style="color:#bf616a;">this</span><span>.className
+</span><span>      ],
+</span><span>       </span><span style="color:#65737e;">// 控制组件显示
+</span><span>      visible: </span><span style="color:#d08770;">false</span><span>,
+</span><span>       </span><span style="color:#65737e;">// 是否关闭
+</span><span>      closed: </span><span style="color:#d08770;">false</span><span>,
+</span><span>       </span><span style="color:#65737e;">// 定时器
+</span><span>      timer: </span><span style="color:#d08770;">null
+</span><span>   }
+</span><span>  },
+</span><span>  watch: {
+</span><span>    </span><span style="color:#8fa1b3;">closed </span><span>(</span><span style="color:#bf616a;">newVal</span><span>) {
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">newVal</span><span>) {
+</span><span>        </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">visible </span><span>= </span><span style="color:#d08770;">false
+</span><span>      }
+</span><span>    }
+</span><span>  },
+</span><span>  methods: {
+</span><span>    </span><span style="color:#8fa1b3;">close </span><span>() {
+</span><span>      </span><span style="color:#bf616a;">this</span><span>.closed = </span><span style="color:#d08770;">true
+</span><span>    },
+</span><span>    </span><span style="color:#8fa1b3;">afterLeave </span><span>() {
+</span><span>      </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#8fa1b3;">$destroy</span><span>(</span><span style="color:#d08770;">true</span><span>)
+</span><span>      </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">$el</span><span>.parentNode.</span><span style="color:#96b5b4;">removeChild</span><span>(</span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">$el</span><span>)
+</span><span>    },
+</span><span>    </span><span style="color:#8fa1b3;">clearTimer </span><span>() {
+</span><span>      </span><span style="color:#96b5b4;">clearTimeout</span><span>(</span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">timer</span><span>)
+</span><span>    },
+</span><span>    </span><span style="color:#8fa1b3;">startTimer </span><span>() {
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">timeout </span><span>= </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">duration
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">timeout </span><span>&gt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>        </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">timer </span><span>= </span><span style="color:#96b5b4;">setTimeout</span><span>(() </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>          </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">this</span><span>.closed) {
+</span><span>            </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#96b5b4;">close</span><span>()
+</span><span>          }
+</span><span>        }, </span><span style="color:#bf616a;">timeout</span><span>);
+</span><span>      }
+</span><span>    }
+</span><span>  },
+</span><span>  </span><span style="color:#8fa1b3;">mounted </span><span>() {
+</span><span>    </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#8fa1b3;">startTimer</span><span>()
+</span><span>    </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#bf616a;">visible </span><span>= </span><span style="color:#d08770;">true
+</span><span>  },
+</span><span>  </span><span style="color:#8fa1b3;">beforeDestroy </span><span>() {
+</span><span>    </span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#8fa1b3;">clearTimer</span><span>()
+</span><span>  }
+</span><span>}
+</span><span>&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span></code></pre>
+<p>可以看到组件的代码逻辑也是非常简单的，props的处理我就不多细说了，可能每一个人的需求都一样。重点要讲一讲的是组件的创建和销毁过程。在组件挂载后，组件会调用startTimer方法生成一个定时器，按照duration指定的时间后调用close方法，close方法会设定data的closed为true，visible监听到closed变为true后就变为false，所以根据v-show这个指令，组件的display样式属性就会变成none。最后Vue官方内置的过渡组件transition会调用一系列钩子函数，我们直接在afterLeave这个钩子上销毁组件和清除dom。看到这里，可能有同学会有疑问了？为啥要这样销毁组件啊，直接用一个prop控制组件显示不就可以了吗？其实对于一般的组件我们是没必要弄成这样，但是我们得思考一下消息弹窗的使用场景啊。一般情况下，消息弹窗都是在完成了某种操作后，弹出来告诉用户操作成功与否，所以我们通常用js控制消息弹窗显示。因此，我们的消息弹窗组件不仅仅是声明式的，更应该是命令式的，直接用js控制显示与否。</p>
+<p>很多同学应该都使用过element，element在全局引入的时候会向vue上挂载一个message的方法，一般我们都是<code>this.$message</code>这样来操作的，我的目标也是做成这样子。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">vue</span><span>&#39;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Message </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./Message.vue</span><span>&#39;
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">messageConstructor </span><span>= </span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">extend</span><span>(</span><span style="color:#bf616a;">Message</span><span>)
+</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">count </span><span>= </span><span style="color:#d08770;">1
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">notify </span><span>= (</span><span style="color:#bf616a;">options </span><span>= {}) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 如果Vue运行在服务端，放弃调用
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#ebcb8b;">Vue</span><span>.prototype.</span><span style="color:#bf616a;">$isServer</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">return
+</span><span>  }
+</span><span>  
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">options </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;) {
+</span><span>    </span><span style="color:#bf616a;">options </span><span>= {
+</span><span>      message: </span><span style="color:#bf616a;">options
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 创造实例
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">instance </span><span>= new messageConstructor({
+</span><span>    propsData: </span><span style="color:#bf616a;">options
+</span><span>  })
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 渲染并挂载到body上
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">vm </span><span>= </span><span style="color:#bf616a;">instance</span><span>.</span><span style="color:#8fa1b3;">$mount</span><span>()
+</span><span>  document.body.</span><span style="color:#96b5b4;">appendChild</span><span>(</span><span style="color:#bf616a;">vm</span><span>.</span><span style="color:#bf616a;">$el</span><span>)
+</span><span>  </span><span style="color:#bf616a;">vm</span><span>.</span><span style="color:#bf616a;">$el</span><span>.style.zIndex = </span><span style="color:#bf616a;">count
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 返回一个主动关闭的方法
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">close </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#bf616a;">vm</span><span>.closed = </span><span style="color:#d08770;">true
+</span><span>  }
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">close
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">export default </span><span style="color:#bf616a;">notify
+</span></code></pre>
+<p>这里我们用了Vue的一个方法，<code>vue.extend</code>，这个方法接受一些配置参数，返回一个可以生产vue实例的构造函数，其实我们平时使用的组件一般都是这些构造函数实例化的对象。代码的逻辑很简单，当notify方法被调用的时候会创造一个message组件的实例对象，同时传入props，最后渲染成dom并挂载到document.body上。最后我们提供一个install方法将notify和message组件全局安装到Vue中：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Plugin </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">static </span><span style="color:#8fa1b3;">install </span><span>(</span><span style="color:#bf616a;">Vue</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">Vue</span><span style="color:#eff1f5;">.prototype.</span><span style="color:#bf616a;">notify </span><span>= </span><span style="color:#bf616a;">notify
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">Vue</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">mixin</span><span style="color:#eff1f5;">({
+</span><span style="color:#eff1f5;">      components: {
+</span><span style="color:#eff1f5;">        </span><span>&#39;</span><span style="color:#a3be8c;">oce-message</span><span>&#39;</span><span style="color:#eff1f5;">: </span><span style="color:#bf616a;">Message
+</span><span style="color:#eff1f5;">      }
+</span><span style="color:#eff1f5;">    })
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span><span style="color:#b48ead;">export default </span><span style="color:#ebcb8b;">Plugin
+</span><span>
+</span><span>
+</span><span style="color:#65737e;">// 全局注册
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">oce</span><span>-</span><span style="color:#bf616a;">message </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">oce-message</span><span>&#39;
+</span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">Vue </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">vue</span><span>&#39;
+</span><span>
+</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#8fa1b3;">use</span><span>(</span><span style="color:#bf616a;">oce</span><span>-</span><span style="color:#bf616a;">message</span><span>)
+</span><span>
+</span><span style="color:#65737e;">// 使用
+</span><span>&lt;</span><span style="color:#bf616a;">oce</span><span>-</span><span style="color:#bf616a;">message </span><span>... /&gt;
+</span><span style="color:#bf616a;">this</span><span>.</span><span style="color:#8fa1b3;">notify</span><span>(...)
+</span></code></pre>
+<p>好了，一个简单的消息弹窗组件就完成了，具体的代码和使用方法在这里<a href="https://www.github.com/naeco/oce-message">oce-message</a>可以找到，欢迎star和提issue。</p>
+<h3 id="hou-xu">后续</h3>
+<p>这个组件有点简陋，其实有一些可以优化的地方：</p>
+<ol>
+<li>样式</li>
+<li>过渡动画</li>
+<li>性能（实例是否可以做成一个单例？）</li>
+</ol>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/vue/"
+      >vue</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vue-key&#x2F;"
+    ><span class="mr-1.5">←</span><span>Vue组件复用的一些问题</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;web-worker&#x2F;"
+    ><span>让你的函数运行在web worker中</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,525 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    用 JavaScript 实现一个 简单的 brainfuck 解释器 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="用 JavaScript 实现一个 简单的 brainfuck 解释器" />
+  <meta name="author" content="用 JavaScript 实现一个 简单的 brainfuck 解释器" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;brainfuck-interpreter&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">用 JavaScript 实现一个 简单的 brainfuck 解释器</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2021-12-01</time>
+  <span class="mx-1">&middot;</span>
+  <span>7min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#brainfuck-jie-shao"
+            >brainfuck 介绍</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#cheng-xu-shi-li"
+                >程序示例</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#jie-shi-qi-shi-xian"
+            >解释器实现</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#shi-yong-fang-fa"
+                >使用方法</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#brainfuck-bian-yi-qi"
+                >brainfuck 编译器</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#xiang-mu-di-zhi"
+            >项目地址</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-interpreter/#xiang-guan-zi-liao"
+            >相关资料</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="brainfuck-jie-shao">brainfuck 介绍</h2>
+<p><a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> 是一种极小化的计算机语言，它是由 <a href="https://en.wikipedia.org/wiki/Brainfuck">Urban Müller</a> 在 1993 年创建的。由于 fuck 在英语中是脏话，这种语言 有时被称为 brainf*ck 或 brainf**k，甚至被简称为 BF。这是一种图灵完备的编程语言，但它不像 C++ 那么多元化，因为仅仅只有 8 个指令（操作符）。这种语言基于一个简单的机器模型，除了指令，这个机器还包括：一个以字节为单位、被初始化为零的的数组（我们称之为纸带），一个指向该数组的指针，以及用于输入输出的两个字节流。</p>
+<p>下面是八个指令的描述，其中每一个指令由一个字符所标识：</p>
+<table><thead><tr><th>字符</th><th>含义</th></tr></thead><tbody>
+<tr><td>&gt;</td><td>指针加一，即纸带向右移动一个格子</td></tr>
+<tr><td>&lt;</td><td>指针减一，即纸带向左移动一个格子</td></tr>
+<tr><td>+</td><td>指针指向的字节的值加一</td></tr>
+<tr><td>-</td><td>指针指向的字节的值减一</td></tr>
+<tr><td>.</td><td>输出指针指向的格子内容（ASCⅡ码）</td></tr>
+<tr><td>,</td><td>输入内容到指针指向的单元（ASCⅡ码）</td></tr>
+<tr><td>[</td><td>如果指针指向的单元值为零，向后跳转到对应的 ] 指令的下一个指令</td></tr>
+<tr><td>]</td><td>如果指针指向的单元值不为零，向前跳转到对应的 [ 指令的下一个指令处</td></tr>
+</tbody></table>
+<h3 id="cheng-xu-shi-li">程序示例</h3>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>&#39;</span><span style="color:#a3be8c;">+++&gt;++</span><span>&#39;
+</span><span style="color:#65737e;">// [3, 2]
+</span></code></pre>
+<p>这个程序将在纸带第一格的值改变为 3，第二格的值改变为 2</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>&#39;</span><span style="color:#a3be8c;">++++++[&gt;++++++&lt;-]&gt;.</span><span>&#39;
+</span></code></pre>
+<p>这个程序稍微有点复杂，首先将第一格内容增加到 6，然后碰到一个 “[” 字符，因为当前格子的值不为 0，所以进入循环。首先是跳到第二个格子，连续加到 6，此时第二个格子的值为 6，然后跳转回第一个格子，然后减一，此时第一个格子的值为 5。依然不等于 0，所以继续循环，知道第一个格子的值为 0，跳出循环。跳出循环后，又跳到第二个格子，然后输出当前格子的值，因为第二个格子的值为 36，所以输出 “$” 符号（ASCⅡ码）。</p>
+<h2 id="jie-shi-qi-shi-xian">解释器实现</h2>
+<p>brainfuck 由于只有 8 个操作符，所以解释器实现也比较的简单，大概不到 100 行的代码。所以这里不再划分模块了，直接上代码：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">readlineSync </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">readline-sync</span><span>&#39;);
+</span><span>
+</span><span style="color:#65737e;">// 设定纸带格子数上限
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">max_tape_length </span><span>= </span><span style="color:#d08770;">5000</span><span>;
+</span><span style="color:#65737e;">// 设定 brainfuck 程序执行步骤的上限，防止出现死循环等情况
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">max_step </span><span>= Math.</span><span style="color:#96b5b4;">pow</span><span>(</span><span style="color:#d08770;">2</span><span>, </span><span style="color:#d08770;">16</span><span>);
+</span><span>
+</span><span style="color:#65737e;">// brainfuck 解释器
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">brainfuckInterpreter</span><span>(</span><span style="color:#bf616a;">source </span><span>= &#39;&#39;) {
+</span><span>  </span><span style="color:#65737e;">// 检查语法
+</span><span>  </span><span style="color:#8fa1b3;">checkSyntax</span><span>(</span><span style="color:#bf616a;">source</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 初始化源代码索引
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">current </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>  </span><span style="color:#65737e;">// 初始化纸带当前位置
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">pointer </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>  </span><span style="color:#65737e;">// 初始化纸带
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">tape </span><span>= [</span><span style="color:#d08770;">0</span><span>];
+</span><span>  </span><span style="color:#65737e;">// 初始化一个栈，用于循环等语句
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">loopStack </span><span>= [];
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">step </span><span>= </span><span style="color:#d08770;">1</span><span>;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 开始执行 brainfuck 代码
+</span><span>  </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#bf616a;">current </span><span>&lt; </span><span style="color:#bf616a;">source</span><span>.length) {
+</span><span>    </span><span style="color:#65737e;">// 记录 brainfuck 程序执行次数，如果超出阈值，直接抛出异常
+</span><span>    </span><span style="color:#bf616a;">step</span><span>++;
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">step </span><span>&gt; </span><span style="color:#bf616a;">max_step</span><span>) {
+</span><span>      </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Program execution is too long, may fall into an infinite loop, please check the source code</span><span>&#39;);
+</span><span>    }
+</span><span>	
+</span><span>    </span><span style="color:#65737e;">// 取出源码的字符
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">char </span><span>= </span><span style="color:#bf616a;">source</span><span>[</span><span style="color:#bf616a;">current</span><span>];
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 根据不同的操作符，执行相应的逻辑
+</span><span>    </span><span style="color:#b48ead;">switch </span><span>(</span><span style="color:#bf616a;">char</span><span>) {
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">&gt;</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 纸带向右移动一步
+</span><span>        </span><span style="color:#bf616a;">pointer</span><span>++;
+</span><span>        </span><span style="color:#65737e;">// 如果超出了上限，直接抛出异常
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">pointer </span><span>&gt; </span><span style="color:#bf616a;">max_tape_length</span><span>) {
+</span><span>          </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Tape</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">s length exceed limit.</span><span>&#39;);
+</span><span>        }
+</span><span>        </span><span style="color:#65737e;">// 给纸带上的格子设定初始值
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>] === void </span><span style="color:#d08770;">0</span><span>) {
+</span><span>          </span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>] = </span><span style="color:#d08770;">0</span><span>;
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">&lt;</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 纸带向左移动一步
+</span><span>        </span><span style="color:#bf616a;">pointer</span><span>--;
+</span><span>        </span><span style="color:#65737e;">// 同样地，检查是否超出限制
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">pointer </span><span>&lt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>          </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Tape</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">s length exceed limit.</span><span>&#39;);
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">+</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 纸带当前格子的值加一
+</span><span>        </span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>]++;
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">-</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 纸带当前格子的值减一
+</span><span>        </span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>]--;
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">.</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 将纸带当前值转化为 ASCⅡ码 码打印出来
+</span><span>        </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(&#39;</span><span style="color:#a3be8c;">output:: </span><span>&#39;, </span><span style="color:#ebcb8b;">String</span><span>.</span><span style="color:#96b5b4;">fromCharCode</span><span>(</span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>]));
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">,</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 从终端读取第一个字符，存储字符对应的 ASCⅡ码 码值
+</span><span>        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">input </span><span>= </span><span style="color:#bf616a;">readlineSync</span><span>.</span><span style="color:#8fa1b3;">question</span><span>(&#39;</span><span style="color:#a3be8c;">input:: </span><span>&#39;);
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">input </span><span>=== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39;) {
+</span><span>          </span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>] = </span><span style="color:#bf616a;">input</span><span>[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#8fa1b3;">codePointAt</span><span>();
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">[</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 添加进栈顶
+</span><span>        </span><span style="color:#65737e;">// 这里为什么使用栈这种数据结构呢，因为可能会存在多重嵌套的循环结构，使用栈能够确保总是可以取到当前循环的 “[” 字符
+</span><span>        </span><span style="color:#bf616a;">loopStack</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">current</span><span>);
+</span><span>
+</span><span>        </span><span style="color:#65737e;">// 检查纸带当前格子的值，如果等于0，不执行循环
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>] === </span><span style="color:#d08770;">0</span><span>) {
+</span><span>          </span><span style="color:#65737e;">// 这里需要找到与之对应“]”字符，跳过内部嵌套的循环语句
+</span><span>          </span><span style="color:#65737e;">// TODO: 可以在预处理阶段生成“[”到“]”的映射信息，就可以避免重复执行，提高性能
+</span><span>          </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">leftCount </span><span>= </span><span style="color:#d08770;">1</span><span>;
+</span><span>          </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#bf616a;">current </span><span>&lt; </span><span style="color:#bf616a;">source</span><span>.length) {
+</span><span>            </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">op </span><span>= </span><span style="color:#bf616a;">source</span><span>[</span><span style="color:#bf616a;">current</span><span>];
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">op </span><span>=== &quot;</span><span style="color:#a3be8c;">[</span><span>&quot;) {
+</span><span>              </span><span style="color:#bf616a;">leftCount</span><span>++;
+</span><span>            } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">op </span><span>=== &quot;</span><span style="color:#a3be8c;">]</span><span>&quot;) {
+</span><span>              </span><span style="color:#bf616a;">leftCount</span><span>--;
+</span><span>              </span><span style="color:#65737e;">// 找到元素
+</span><span>              </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">leftCount </span><span>=== </span><span style="color:#d08770;">0</span><span>) {
+</span><span>                </span><span style="color:#b48ead;">break</span><span>;
+</span><span>              }
+</span><span>            }
+</span><span>            </span><span style="color:#bf616a;">current</span><span>++;
+</span><span>          }
+</span><span>          </span><span style="color:#b48ead;">continue</span><span>;
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">]</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 弹出栈顶元素，即本次循环的 “[” 元素位置
+</span><span>        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">loopStartIndex </span><span>= </span><span style="color:#bf616a;">loopStack</span><span>.</span><span style="color:#96b5b4;">pop</span><span>();
+</span><span>        </span><span style="color:#65737e;">// 检查纸带当前格子的值，如果不等于0，继续循环，直接跳回到 “[” 元素的位置即可，否则跳到下一个元素
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">tape</span><span>[</span><span style="color:#bf616a;">pointer</span><span>] !== </span><span style="color:#d08770;">0</span><span>) {
+</span><span>          </span><span style="color:#bf616a;">current </span><span>= </span><span style="color:#bf616a;">loopStartIndex</span><span>;
+</span><span>          </span><span style="color:#b48ead;">continue</span><span>;
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>    }
+</span><span>	
+</span><span>    </span><span style="color:#65737e;">// 跳到下一个字符
+</span><span>    </span><span style="color:#bf616a;">current</span><span>++;
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 返回最终的纸带
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">tape</span><span>;
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">checkSyntax</span><span>(</span><span style="color:#bf616a;">source </span><span>= &quot;&quot;) {
+</span><span>  </span><span style="color:#65737e;">// 合法字符
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">set </span><span>= new Set([&quot;</span><span style="color:#a3be8c;">&gt;</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">&lt;</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">+</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">-</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">.</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">,</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">[</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">]</span><span>&quot;]);
+</span><span>  </span><span style="color:#65737e;">// 记录 “[” 的数量
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">leftCount </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>  </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">i </span><span>= </span><span style="color:#d08770;">0</span><span>; </span><span style="color:#bf616a;">i </span><span>&lt; </span><span style="color:#bf616a;">source</span><span>.length; </span><span style="color:#bf616a;">i</span><span>++) {
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">char </span><span>= </span><span style="color:#bf616a;">source</span><span>[</span><span style="color:#bf616a;">i</span><span>];
+</span><span>    </span><span style="color:#65737e;">// 非法字符检测
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">set</span><span>.</span><span style="color:#96b5b4;">has</span><span>(</span><span style="color:#bf616a;">char</span><span>)) {
+</span><span>      </span><span style="color:#b48ead;">throw </span><span>new Error(`</span><span style="color:#a3be8c;">Invalid char: ${</span><span style="color:#bf616a;">char</span><span style="color:#a3be8c;">} at index ${</span><span style="color:#bf616a;">i</span><span style="color:#a3be8c;">}</span><span>`);
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">char </span><span>=== &quot;</span><span style="color:#a3be8c;">[</span><span>&quot;) {
+</span><span>      </span><span style="color:#bf616a;">leftCount</span><span>++;
+</span><span>    } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">char </span><span>=== &quot;</span><span style="color:#a3be8c;">]</span><span>&quot;) {
+</span><span>      </span><span style="color:#65737e;">// 出现“]”，但是没有对应的“]”
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">leftCount </span><span>&lt;= </span><span style="color:#d08770;">0</span><span>) {
+</span><span>        </span><span style="color:#b48ead;">throw </span><span>new Error(`</span><span style="color:#a3be8c;">Invalid Loop syntax at index ${</span><span style="color:#bf616a;">i</span><span style="color:#a3be8c;">}</span><span>`);
+</span><span>      }
+</span><span>      </span><span style="color:#bf616a;">leftCount</span><span>--;
+</span><span>    }
+</span><span>  }
+</span><span>  </span><span style="color:#65737e;">// 保证每一个“[”都有与之对应的“]”
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">leftCount </span><span>!== </span><span style="color:#d08770;">0</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">throw </span><span>new Error(&quot;</span><span style="color:#a3be8c;">Invalid Loop syntax</span><span>&quot;);
+</span><span>  }
+</span><span>}
+</span><span>
+</span></code></pre>
+<h3 id="shi-yong-fang-fa">使用方法</h3>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">tape </span><span>= </span><span style="color:#8fa1b3;">brainfuckInterpreter</span><span>(&#39;</span><span style="color:#a3be8c;">+++&gt;++&gt;+</span><span>&#39;);
+</span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">tape</span><span>);
+</span><span style="color:#65737e;">// [3, 2, 1]
+</span></code></pre>
+<h3 id="brainfuck-bian-yi-qi">brainfuck 编译器</h3>
+<p>实现一个解释器相对来说还是比较简单了，同时我还实现了一个简单的编译器，详情请看<a href="https://naecoo.github.io/brainfuck-compiler/">博文</a></p>
+<h2 id="xiang-mu-di-zhi">项目地址</h2>
+<p><a href="https://github.com/naecoo/brainfuck-interpreter">brainfuck-interpreter</a></p>
+<h2 id="xiang-guan-zi-liao">相关资料</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck - Wikipedia</a></li>
+<li><a href="https://sites.google.com/site/visualbf/">Visual brainfuck </a></li>
+</ul>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;obvious&#x2F;"
+    ><span class="mr-1.5">←</span><span>obvious - 微前端框架分析</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;brainfuck-compiler&#x2F;"
+    ><span>用 JavaScript 实现一个 简单的 brainfuck 编译器</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,1083 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    用 JavaScript 实现一个 简单的 brainfuck 编译器 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="用 JavaScript 实现一个 简单的 brainfuck 编译器" />
+  <meta name="author" content="用 JavaScript 实现一个 简单的 brainfuck 编译器" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;brainfuck-compiler&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">用 JavaScript 实现一个 简单的 brainfuck 编译器</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2021-12-28</time>
+  <span class="mx-1">&middot;</span>
+  <span>17min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#guan-yu-brainfuck"
+            >关于 brainfuck	</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#jian-dan-de-bian-yi-qi-zhi-shi"
+            >简单的编译器知识</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#parsing"
+                >Parsing</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#transformation"
+                >Transformation</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#code-generation"
+                >Code Generation</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#dai-ma-shi-xian"
+            >代码实现</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#jie-xi-yuan-ma"
+                >解析源码</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#gou-jian-ast"
+                >构建 AST</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#zhuan-huan-ast"
+                >转换 AST</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#dai-ma-sheng-cheng"
+                >代码生成</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#zu-zhuang"
+                >组装</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/brainfuck-compiler/#xiang-guan-zi-liao"
+            >相关资料</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="guan-yu-brainfuck">关于 brainfuck	</h2>
+<p>关于 brainfuck 语言的介绍，可以查询本文所写的 《<a href="https://naecoo.github.io/brainfuck-interpreter/">用 JavaScript 实现一个 简单的 brainfuck 解释器</a>》一文，在这篇博客文章中，本人描述了 brainfuck 的模型、语法和指令集，并用 javascript 实现了一个解释器，输入 brainfuck 的源码字符，可以输出 brainfuck 程序的执行结果。</p>
+<p>如果只是实现一个 brainfuck 解释器，未免有点过于简单了，因为 brainfuck 只有 8 种指令。作为一名有理想的程序员，我们应该有更高的追求。因此，我将实现一个简单的 brainfuck 编译器，可以将 brainfuck 语言编译为 javascript 语言，在这个过程中，我们可以学到关于编译器的一些基本原理。</p>
+<h2 id="jian-dan-de-bian-yi-qi-zhi-shi">简单的编译器知识</h2>
+<p><a href="https://zh.wikipedia.org/wiki/%E7%B7%A8%E8%AD%AF%E5%99%A8">编译器</a>是一门复杂的计算机知识，通常也是一种计算机程序，可以将某种编程语言的源代码转换成另一种语言，比如说将 C 语言编译成可执行程序，将 typescript 编译成 javascript 等等。不同语言的编译器的功能都不太一样，比如 C、C++ 等语言的编译器会将源代码编译成不同平台的机器语言，C#、Java 等语言则会编译成平台无关的字节码。也有一些编译器，只是将一种语言转换形式，或者转换成另外一种高级语言，比如前端常用的 <a href="https://github.com/babel/babel">babel</a> ，我们将要实现的，也是这一种相对来说比较简单的编译器。</p>
+<p>大部分的编译器都拆分成三个步骤：Parsing、Transformation 和 Code Generation</p>
+<ol>
+<li>Parsing 就是将原始代码字符转化为更抽象的表示，比如 <a href="https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E8%AA%9E%E6%B3%95%E6%A8%B9">AST（抽象语法树)</a></li>
+<li>Transformation  就是对抽象层做各种操作，生成新的抽象层</li>
+<li>Code Generation 即根据转换的抽象层，生成目标代码</li>
+</ol>
+<h3 id="parsing">Parsing</h3>
+<p>Parsing 也可以分为两部分：<a href="https://zh.wikipedia.org/wiki/%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90">词法分析</a>和<a href="https://zh.wikipedia.org/wiki/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90">语法分析</a>。</p>
+<p>词法分析指的是将源代码进行转换成一个个 token 的过程，token 是源代码的最小组成单位，比如这个 js 表达式：</p>
+<p><code>var a = 1;</code></p>
+<p>词法分析后，可以拆解成 <code>var</code>、<code>a</code>、<code>=</code>、<code>1</code> 和 <code>;</code> 等 token。
+而语法分析则会根据生成的 tokens 进行分析，并确定其语法结构，这种语法结构通常又被称为抽象语法树，也就是 AST。比方说上面的语句先解析成 token ，再转化成 AST 后，会是类似这样的结构：</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Program</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: [
+</span><span>    {
+</span><span>      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">VariableDeclaration</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">declarations</span><span>&quot;: [
+</span><span>        {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">VariableDeclarator</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">id</span><span>&quot;: {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">a</span><span>&quot;
+</span><span>          },
+</span><span>          &quot;</span><span style="color:#a3be8c;">init</span><span>&quot;: {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Literal</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: </span><span style="color:#d08770;">1</span><span>,
+</span><span>            &quot;</span><span style="color:#a3be8c;">raw</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1</span><span>&quot;
+</span><span>          }
+</span><span>        }
+</span><span>      ],
+</span><span>      &quot;</span><span style="color:#a3be8c;">kind</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">var</span><span>&quot;
+</span><span>    }
+</span><span>  ]
+</span><span>}
+</span></code></pre>
+<h3 id="transformation">Transformation</h3>
+<p>在进行完词法分析和语法分析后，我们得到了源代码的抽象表示层 AST，所谓 transformation，就是对 AST 进行语法的修改，甚至是转换成另外一种编程语言的 AST。</p>
+<p>比方说上述的 js 语句，我们想把 <code>var</code> 声明改为 <code>const</code>, 于是将 <code>kind</code> 字段改成 <code>const</code> ：</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Program</span><span>&quot;,
+</span><span>  &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: [
+</span><span>    {
+</span><span>      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">VariableDeclaration</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">declarations</span><span>&quot;: [
+</span><span>        {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">VariableDeclarator</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">id</span><span>&quot;: {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">a</span><span>&quot;
+</span><span>          },
+</span><span>          &quot;</span><span style="color:#a3be8c;">init</span><span>&quot;: {
+</span><span>            &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Literal</span><span>&quot;,
+</span><span>            &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: </span><span style="color:#d08770;">1</span><span>,
+</span><span>            &quot;</span><span style="color:#a3be8c;">raw</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">1</span><span>&quot;
+</span><span>          }
+</span><span>        }
+</span><span>      ],
+</span><span>      &quot;</span><span style="color:#a3be8c;">kind</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">const</span><span>&quot;
+</span><span>    }
+</span><span>  ]
+</span><span>}
+</span></code></pre>
+<h3 id="code-generation">Code Generation</h3>
+<p>最后一个阶段就是代码生成了，不同的编译器有不同的方式去生成目标代码，这可能会有针对性的优化方法，但对于大多数编译器，都是解析 transformation 阶段生成的 AST，遍历各个节点，然后输出目标代码字符。</p>
+<p>当然，并不是每一个编译器都是符合上述的模型，因为不同的编译器有不同的需求，可能需要更加复杂的步骤。但我相信基于这个模型，你会对基本的编译器有一个清晰的认知。</p>
+<h2 id="dai-ma-shi-xian">代码实现</h2>
+<p>介绍一些原理性的概念后，我们就要着手去实现一个简单的编译器了，需求很简单：</p>
+<ol>
+<li>输入 brainfuck 的源代码，比如 <code>++&gt;++</code>，</li>
+<li>输出对应的 javascript 目标代码</li>
+</ol>
+<p>按照上述的模型，我们的编译器将会分为四部分：</p>
+<ol>
+<li>解析 brainfuck 源代码， 生成 tokens</li>
+<li>将 tokens 转化为 brainfuck 的 AST</li>
+<li>将 AST 转化为 javascript 的 AST</li>
+<li>生成 javascript 代码</li>
+</ol>
+<p>其中， 1、2 步是 parsing、第3步是 Transformation、最后一步则是 Code Generation。</p>
+<h3 id="jie-xi-yuan-ma">解析源码</h3>
+<p>我将会使用 brainfuck 源码 <code>&gt;+-&lt;[,.]</code> 作为示例输入进行讲解</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>
+</span><span style="color:#65737e;">// token 类型，对应 brainfuck 的八个指令
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">TOKENS </span><span>= {
+</span><span>  INCREMENT: &#39;</span><span style="color:#a3be8c;">Increment</span><span>&#39;,
+</span><span>  DECREASE: &#39;</span><span style="color:#a3be8c;">Decrease</span><span>&#39;,
+</span><span>  MOVE_NEXT: &#39;</span><span style="color:#a3be8c;">MoveNext</span><span>&#39;,
+</span><span>  MOVE_PREV: &#39;</span><span style="color:#a3be8c;">MovePrev</span><span>&#39;,
+</span><span>  INPUT: &#39;</span><span style="color:#a3be8c;">Input</span><span>&#39;,
+</span><span>  ONTPUT: &#39;</span><span style="color:#a3be8c;">Output</span><span>&#39;,
+</span><span>  LOOP_OPEN: &#39;</span><span style="color:#a3be8c;">LoopOpen</span><span>&#39;,
+</span><span>  LOOP_CLOSE: &#39;</span><span style="color:#a3be8c;">LoopClose</span><span>&#39;
+</span><span>};
+</span><span>
+</span><span style="color:#65737e;">// 生成 tokens 的方法，接收参数为 brainfuck 源代码
+</span><span style="color:#65737e;">// 因为 brainfuck 的源码都是单个独立的字符，所以这一步比较简单
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">tokenier </span><span>= (</span><span style="color:#bf616a;">str</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">tokens </span><span>= [];
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">current </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 逐个字符进行解析
+</span><span>  </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#bf616a;">current </span><span>&lt; </span><span style="color:#bf616a;">str</span><span>.length) {
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">char </span><span>= </span><span style="color:#bf616a;">str</span><span>[</span><span style="color:#bf616a;">current</span><span>++];
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 解析不同的指令符号
+</span><span>    </span><span style="color:#b48ead;">switch </span><span>(</span><span style="color:#bf616a;">char</span><span>) {
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">+</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">INCREMENT</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">+</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">-</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">DECREASE</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">-</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">&gt;</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">MOVE_NEXT</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">&gt;</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">&lt;</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">MOVE_PREV</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">&lt;</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">.</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">ONTPUT</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">.</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">,</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">INPUT</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">,</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">[</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">LOOP_OPEN</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">[</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">]</span><span>&#39;:
+</span><span>        </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">LOOP_CLOSE</span><span>,
+</span><span>          value: &#39;</span><span style="color:#a3be8c;">]</span><span>&#39;
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>      </span><span style="color:#b48ead;">default</span><span>:
+</span><span>        </span><span style="color:#65737e;">// 如果是其他字符，跳过即可
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 返回 tokens
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">tokens</span><span>;
+</span><span>};
+</span></code></pre>
+<p>使用示例的输入将生成如下的 tokens:</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>[
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">MoveNext</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">&gt;</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Increment</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">+</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Decrease</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">-</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">MovePrev</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">&lt;</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">LoopOpen</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">[</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Input</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">,</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Output</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">.</span><span>&quot;
+</span><span>      },
+</span><span>      {
+</span><span>          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">LoopClose</span><span>&quot;,
+</span><span>          &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">]</span><span>&quot;
+</span><span>      }
+</span><span>]
+</span></code></pre>
+<h3 id="gou-jian-ast">构建 AST</h3>
+<p>第二步则是根据 tokens 生成 AST，由于 brainfuck 没有标准的 AST 结构（可能有，但是我没有找到），所以我自己定义了一套简单的结构</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 将 tokens 转化为 ast， 输入参数为tokens
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">parser </span><span>= (</span><span style="color:#bf616a;">tokens</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 先把顶层的结构定义好
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ast </span><span>= {
+</span><span>    type: &#39;</span><span style="color:#a3be8c;">Program</span><span>&#39;,
+</span><span>    body: []
+</span><span>  };
+</span><span>  </span><span style="color:#65737e;">// 定义一个栈，用于保存 ast 节点的引用，主要用于循环语法
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">nodeStask </span><span>= [];
+</span><span>  </span><span style="color:#65737e;">// 当前ast节点的引用
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">currentNode </span><span>= </span><span style="color:#bf616a;">ast</span><span>.body;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 定义遍历 tokens 的方法
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">walk </span><span>= (</span><span style="color:#bf616a;">token</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#b48ead;">switch </span><span>(</span><span style="color:#bf616a;">token</span><span>.type) {
+</span><span>      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">INCREMENT</span><span>:
+</span><span>      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">DECREASE</span><span>:
+</span><span>      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">MOVE_NEXT</span><span>:
+</span><span>      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">MOVE_PREV</span><span>:
+</span><span>      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">INPUT</span><span>:
+</span><span>      </span><span style="color:#b48ead;">case </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">ONTPUT</span><span>:
+</span><span>        </span><span style="color:#65737e;">// 除了 `[` 和 `]` 两个指令外，其他指令都是普通的 ast 节点
+</span><span>        </span><span style="color:#65737e;">// 所以直接添加新节点即可
+</span><span>        </span><span style="color:#bf616a;">currentNode</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>          type: &#39;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&#39;,
+</span><span>          value: </span><span style="color:#bf616a;">token</span><span>.type
+</span><span>        });
+</span><span>        </span><span style="color:#b48ead;">return</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 解析 `[` 指令
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">token</span><span>.type === </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">LOOP_OPEN</span><span>) {
+</span><span>      </span><span style="color:#65737e;">// 定义 &#39;[&#39; 指令的节点
+</span><span>      </span><span style="color:#65737e;">// 简单来说就是循环节点，我们需要解析里面的指令并保存在循环节点的 body 中
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">astNode </span><span>= {
+</span><span>        type: &#39;</span><span style="color:#a3be8c;">LoopStatement</span><span>&#39;,
+</span><span>        body: []
+</span><span>      };
+</span><span>      </span><span style="color:#65737e;">// 更新 ast
+</span><span>      </span><span style="color:#bf616a;">currentNode</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">astNode</span><span>);
+</span><span>      </span><span style="color:#65737e;">// 压入栈，保持当前的 ast 节点引用，循环结束后恢复
+</span><span>      </span><span style="color:#bf616a;">nodeStask</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">currentNode</span><span>);
+</span><span>      </span><span style="color:#65737e;">// 更新 ast 指针
+</span><span>      </span><span style="color:#bf616a;">currentNode </span><span>= </span><span style="color:#bf616a;">astNode</span><span>.body;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 解析 `]` 指令
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">token</span><span>.type === </span><span style="color:#bf616a;">TOKENS</span><span>.</span><span style="color:#bf616a;">LOOP_CLOSE</span><span>) {
+</span><span>      </span><span style="color:#65737e;">// 如果栈是空的，说明没有与之对应的 `[` 指令，语法有误
+</span><span>      </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">nodeStask</span><span>.length &lt;= </span><span style="color:#d08770;">0</span><span>) {
+</span><span>        </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Uncaught SyntaxError: Loop syntax error</span><span>&#39;);
+</span><span>      }
+</span><span>
+</span><span>      </span><span style="color:#65737e;">// 弹出栈顶元素，恢复进入循环之前的指针引用
+</span><span>      </span><span style="color:#bf616a;">currentNode </span><span>= </span><span style="color:#bf616a;">nodeStask</span><span>.</span><span style="color:#96b5b4;">pop</span><span>();
+</span><span>    }
+</span><span>  };
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 开始遍历 tokens
+</span><span>  </span><span style="color:#bf616a;">tokens</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#bf616a;">walk</span><span>);
+</span><span>  
+</span><span>  </span><span style="color:#65737e;">// 如果栈没清空，说明 `[` 和 `]` 这两个指令输入不规范，语法有误
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">nodeStask</span><span>.length &gt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Uncaught SyntaxError: Loop syntax error</span><span>&#39;);
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 返回结果
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">ast</span><span>;
+</span><span>};
+</span><span>
+</span></code></pre>
+<p>基于此程序，用示例的输入，生成的 ast 会是如下：</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Program</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: [
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">MoveNext</span><span>&quot;
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Increment</span><span>&quot;
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Decrease</span><span>&quot;
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">MovePrev</span><span>&quot;
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">LoopStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: [
+</span><span>                  {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Input</span><span>&quot;
+</span><span>                  },
+</span><span>                  {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Output</span><span>&quot;
+</span><span>                  }
+</span><span>              ]
+</span><span>          }
+</span><span>      ]
+</span><span>}
+</span></code></pre>
+<h3 id="zhuan-huan-ast">转换 AST</h3>
+<p>因为我们的目标是生成 javascript 的代码，所以要将 brainfuck 的 ast 转换成 javascript 的 ast。那么问题来了，我们要怎么将 brainfuck 的语法翻译到 javascript 呢？其实很简单，我们可以将指令封装成 javascript 的函数， 一条指令就对应一个函数调用，而遇到循环语句呢，就用 <code>while</code> 循环替代。我们可以先构建如下的 javascript 函数，可以称之为 brainfuck 的 runtime：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 这个代表纸带
+</span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">t </span><span>= [</span><span style="color:#d08770;">0</span><span>];
+</span><span style="color:#65737e;">// 这个代表当前指针指向
+</span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">p </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span style="color:#65737e;">// 获取当前指针指向格子的值
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">getValue</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>];
+</span><span>}
+</span><span style="color:#65737e;">// `+` 指令
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">increment</span><span>() {
+</span><span>  </span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>]++;
+</span><span>}
+</span><span style="color:#65737e;">// `-` 指令
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">decrease</span><span>() {
+</span><span>  </span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>]--;
+</span><span>}
+</span><span style="color:#65737e;">// `&gt;` 指令
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">movePrev</span><span>() {
+</span><span>  </span><span style="color:#bf616a;">p</span><span>--;
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">p </span><span>&lt; </span><span style="color:#d08770;">0</span><span>) </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Pointer less then 0 </span><span>&#39;, </span><span style="color:#bf616a;">p</span><span>);
+</span><span>}
+</span><span style="color:#65737e;">// `&lt;` 指令
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">moveNext</span><span>() {
+</span><span>  </span><span style="color:#bf616a;">p</span><span>++;
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>] === </span><span style="color:#d08770;">undefined</span><span>) </span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>] = </span><span style="color:#d08770;">0</span><span>;
+</span><span>}
+</span><span style="color:#65737e;">// `.` 指令
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">output</span><span>() {
+</span><span>  </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#ebcb8b;">String</span><span>.</span><span style="color:#96b5b4;">fromCharCode</span><span>(</span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>]));
+</span><span>}
+</span><span style="color:#65737e;">// `,` 指令
+</span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">input</span><span>() {
+</span><span>  </span><span style="color:#b48ead;">var </span><span style="color:#bf616a;">c </span><span>= </span><span style="color:#8fa1b3;">prompt</span><span>(&#39;</span><span style="color:#a3be8c;">Input one Ascii character</span><span>&#39;);
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">c </span><span>!== &#39;</span><span style="color:#a3be8c;">string</span><span>&#39; || </span><span style="color:#bf616a;">c</span><span>.length &lt;= </span><span style="color:#d08770;">0</span><span>) </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Invalid input: </span><span>&#39;, </span><span style="color:#bf616a;">c</span><span>);
+</span><span>  </span><span style="color:#bf616a;">t</span><span>[</span><span style="color:#bf616a;">p</span><span>] = </span><span style="color:#bf616a;">c</span><span>[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#96b5b4;">charCodeAt</span><span>();
+</span><span>}
+</span></code></pre>
+<p>下一步就是转换 ast 结构了，我们先定义遍历 ast 节点的方法，我们称之为 <code>traverasl</code>:</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 遍历 ast 的方法（深度优先）
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">traverse </span><span>= (</span><span style="color:#bf616a;">ast</span><span>, </span><span style="color:#bf616a;">visitor</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 定义遍历节点的方法
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">traverseNode </span><span>= (</span><span style="color:#bf616a;">node</span><span>, </span><span style="color:#bf616a;">parent</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#65737e;">// 去除对应节点类型的访问器
+</span><span>    </span><span style="color:#65737e;">// 访问器可以是一个函数，或者是一个对象
+</span><span>    </span><span style="color:#65737e;">// 如果是一个对象，可以定义 enter 和 exit 函数，分别会在进入节点和退出节点时调用
+</span><span>    </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">method </span><span>= </span><span style="color:#bf616a;">visitor</span><span>[</span><span style="color:#bf616a;">node</span><span>.type] || {};
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 格式化方法
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(typeof </span><span style="color:#bf616a;">method </span><span>=== &#39;</span><span style="color:#a3be8c;">function</span><span>&#39;) {
+</span><span>      </span><span style="color:#bf616a;">method </span><span>= {
+</span><span>        enter: </span><span style="color:#bf616a;">method
+</span><span>      };
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 调用访问器的 enter 方法
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">method</span><span>.</span><span style="color:#bf616a;">enter</span><span>) </span><span style="color:#bf616a;">method</span><span>.</span><span style="color:#8fa1b3;">enter</span><span>(</span><span style="color:#bf616a;">node</span><span>, </span><span style="color:#bf616a;">parent</span><span>);
+</span><span>    
+</span><span>    </span><span style="color:#b48ead;">switch </span><span>(</span><span style="color:#bf616a;">node</span><span>.type) {
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">Program</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 处理子节点
+</span><span>        </span><span style="color:#8fa1b3;">traverseArray</span><span>(</span><span style="color:#bf616a;">node</span><span>.body, </span><span style="color:#bf616a;">node</span><span>);
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">LoopStatement</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 处理子节点
+</span><span>        </span><span style="color:#8fa1b3;">traverseArray</span><span>(</span><span style="color:#bf616a;">node</span><span>.body, </span><span style="color:#bf616a;">node</span><span>);
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">case </span><span>&#39;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&#39;:
+</span><span>        </span><span style="color:#65737e;">// 该类型没有子节点，无需处理
+</span><span>        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>
+</span><span>      </span><span style="color:#b48ead;">default</span><span>:
+</span><span>        </span><span style="color:#b48ead;">throw </span><span>new Error(&#39;</span><span style="color:#a3be8c;">Unknown Ast node type: </span><span>&#39;, </span><span style="color:#bf616a;">node</span><span>.type);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 调用访问器的 exit 方法
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">method</span><span>.</span><span style="color:#bf616a;">exit</span><span>) </span><span style="color:#bf616a;">method</span><span>.</span><span style="color:#8fa1b3;">exit</span><span>(</span><span style="color:#bf616a;">node</span><span>, </span><span style="color:#bf616a;">parent</span><span>);
+</span><span>  };
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 定义遍历节点列表的方法
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">traverseArray </span><span>= (</span><span style="color:#bf616a;">array</span><span>, </span><span style="color:#bf616a;">parent</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#bf616a;">array</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>((</span><span style="color:#bf616a;">child</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#8fa1b3;">traverseNode</span><span>(</span><span style="color:#bf616a;">child</span><span>, </span><span style="color:#bf616a;">parent</span><span>);
+</span><span>    });
+</span><span>  };
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 开始遍历
+</span><span>  </span><span style="color:#8fa1b3;">traverseNode</span><span>(</span><span style="color:#bf616a;">ast</span><span>, </span><span style="color:#d08770;">null</span><span>);
+</span><span>};
+</span></code></pre>
+<p>接下来就是转换 ast 的操作了， javascript ast 的结构参考自 <a href="https://github.com/acornjs/acorn">acorn</a> 这个解析器, 但是为了简化代码，删去了一些不必要的字段。</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 处理字符串，使其首字母变成小写
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">decapitalize </span><span>= (</span><span style="color:#bf616a;">s</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>(</span><span style="color:#bf616a;">s </span><span>? `</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">s</span><span style="color:#a3be8c;">[</span><span style="color:#d08770;">0</span><span style="color:#a3be8c;">].</span><span style="color:#96b5b4;">toLowerCase</span><span style="color:#a3be8c;">()}${</span><span style="color:#bf616a;">s</span><span style="color:#a3be8c;">.</span><span style="color:#96b5b4;">slice</span><span style="color:#a3be8c;">(</span><span style="color:#d08770;">1</span><span style="color:#a3be8c;">)}</span><span>` : </span><span style="color:#bf616a;">s</span><span>);
+</span><span>
+</span><span style="color:#65737e;">// ast 转换，参数是旧的 ast，即 brainfuck 的 ast
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">transformer </span><span>= (</span><span style="color:#bf616a;">ast</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 首先定义新的 ast 结构
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">newAst </span><span>= {
+</span><span>    type: &#39;</span><span style="color:#a3be8c;">Program</span><span>&#39;,
+</span><span>    body: []
+</span><span>  };
+</span><span>  
+</span><span>  </span><span style="color:#65737e;">// 在旧的 ast 上添加一个指针，对应新的 ast节点
+</span><span>  </span><span style="color:#bf616a;">ast</span><span>.</span><span style="color:#bf616a;">_context </span><span>= </span><span style="color:#bf616a;">newAst</span><span>.body;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 遍历 ast
+</span><span>  </span><span style="color:#8fa1b3;">traverse</span><span>(</span><span style="color:#bf616a;">ast</span><span>, {
+</span><span>    </span><span style="color:#65737e;">// 处理 ExpressionStatement 类型的节点
+</span><span>    </span><span style="color:#8fa1b3;">ExpressionStatement</span><span>: (</span><span style="color:#bf616a;">node</span><span>, </span><span style="color:#bf616a;">parent</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#65737e;">// 这是普通的指令，直接往新的 ast 中添加节点即可，对应 javascript 的函数调用
+</span><span>      </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#bf616a;">_context</span><span>.</span><span style="color:#96b5b4;">push</span><span>({
+</span><span>        type: &#39;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&#39;,
+</span><span>        expression: {
+</span><span>          type: &#39;</span><span style="color:#a3be8c;">CallExpression</span><span>&#39;,
+</span><span>          callee: {
+</span><span>            type: &#39;</span><span style="color:#a3be8c;">Identifier</span><span>&#39;,
+</span><span>            name: </span><span style="color:#8fa1b3;">decapitalize</span><span>(</span><span style="color:#bf616a;">node</span><span>.value)
+</span><span>          }
+</span><span>        }
+</span><span>      });
+</span><span>    },
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// 处理 LoopStatement 类型的节点
+</span><span>    </span><span style="color:#8fa1b3;">LoopStatement</span><span>: (</span><span style="color:#bf616a;">node</span><span>, </span><span style="color:#bf616a;">parent</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#65737e;">// 构造 javascript 中 while 语句的 ast 节点
+</span><span>      </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">whileNode </span><span>= {
+</span><span>        type: &#39;</span><span style="color:#a3be8c;">WhileStatement</span><span>&#39;,
+</span><span>        </span><span style="color:#65737e;">// 这里 while 语句中的测试条件也被我们封装成函数了
+</span><span>        </span><span style="color:#65737e;">// 类似这样 =&gt; `while(getValue())`
+</span><span>        test: {
+</span><span>          type: &#39;</span><span style="color:#a3be8c;">CallExpression</span><span>&#39;,
+</span><span>          callee: {
+</span><span>            type: &#39;</span><span style="color:#a3be8c;">Identifier</span><span>&#39;,
+</span><span>            name: &#39;</span><span style="color:#a3be8c;">getValue</span><span>&#39;
+</span><span>          }
+</span><span>        },
+</span><span>        </span><span style="color:#65737e;">// while 语句中的代码
+</span><span>        body: {
+</span><span>          type: &#39;</span><span style="color:#a3be8c;">BlockStatement</span><span>&#39;,
+</span><span>          body: []
+</span><span>        }
+</span><span>      };
+</span><span>      </span><span style="color:#65737e;">// 添加节点
+</span><span>      </span><span style="color:#bf616a;">parent</span><span>.</span><span style="color:#bf616a;">_context</span><span>.</span><span style="color:#96b5b4;">push</span><span>(</span><span style="color:#bf616a;">whileNode</span><span>);
+</span><span>      </span><span style="color:#65737e;">// 更新引用关系
+</span><span>      </span><span style="color:#bf616a;">node</span><span>.</span><span style="color:#bf616a;">_context </span><span>= </span><span style="color:#bf616a;">whileNode</span><span>.body.body;
+</span><span>    }
+</span><span>  });
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">newAst</span><span>;
+</span><span>};
+</span></code></pre>
+<p>使用示例，将输出如下的 javascript ast：</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#c0c5ce;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Program</span><span>&quot;,
+</span><span>      &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: [
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">expression</span><span>&quot;: {
+</span><span>                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                  &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">moveNext</span><span>&quot;
+</span><span>                  }
+</span><span>              }
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">expression</span><span>&quot;: {
+</span><span>                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                  &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">increment</span><span>&quot;
+</span><span>                  }
+</span><span>              }
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">expression</span><span>&quot;: {
+</span><span>                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                  &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">decrease</span><span>&quot;
+</span><span>                  }
+</span><span>              }
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">expression</span><span>&quot;: {
+</span><span>                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                  &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">movePrev</span><span>&quot;
+</span><span>                  }
+</span><span>              }
+</span><span>          },
+</span><span>          {
+</span><span>              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">WhileStatement</span><span>&quot;,
+</span><span>              &quot;</span><span style="color:#a3be8c;">test</span><span>&quot;: {
+</span><span>                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                  &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                      &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                      &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">getValue</span><span>&quot;
+</span><span>                  }
+</span><span>              },
+</span><span>              &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: {
+</span><span>                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">BlockStatement</span><span>&quot;,
+</span><span>                  &quot;</span><span style="color:#a3be8c;">body</span><span>&quot;: [
+</span><span>                      {
+</span><span>                          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>                          &quot;</span><span style="color:#a3be8c;">expression</span><span>&quot;: {
+</span><span>                              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                              &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                                  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">input</span><span>&quot;
+</span><span>                              }
+</span><span>                          }
+</span><span>                      },
+</span><span>                      {
+</span><span>                          &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">ExpressionStatement</span><span>&quot;,
+</span><span>                          &quot;</span><span style="color:#a3be8c;">expression</span><span>&quot;: {
+</span><span>                              &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">CallExpression</span><span>&quot;,
+</span><span>                              &quot;</span><span style="color:#a3be8c;">callee</span><span>&quot;: {
+</span><span>                                  &quot;</span><span style="color:#a3be8c;">type</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">Identifier</span><span>&quot;,
+</span><span>                                  &quot;</span><span style="color:#a3be8c;">name</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">output</span><span>&quot;
+</span><span>                              }
+</span><span>                          }
+</span><span>                      }
+</span><span>                  ]
+</span><span>              }
+</span><span>          }
+</span><span>      ]
+</span><span>}
+</span></code></pre>
+<h3 id="dai-ma-sheng-cheng">代码生成</h3>
+<p>最后一步便是目标代码的生成了， 代码生成相对来说是最简单，但是也是最繁琐的一步了，我们需要遍历 ast 的节点，生成对应的代码，我们可以采用递归的方法去生成：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// 封装一个生成器类
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Generator </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor</span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 保存代码内容
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">output </span><span>= &#39;&#39;</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// 写入新的字符
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">write</span><span>(</span><span style="color:#bf616a;">code</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">output </span><span>+= </span><span style="color:#bf616a;">code</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// Program 类型处理
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">Program</span><span>(</span><span style="color:#bf616a;">node</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 用一个函数进行封装
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">function brainMain() { </span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 然后遍历子节点
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.body.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">child</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#65737e;">// 调用对应的类型方法
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">child</span><span style="color:#eff1f5;">.type](</span><span style="color:#bf616a;">child</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    });
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;"> }</span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// ExpressionStatement 类型处理
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">ExpressionStatement</span><span>(</span><span style="color:#bf616a;">node</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 处理表达式
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">expression</span><span style="color:#eff1f5;">.type](</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">expression</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">;</span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// BlockStatement 类型处理
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">BlockStatement</span><span>(</span><span style="color:#bf616a;">node</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;"> {</span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 处理 block
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.body.</span><span style="color:#96b5b4;">forEach</span><span style="color:#eff1f5;">(</span><span>(</span><span style="color:#bf616a;">child</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">      </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">child</span><span style="color:#eff1f5;">.type](</span><span style="color:#bf616a;">child</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    });
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">} </span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// WhileStatement 类型处理
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">WhileStatement</span><span>(</span><span style="color:#bf616a;">node</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;"> while(</span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 测试条件
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">test</span><span style="color:#eff1f5;">.type](</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">test</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">)</span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 循环里面的代码
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.body.type](</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.body);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// CallExpression 类型处理
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">CallExpression</span><span>(</span><span style="color:#bf616a;">node</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">// 函数调用
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.callee.type](</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.callee);
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">()</span><span>&#39;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#65737e;">// Identifier 类型处理
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">Identifier</span><span>(</span><span style="color:#bf616a;">node</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#96b5b4;">write</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">node</span><span style="color:#eff1f5;">.name);
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>采用示例输入，最终输出的代码将会是:</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">brainMain</span><span>() { </span><span style="color:#8fa1b3;">moveNext</span><span>();</span><span style="color:#8fa1b3;">increment</span><span>();</span><span style="color:#8fa1b3;">decrease</span><span>();</span><span style="color:#8fa1b3;">movePrev</span><span>(); </span><span style="color:#b48ead;">while</span><span>(</span><span style="color:#8fa1b3;">getValue</span><span>()) {</span><span style="color:#8fa1b3;">input</span><span>();</span><span style="color:#8fa1b3;">output</span><span>();}  }
+</span></code></pre>
+<p>前面提到我们定义了 brainfuck 的 runtime，生成的代码需要依赖这个 runtime 才能执行，为了避免这个麻烦，我们生成代码的时候，同时将运行时也写入代码中:</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// runtime
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">preset </span><span>= `
+</span><span style="color:#a3be8c;">var t = [0];
+</span><span style="color:#a3be8c;">var p = 0;
+</span><span style="color:#a3be8c;">function getValue() {
+</span><span style="color:#a3be8c;">  return t[p];
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">function increment() {
+</span><span style="color:#a3be8c;">  t[p]++;
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">function decrease() {
+</span><span style="color:#a3be8c;">  t[p]--;
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">function movePrev() {
+</span><span style="color:#a3be8c;">  p--;
+</span><span style="color:#a3be8c;">  if (p &lt; 0) throw new Error(&#39;Pointer less then 0 &#39;, p);
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">function moveNext() {
+</span><span style="color:#a3be8c;">  p++;
+</span><span style="color:#a3be8c;">  if (t[p] === undefined) t[p] = 0;
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">function output() {
+</span><span style="color:#a3be8c;">  console.log(String.fromCharCode(t[p]));
+</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">function input() {
+</span><span style="color:#a3be8c;">  var c = prompt(&#39;Input one Ascii character&#39;);
+</span><span style="color:#a3be8c;">  if (typeof c !== &#39;string&#39; || c.length &lt;= 0) throw new Error(&#39;Invalid input: &#39;, c);
+</span><span style="color:#a3be8c;">  t[p] = c[0].charCodeAt();
+</span><span style="color:#a3be8c;">}
+</span><span>`;
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">codeGenerator </span><span>= (</span><span style="color:#bf616a;">ast</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 实例化生成器
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">generator </span><span>= new Generator();
+</span><span>  </span><span style="color:#65737e;">// 开始生成代码
+</span><span>  </span><span style="color:#bf616a;">generator</span><span>[</span><span style="color:#bf616a;">ast</span><span>.type](</span><span style="color:#bf616a;">ast</span><span>);
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 将 runtime 也加进来
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">result </span><span>= `
+</span><span style="color:#a3be8c;">(function () {
+</span><span style="color:#a3be8c;">// runtime
+</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">preset</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">// 生成的代码
+</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">generator</span><span style="color:#a3be8c;">.</span><span style="color:#bf616a;">output</span><span style="color:#a3be8c;">}
+</span><span style="color:#a3be8c;">
+</span><span style="color:#a3be8c;">// 返回这个函数
+</span><span style="color:#a3be8c;">return brainMain;
+</span><span style="color:#a3be8c;">})();
+</span><span style="color:#a3be8c;">	</span><span>`;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 返回最终结果
+</span><span>  </span><span style="color:#b48ead;">return </span><span>{
+</span><span>    </span><span style="color:#bf616a;">result</span><span>,
+</span><span>    compileResult: </span><span style="color:#bf616a;">generator</span><span>.</span><span style="color:#bf616a;">output
+</span><span>  };
+</span><span>};
+</span></code></pre>
+<h3 id="zu-zhuang">组装</h3>
+<p>将这几个阶段组装起来，就是我们最终的成果：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">compiler </span><span>= (</span><span style="color:#bf616a;">sourceCode</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 生成tokens
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">tokens </span><span>= </span><span style="color:#8fa1b3;">tokenier</span><span>(</span><span style="color:#bf616a;">sourceCode</span><span>);
+</span><span>  </span><span style="color:#65737e;">// 生成 brainfuck ast
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">ast </span><span>= </span><span style="color:#8fa1b3;">parser</span><span>(</span><span style="color:#bf616a;">tokens</span><span>);
+</span><span>  </span><span style="color:#65737e;">// 转换成 javascript ast
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">newAst </span><span>= </span><span style="color:#8fa1b3;">transformer</span><span>(</span><span style="color:#bf616a;">ast</span><span>);
+</span><span>  </span><span style="color:#65737e;">// 生成 javascript 代码
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">code </span><span>= </span><span style="color:#8fa1b3;">codeGenerator</span><span>(</span><span style="color:#bf616a;">newAst</span><span>);
+</span><span>  </span><span style="color:#65737e;">// 返回结果
+</span><span>  </span><span style="color:#b48ead;">return </span><span>{
+</span><span>    </span><span style="color:#bf616a;">tokens</span><span>,
+</span><span>    </span><span style="color:#bf616a;">ast</span><span>,
+</span><span>    javascriptAst: </span><span style="color:#bf616a;">newAst</span><span>,
+</span><span>    compiler: </span><span style="color:#bf616a;">code</span><span>.</span><span style="color:#bf616a;">compileResult</span><span>,
+</span><span>    code: </span><span style="color:#bf616a;">code</span><span>.</span><span style="color:#bf616a;">result</span><span>,
+</span><span>  }
+</span><span>};
+</span></code></pre>
+<h2 id="zong-jie">总结</h2>
+<p>最后放上源码的地址 <a href="https://github.com/naecoo/brainfuck-compiler/">brainfuck-compiler</a>， 如果对代码有疑问，或者觉得有问题，可以在 issue 中提出，或者直接提 PR。</p>
+<p>同时，为了方便操作，我还做了一个 brainfuck 语言在线编译和可视化执行的网页，地址在<a href="https://naecoo.github.io/brainfuck-compiler/index.html">这里</a>。</p>
+<h2 id="xiang-guan-zi-liao">相关资料</h2>
+<ul>
+<li><a href="https://github.com/jamiebuilds/the-super-tiny-compiler">the-super-tiny-compiler</a></li>
+<li><a href="https://astexplorer.net/">ast-explorer</a></li>
+<li><a href="https://github.com/davidbonnet/astring">javascript-codegen-astring</a> </li>
+</ul>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;brainfuck-interpreter&#x2F;"
+    ><span class="mr-1.5">←</span><span>用 JavaScript 实现一个 简单的 brainfuck 解释器</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;rollup-plugin&#x2F;"
+    ><span>如何实现一个 Rollup 插件</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

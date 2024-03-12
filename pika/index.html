@@ -1,0 +1,445 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    告别webpack，直接运行npm包 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="告别webpack，直接运行npm包" />
+  <meta name="author" content="告别webpack，直接运行npm包" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pika&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">告别webpack，直接运行npm包</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-09-15</time>
+  <span class="mx-1">&middot;</span>
+  <span>5min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pika/#wei-shen-me-yao-da-bao"
+            >为什么要打包？</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pika/#xian-zhuang"
+            >现状</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pika/#pika-web"
+            >@pika&#x2F;web</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pika/#shi-yong-fang-fa"
+            >使用方法</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pika/#yuan-ma-jie-mi"
+            >源码解密</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="wei-shen-me-yao-da-bao">为什么要打包？</h3>
+<p>2019年，距离es6正式发布已经过去了4年多了，es6给我们带来了许多新特性，包括全新的JavaScript模块系统（<a href="https://flaviocopes.com/es-modules/">ESM</a>），它可以直接在浏览器运行。但一般我们开发项目，还是要引入Browserify和Webpack等打包工具进行打包，诚然，这些打包工具可以给项目带来很多好处、比如混淆、压缩和转译代码等等。但与此同时，也带给项目极大的复杂性，各种各样的配置文件和插件等。很多时候，我们不得不进行打包，因为<a href="https://www.npmjs.com/">npm</a>的存在，我们通常会引用很多注册在<code>npm</code>上面的包，早期的<code>npm</code>包大部分都是<code>common.js（cjs）</code>风格的，这意味着浏览器不能直接运行，所以一般都要经过打包工具转换成浏览器支持的模块。</p>
+<h3 id="xian-zhuang">现状</h3>
+<p><code>npm</code>后面推出了<code>module</code>入口的模块，即ESM风格的模块，到目前为止，已经超过70000个包提供了<a href="https://www.pika.dev/about/stats">ESM的版本</a>，已经基本满足我们开发的需要了。所以为什么我们不直接跳过打包这个步骤，直接运行呢？事实上，自己写的ESM模块可以直接运行，但大部分<code>npm</code>包都会有依赖，浏览器没办法从<code>node_modules</code>导入这些依赖，所以我们依然需要对代码进行打包，转译。</p>
+<h3 id="pika-web">@pika/web</h3>
+<p>基于上述原因，<a href="https://github.com/pikapkg/web">@pika/web</a>诞生了。<code>@pika/web</code>不是构建工具，而是依赖安装工具，它可以帮助你构建npm包，然后直接在浏览器上运行，只需要一行代码：</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">npx</span><span> @pika/web
+</span></code></pre>
+<h3 id="shi-yong-fang-fa">使用方法</h3>
+<p><code>@pika/web</code>使用起来十分简单，我们首先需要在<code>package.json</code>的<code>dependencies</code>显式声明项目所依赖的包:</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// package.json
+</span><span style="color:#65737e;">// ...
+</span><span>&quot;</span><span style="color:#a3be8c;">dependencies</span><span>&quot;: {
+</span><span>  &quot;</span><span style="color:#a3be8c;">test</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">^1.0.0</span><span>&quot;
+</span><span>},
+</span></code></pre>
+<p>然后在项目中引用这个包:</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// index.js
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">name </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">test</span><span>&#39;
+</span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">name</span><span>)
+</span></code></pre>
+<p>然后执行<code>npx @pika/web</code></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/9/13/16d293bcbc8221c3?w=322&amp;h=57&amp;f=png&amp;s=5966" alt="" />
+pika会在项目根目录生成一个<code>web_modules</code>的文件夹，里面放着项目依赖的文件，最后一步就是将替换项目引用依赖的地址</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// before
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">name </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">test</span><span>&#39;
+</span><span style="color:#65737e;">// after
+</span><span style="color:#b48ead;">import </span><span>{ </span><span style="color:#bf616a;">name </span><span>} </span><span style="color:#b48ead;">from </span><span>&#39;</span><span style="color:#a3be8c;">./web_modules/test.js</span><span>&#39;
+</span></code></pre>
+<p>最后一步，因为我们的代码需要在浏览器执行，所以需要嵌入到<code>html</code>文件中:</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;!</span><span style="color:#b48ead;">DOCTYPE </span><span style="color:#d08770;">html</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">html </span><span style="color:#d08770;">lang</span><span>=&quot;</span><span style="color:#a3be8c;">en</span><span>&quot;&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span>=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">title</span><span>&gt;Document&lt;/</span><span style="color:#bf616a;">title</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">type</span><span>=&quot;</span><span style="color:#a3be8c;">module</span><span>&quot; </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">./index.js</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">html</span><span>&gt;
+</span></code></pre>
+<p>然后用浏览器打开文件，你会得到你想要的结果。</p>
+<p>可能有的同学会有说：“我的项目引用的依赖很多，总不能一个个去替换地址吧，多麻烦啊！”，没问题，pika提供了一个<code>babel</code>的插件帮助我们替换模块引用。</p>
+<h3 id="yuan-ma-jie-mi">源码解密</h3>
+<p><code>@pika/web</code>的原理很简单，首先它会从<code>package.json</code>的<code>dependencies</code>种寻找项目依赖，收集好依赖就会逐个解析依赖，生成<code>rollup</code>的配置文件，最后用<code>rollup</code>将每一个依赖打包成模块，放到<code>web_modules</code>中。</p>
+<ul>
+<li>收集依赖</li>
+</ul>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// ...
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">pkgManifest </span><span>= </span><span style="color:#96b5b4;">require</span><span>(</span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">join</span><span>(</span><span style="color:#bf616a;">cwd</span><span>, &#39;</span><span style="color:#a3be8c;">package.json</span><span>&#39;));
+</span><span>  </span><span style="color:#b48ead;">const </span><span>{</span><span style="color:#bf616a;">namedExports</span><span>, </span><span style="color:#bf616a;">webDependencies</span><span>} = </span><span style="color:#bf616a;">pkgManifest</span><span>[&#39;</span><span style="color:#a3be8c;">@pika/web</span><span>&#39;] || {
+</span><span>    namedExports: </span><span style="color:#d08770;">undefined</span><span>,
+</span><span>    webDependencies: </span><span style="color:#d08770;">undefined</span><span>,
+</span><span>  };
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">doesWhitelistExist </span><span>= !!</span><span style="color:#bf616a;">webDependencies</span><span>;
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">arrayOfDeps </span><span>= </span><span style="color:#bf616a;">webDependencies </span><span>|| </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#96b5b4;">keys</span><span>(</span><span style="color:#bf616a;">pkgManifest</span><span>.</span><span style="color:#bf616a;">dependencies </span><span>|| {});
+</span><span style="color:#65737e;">// ...
+</span></code></pre>
+<ul>
+<li>逐个解析</li>
+</ul>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// ...
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">depManifestLoc </span><span>= </span><span style="color:#8fa1b3;">resolveFrom</span><span>(</span><span style="color:#bf616a;">cwd</span><span>, `</span><span style="color:#a3be8c;">${</span><span style="color:#bf616a;">dep</span><span style="color:#a3be8c;">}/package.json</span><span>`);
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">depManifest </span><span>= </span><span style="color:#96b5b4;">require</span><span>(</span><span style="color:#bf616a;">depManifestLoc</span><span>);
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">foundEntrypoint</span><span>: string = </span><span style="color:#bf616a;">depManifest</span><span>.</span><span style="color:#bf616a;">module</span><span>;
+</span><span>  </span><span style="color:#65737e;">// If the package was a part of the explicit whitelist, fallback to it&#39;s main CJS entrypoint.
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">foundEntrypoint </span><span>&amp;&amp; </span><span style="color:#bf616a;">isExplicit</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">foundEntrypoint </span><span>= </span><span style="color:#bf616a;">depManifest</span><span>.</span><span style="color:#bf616a;">main </span><span>|| &#39;</span><span style="color:#a3be8c;">index.js</span><span>&#39;;
+</span><span>  }
+</span><span style="color:#65737e;">// ...
+</span></code></pre>
+<ul>
+<li>生成<code>rollup</code>打包配置</li>
+</ul>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// ...
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">inputOptions </span><span>= {
+</span><span>      input: </span><span style="color:#bf616a;">depObject</span><span>,
+</span><span>      plugins: [
+</span><span>        </span><span style="color:#8fa1b3;">rollupPluginNodeResolve</span><span>({
+</span><span>          mainFields: [&#39;</span><span style="color:#a3be8c;">browser</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">module</span><span>&#39;, !</span><span style="color:#bf616a;">isStrict </span><span>&amp;&amp; &#39;</span><span style="color:#a3be8c;">main</span><span>&#39;].</span><span style="color:#8fa1b3;">filter</span><span>(</span><span style="color:#ebcb8b;">Boolean</span><span>),
+</span><span>          modulesOnly: </span><span style="color:#bf616a;">isStrict</span><span>, </span><span style="color:#65737e;">// Default: false
+</span><span>          extensions: [&#39;</span><span style="color:#a3be8c;">.mjs</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">.cjs</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">.js</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">.json</span><span>&#39;], </span><span style="color:#65737e;">// Default: [ &#39;.mjs&#39;, &#39;.js&#39;, &#39;.json&#39;, &#39;.node&#39; ]
+</span><span>          </span><span style="color:#65737e;">// whether to prefer built-in modules (e.g. `fs`, `path`) or local ones with the same names
+</span><span>          preferBuiltins: </span><span style="color:#d08770;">false</span><span>, </span><span style="color:#65737e;">// Default: true
+</span><span>        }),
+</span><span>        !</span><span style="color:#bf616a;">isStrict </span><span>&amp;&amp;
+</span><span>          </span><span style="color:#8fa1b3;">rollupPluginCommonjs</span><span>({
+</span><span>            extensions: [&#39;</span><span style="color:#a3be8c;">.js</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">.cjs</span><span>&#39;], </span><span style="color:#65737e;">// Default: [ &#39;.js&#39; ]
+</span><span>            namedExports: </span><span style="color:#bf616a;">knownNamedExports</span><span>,
+</span><span>          }),
+</span><span>        !!</span><span style="color:#bf616a;">isBabel </span><span>&amp;&amp;
+</span><span>          </span><span style="color:#8fa1b3;">rollupPluginBabel</span><span>({
+</span><span>            compact: </span><span style="color:#d08770;">false</span><span>,
+</span><span>            babelrc: </span><span style="color:#d08770;">false</span><span>,
+</span><span>            presets: [
+</span><span>              [
+</span><span>                </span><span style="color:#bf616a;">babelPresetEnv</span><span>,
+</span><span>                {
+</span><span>                  modules: </span><span style="color:#d08770;">false</span><span>,
+</span><span>                  targets: </span><span style="color:#bf616a;">hasBrowserlistConfig </span><span>? </span><span style="color:#d08770;">undefined </span><span>: &#39;</span><span style="color:#a3be8c;">&gt;0.75%, not ie 11, not op_mini all</span><span>&#39;,
+</span><span>                },
+</span><span>              ],
+</span><span>            ],
+</span><span>          }),
+</span><span>        !!</span><span style="color:#bf616a;">isOptimized </span><span>&amp;&amp; </span><span style="color:#8fa1b3;">rollupPluginTerser</span><span>(),
+</span><span>      ],
+</span><span>      }) </span><span style="color:#bf616a;">as</span><span> any,
+</span><span>    };
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">outputOptions </span><span>= {
+</span><span>      dir: </span><span style="color:#bf616a;">destLoc</span><span>,
+</span><span>      format: &#39;</span><span style="color:#a3be8c;">esm</span><span>&#39; </span><span style="color:#b48ead;">as </span><span>&#39;</span><span style="color:#a3be8c;">esm</span><span>&#39;,
+</span><span>      sourcemap: </span><span style="color:#bf616a;">sourceMap </span><span>=== </span><span style="color:#d08770;">undefined </span><span>? </span><span style="color:#bf616a;">isOptimized </span><span>: </span><span style="color:#bf616a;">sourceMap</span><span>,
+</span><span>      exports: &#39;</span><span style="color:#a3be8c;">named</span><span>&#39; </span><span style="color:#b48ead;">as </span><span>&#39;</span><span style="color:#a3be8c;">named</span><span>&#39;,
+</span><span>      chunkFileNames: &#39;</span><span style="color:#a3be8c;">common/[name]-[hash].js</span><span>&#39;,
+</span><span>    };
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">packageBundle </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">rollup</span><span>.</span><span style="color:#8fa1b3;">rollup</span><span>(</span><span style="color:#bf616a;">inputOptions</span><span>);
+</span><span>    </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">packageBundle</span><span>.</span><span style="color:#96b5b4;">write</span><span>(</span><span style="color:#bf616a;">outputOptions</span><span>);
+</span><span>    </span><span style="color:#bf616a;">fs</span><span>.</span><span style="color:#8fa1b3;">writeFileSync</span><span>(
+</span><span>      </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">join</span><span>(</span><span style="color:#bf616a;">destLoc</span><span>, &#39;</span><span style="color:#a3be8c;">import-map.json</span><span>&#39;),
+</span><span>      JSON.</span><span style="color:#96b5b4;">stringify</span><span>({imports: </span><span style="color:#bf616a;">importMap</span><span>}, </span><span style="color:#d08770;">undefined</span><span>, </span><span style="color:#d08770;">2</span><span>),
+</span><span>      {encoding: &#39;</span><span style="color:#a3be8c;">utf8</span><span>&#39;},
+</span><span>    );
+</span><span style="color:#65737e;">// ...
+</span></code></pre>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/webpack/"
+      >webpack</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pseudo&#x2F;"
+    ><span class="mr-1.5">←</span><span>伪类和伪元素</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pagecycle&#x2F;"
+    ><span>网页生命周期(Page lifecycle API)</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

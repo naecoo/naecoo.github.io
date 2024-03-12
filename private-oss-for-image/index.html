@@ -1,0 +1,429 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    利用Minio搭建私有图床 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="利用Minio搭建私有图床" />
+  <meta name="author" content="利用Minio搭建私有图床" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;private-oss-for-image&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">利用Minio搭建私有图床</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2020-08-11</time>
+  <span class="mx-1">&middot;</span>
+  <span>8min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/private-oss-for-image/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/private-oss-for-image/#bu-shu-miniofu-wu"
+            >部署Minio服务</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/private-oss-for-image/#pei-zhi-nginx"
+            >配置Nginx</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/private-oss-for-image/#typoranian-tie-shang-chuan"
+            >Typora粘贴上传</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/private-oss-for-image/#hou-xu"
+            >后续</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="qian-yan">前言</h3>
+<p>​	图片存储服务，也叫图床，是每个博客都需要具备的基础服务，因为图片是一种比文字更加生动、具象和容易理解的信息媒介。纯文本的文章会相当枯燥，图片可以更好的帮助我们理解和阅读。过往我们采用的是公共免费的图床，比如SM.MS、微博图床和七牛云图床等服务，但是这些服务缺点很多，首先存储容量受限，其次是稳定性，我们不能保证这些服务可以一直提供（一般企业为了节省带宽费用，会对图片做防盗链处理），最重要的是图片安全性的欠缺，毕竟放在别人家里，很难保证别人会帮你好好保存。</p>
+<p>​	基于上述原因，自建私有图床逐渐成为了大家的首选项，下面就给大家介绍一下如何搭建一个图床，存储服务选用的是<a href="https://min.io/">Minio</a>。Minio是GlusterFS创始人之一Anand Babu Periasamy发布的开源项目，兼容Amason的S3分布式对象存储项目，采用<code>Golang</code>实现，客户端支持<code>Java</code>,<code>Python</code>,<code>Javacript</code>, <code>Golang</code>语言。<code>Minio</code>可以做为云存储的解决方案用来保存海量的图片，视频，文档。由于采用<code>Golang</code>实现，服务端可以工作在Windows,Linux, OS X和FreeBSD上。配置简单，基本是复制可执行程序，单行命令可以运行起来。</p>
+<h3 id="bu-shu-miniofu-wu">部署Minio服务</h3>
+<p>​	<code>Minio</code>官方提供了docker的部署方式，一条命令就可以将服务部署起来，首先我们需要下载<code>Minio</code>的官方镜像。</p>
+<p><img src="https://naecoo.github.io/private-oss-for-image/./1597161658735.png" alt="image-20200812000035246" /></p>
+<p>然后，根据<a href="https://docs.min.io/docs/minio-docker-quickstart-guide">教程</a>执行命令，可以参考本人的命令：</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">docker</span><span> run</span><span style="color:#bf616a;"> -itd -p</span><span> 9000:9000 \
+</span><span style="color:#bf616a;">  --name</span><span> minio1 \
+</span><span style="color:#bf616a;">  -v</span><span> /mnt/minio/data:/data \
+</span><span style="color:#bf616a;">  -v</span><span> /mnt/minio/config:/root/.minio \
+</span><span style="color:#bf616a;">  -e </span><span>&quot;</span><span style="color:#a3be8c;">MINIO_ACCESS_KEY=你的accessKey</span><span>&quot; \
+</span><span style="color:#bf616a;">  -e </span><span>&quot;</span><span style="color:#a3be8c;">MINIO_SECRET_KEY=你的secretKey</span><span>&quot; \
+</span><span>  minio/minio server /data
+</span></code></pre>
+<p>其中<code>/mnt/minio/data</code>和<code>/mnt/minio/config</code>是你的数据挂载目录和配置文件所在目录，这个根据自己需求设置就可以了。命令执行成功后，打开浏览器，输入<code>localhost:9999</code>就可以访问到<code>Minio</code>的管理后台，输入<code>accessKey</code>和<code>secretKey</code>即可进入。</p>
+<p><img src="https://naecoo.github.io/private-oss-for-image/./1597162015540.png" alt="image-20200812000653887" /></p>
+<h3 id="pei-zhi-nginx">配置Nginx</h3>
+<p>​	如果需要外网访问<code>Minio</code>的后台，我们需要配置Nginx，建议申请一个域名，然后在域名控制台配置二级域名，然后再<code>nginx.conf</code>下面配置:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>server {
+</span><span>    listen 80;
+</span><span>    # 这里填写你的二级域名
+</span><span>    server_name xxx.xxx.xxx;
+</span><span>
+</span><span>    location / {
+</span><span>        proxy_pass http://127.0.0.1:9000;
+</span><span>        proxy_set_header Host $host;
+</span><span>        proxy_set_header X-Real-IP $remote_addr;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>同时，图片访问也需要进行配置:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span> server{
+</span><span>    listen 80;
+</span><span>    # 这里填写你的图片访问域名
+</span><span>    # 比如你的图片地址是 http://image.user.com/blog/demo.png
+</span><span>    # 那么下面就填写image.user.com, blog是bucket名称
+</span><span>    server_name xxx.xxx.xxx;
+</span><span>    location / {
+</span><span>        root /mnt/minio/data/;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>最后，你就可以在公网上用域名访问你的图片了，记得二级域名后面带上图片所在的<code>bucket</code>名称。</p>
+<h3 id="typoranian-tie-shang-chuan">Typora粘贴上传</h3>
+<p>​	聪明的你很可能想到了，每次写博客的时候，都要登录<code>Minio</code>后台上传图片，然后复制URL到博文里面，过程有点繁琐，那么能不能简化呢？方法是有点，最普遍的是采用图床客户端，比如<code>PicGo</code>和<code>uPic</code>等工具，但是这些工具有的只支持Mac系统，有的不支持<code>Minio</code>，需要额外编写插件，所以还是很麻烦。于是聪明的我又想到了一个简单的方法，刚好<a href="https://www.typora.io/">Typora</a>完美支持，<code>Typora</code>是一个<code>MarkDown</code>编辑器，如果有不了解的，强烈推荐去下载一个试试。<code>Typora</code>支持图片自定义上传，插入图片的时候，可以配置相应的脚本。所以我们可以写一个上传的脚本，每当图片插入时，就运行脚本，将图片上传到我们的图床，最后返回图片的公网地址，更新<code>MarkDown</code>内容，首先我们要配置<code>Typora</code>, 打开文件-&gt;偏好设置-&gt;图像，可以看到有个上传服务设定的选项。</p>
+<p><img src="https://naecoo.github.io/private-oss-for-image/./1597163365403.png" alt="image-20200812002924055" /></p>
+<p>我们将上传服务切换到<code>Custom Command</code>，也就是自定义命令了，然后在自定义命令输入你的命令，比如<code>node upload.js</code>，<code>Typora</code>会在上传图片时执行这个命令，图片路径将会作为参数传递给脚本。</p>
+<p>​		脚本写起来也非常简单，下面贴出本人的图片上传脚本:</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">/* 
+</span><span style="color:#65737e;"> * typora插入图片调用此脚本，上传图片到图床
+</span><span style="color:#65737e;"> */
+</span><span>
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">path </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">path</span><span>&#39;)
+</span><span style="color:#65737e;">// minio for node.js
+</span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">Minio </span><span>= </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">minio</span><span>&#39;) 
+</span><span style="color:#b48ead;">const </span><span>{ </span><span style="color:#bf616a;">promises </span><span>} = </span><span style="color:#96b5b4;">require</span><span>(&#39;</span><span style="color:#a3be8c;">fs</span><span>&#39;)
+</span><span>
+</span><span style="color:#65737e;">// 解析参数， 获取图片的路径，有可能是多张图片
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">parseArgv </span><span>= () </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">imageList </span><span>= process.argv.</span><span style="color:#96b5b4;">slice</span><span>(</span><span style="color:#d08770;">2</span><span>).</span><span style="color:#8fa1b3;">map</span><span>(</span><span style="color:#bf616a;">u </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">path</span><span>.</span><span style="color:#96b5b4;">resolve</span><span>(</span><span style="color:#bf616a;">u</span><span>))
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">imageList
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 入口
+</span><span style="color:#b48ead;">const </span><span style="color:#8fa1b3;">uploadImageFile </span><span>= </span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">imageList </span><span>= []) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#65737e;">// 创建连接
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">minioClient </span><span>= new Minio.Client({
+</span><span>    </span><span style="color:#65737e;">// 这里填写你的minio后台域名
+</span><span>    endPoint: &#39;</span><span style="color:#a3be8c;">xxx.xxx.xxx</span><span>&#39;,
+</span><span>    port: </span><span style="color:#d08770;">80</span><span>,
+</span><span>    useSSL: </span><span style="color:#d08770;">false</span><span>,
+</span><span>    </span><span style="color:#65737e;">// 下面填写你的accessKey和secretKey
+</span><span>    accessKey: &#39;</span><span style="color:#a3be8c;">*************</span><span>&#39;,
+</span><span>    secretKey: &#39;</span><span style="color:#a3be8c;">*************</span><span>&#39;
+</span><span>  })
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 开始上传图片
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">metaData </span><span>= {}
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">tasks </span><span>= </span><span style="color:#bf616a;">imageList</span><span>.</span><span style="color:#8fa1b3;">map</span><span>(</span><span style="color:#bf616a;">image </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#b48ead;">return </span><span>new Promise(</span><span style="color:#b48ead;">async </span><span>(</span><span style="color:#bf616a;">resolve</span><span>, </span><span style="color:#bf616a;">reject</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>      </span><span style="color:#b48ead;">try </span><span>{
+</span><span>        </span><span style="color:#65737e;">// 图片重命名，这里采用最简单的，可以根据自己需求重新实现
+</span><span>        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">name </span><span>= `</span><span style="color:#a3be8c;">${</span><span style="color:#ebcb8b;">Date</span><span style="color:#a3be8c;">.</span><span style="color:#8fa1b3;">now</span><span style="color:#a3be8c;">()}${</span><span style="color:#bf616a;">path</span><span style="color:#a3be8c;">.</span><span style="color:#8fa1b3;">extname</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">image</span><span style="color:#a3be8c;">)}</span><span>`
+</span><span>        </span><span style="color:#65737e;">// 具体请看Minio的API文档，这里是将图片上传到blog这个bucket上
+</span><span>        </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">res </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#bf616a;">minioClient</span><span>.</span><span style="color:#8fa1b3;">fPutObject</span><span>(&#39;</span><span style="color:#a3be8c;">blog</span><span>&#39;, </span><span style="color:#bf616a;">name</span><span>, </span><span style="color:#bf616a;">image</span><span>, </span><span style="color:#bf616a;">metaData</span><span>)
+</span><span>        </span><span style="color:#8fa1b3;">resolve</span><span>(</span><span style="color:#bf616a;">name</span><span>)
+</span><span>      } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#bf616a;">err</span><span>) {
+</span><span>        </span><span style="color:#8fa1b3;">reject</span><span>(</span><span style="color:#bf616a;">err</span><span>)
+</span><span>      }
+</span><span>    })
+</span><span>  })
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">result </span><span>= </span><span style="color:#b48ead;">await </span><span style="color:#ebcb8b;">Promise</span><span>.</span><span style="color:#96b5b4;">all</span><span>(</span><span style="color:#bf616a;">tasks</span><span>)
+</span><span>  
+</span><span>  </span><span style="color:#65737e;">// 返回图片的访问链接
+</span><span>  </span><span style="color:#bf616a;">result</span><span>.</span><span style="color:#96b5b4;">forEach</span><span>(</span><span style="color:#bf616a;">name </span><span style="color:#b48ead;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">url </span><span>= `</span><span style="color:#a3be8c;">http://xxx.xxx.xxx/blog/${</span><span style="color:#bf616a;">name</span><span style="color:#a3be8c;">}</span><span>`
+</span><span>    </span><span style="color:#65737e;">// Typora会提取脚本的输出作为地址，将markdown上图片链接替换掉
+</span><span>    </span><span style="color:#ebcb8b;">console</span><span>.</span><span style="color:#96b5b4;">log</span><span>(</span><span style="color:#bf616a;">url</span><span>)
+</span><span>  })
+</span><span>}
+</span><span>
+</span><span style="color:#65737e;">// 执行脚本
+</span><span style="color:#8fa1b3;">uploadImageFile</span><span>(</span><span style="color:#8fa1b3;">parseArgv</span><span>())
+</span></code></pre>
+<h3 id="hou-xu">后续</h3>
+<p>​	最终，我们部署了一个安全可靠的图床服务，并实现了<code>Typora</code>的粘贴自动上传功能，整个过程不会很复杂，相信只有认真看完，十几分钟就能走完流程，期待你能亲自动手实践！</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/minio/"
+      >minio</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/blog/"
+      >blog</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vuepress&#x2F;"
+    ><span class="mr-1.5">←</span><span>重构博客</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;koajs&#x2F;"
+    ><span>koa原理解析</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

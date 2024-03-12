@@ -1,0 +1,400 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    重构博客 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="重构博客" />
+  <meta name="author" content="重构博客" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vuepress&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">重构博客</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2020-06-19</time>
+  <span class="mx-1">&middot;</span>
+  <span>5min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vuepress/#vuepress"
+            >vuepress</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vuepress/#li-yong-codingjin-xing-chi-xu-ji-cheng"
+            >利用coding进行持续集成</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vuepress/#si-you-tu-chuang-da-jian"
+            >私有图床搭建</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vuepress/#hou-xu"
+            >后续</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="vuepress">vuepress</h3>
+<p>​	我的博客初版采用的是<code>Hexo</code>，一开始感觉挺好用的，但后面用着用着发现配置文件太多太复杂了，我对于博客只有几点要求：简洁、标签和可定制，所以<code>Hexo</code>很多的功能基本上都用不到。后面<code>Vue</code>也出了自己的静态站点生成器<a href="https://vuepress.vuejs.org/">VuePress</a>，现在迭代得也挺完善了，所以就基于此工具重新构建了博客。</p>
+<p>​	<code>VuePress</code>预置了博客和文档的主题，博客的主题简洁优雅，十分对我的口味。博客配置文件也非常简单，以本站点为例子，只使用了60行左右的代码进行配置，省心省力，下面分享一下我的配置：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>module.exports = {
+</span><span>  </span><span style="color:#65737e;">// 博客标题
+</span><span>  title: &#39;</span><span style="color:#a3be8c;">naeco</span><span>&#39;,
+</span><span>  </span><span style="color:#65737e;">// 博客描述信息
+</span><span>  description: &#39;&#39;,
+</span><span>  </span><span style="color:#65737e;">// dev端口
+</span><span>  port: </span><span style="color:#d08770;">9999</span><span>,
+</span><span>  </span><span style="color:#65737e;">// haed内容
+</span><span>  head: [
+</span><span>    [&#39;</span><span style="color:#a3be8c;">link</span><span>&#39;, { rel: &#39;</span><span style="color:#a3be8c;">icon</span><span>&#39;, href: &#39;</span><span style="color:#a3be8c;">/favicon.icon</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">link</span><span>&#39;, { rel: &#39;</span><span style="color:#a3be8c;">manifest</span><span>&#39;, href: &#39;</span><span style="color:#a3be8c;">/manifest.json</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">meta</span><span>&#39;, { name: &#39;</span><span style="color:#a3be8c;">theme-color</span><span>&#39;, content: &#39;</span><span style="color:#a3be8c;">#ff6348</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">meta</span><span>&#39;, { name: &#39;</span><span style="color:#a3be8c;">apple-mobile-web-app-capable</span><span>&#39;, content: &#39;</span><span style="color:#a3be8c;">yes</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">meta</span><span>&#39;, { name: &#39;</span><span style="color:#a3be8c;">apple-mobile-web-app-status-bar-style</span><span>&#39;, content: &#39;</span><span style="color:#a3be8c;">black</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">link</span><span>&#39;, { rel: &#39;</span><span style="color:#a3be8c;">apple-touch-icon</span><span>&#39;, href: &#39;</span><span style="color:#a3be8c;">/icons.png</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">link</span><span>&#39;, { rel: &#39;</span><span style="color:#a3be8c;">mask-icon</span><span>&#39;, href: &#39;</span><span style="color:#a3be8c;">/mask.svg</span><span>&#39;, color: &#39;</span><span style="color:#a3be8c;">#ff6348</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">meta</span><span>&#39;, { name: &#39;</span><span style="color:#a3be8c;">msapplication-TileImage</span><span>&#39;, content: &#39;</span><span style="color:#a3be8c;">/icons.png</span><span>&#39; }],
+</span><span>    [&#39;</span><span style="color:#a3be8c;">meta</span><span>&#39;, { name: &#39;</span><span style="color:#a3be8c;">msapplication-TileColor</span><span>&#39;, content: &#39;</span><span style="color:#a3be8c;">rgb(51, 51, 51)</span><span>&#39; }]
+</span><span>  ],
+</span><span>  </span><span style="color:#65737e;">// markdown配置
+</span><span>  markdown: {
+</span><span>    lineNumbers: </span><span style="color:#d08770;">false
+</span><span>  },
+</span><span>  </span><span style="color:#65737e;">// 使用es6代码, 不兼容低版本浏览器
+</span><span>  evergreen: </span><span style="color:#d08770;">true</span><span>,
+</span><span>  </span><span style="color:#65737e;">// 第三方主题
+</span><span>  theme: &#39;</span><span style="color:#a3be8c;">@vuepress/theme-blog</span><span>&#39;,
+</span><span>  themeConfig: {
+</span><span>    smoothScroll: </span><span style="color:#d08770;">true</span><span>,
+</span><span>    </span><span style="color:#65737e;">// 日期格式化
+</span><span>    dateFormat: &#39;</span><span style="color:#a3be8c;">YYYY-MM-DD</span><span>&#39;,
+</span><span>    </span><span style="color:#65737e;">// 导航内容
+</span><span>    nav: [
+</span><span>      { text: &#39;</span><span style="color:#a3be8c;">主页</span><span>&#39;, link: &#39;</span><span style="color:#a3be8c;">/</span><span>&#39; },
+</span><span>      { text: &#39;</span><span style="color:#a3be8c;">标签</span><span>&#39;, link: &#39;</span><span style="color:#a3be8c;">/tag/</span><span>&#39; },
+</span><span>      { text: &#39;</span><span style="color:#a3be8c;">关于</span><span>&#39;, link: &#39;</span><span style="color:#a3be8c;">/about/</span><span>&#39; }
+</span><span>    ],
+</span><span>    </span><span style="color:#65737e;">// 底部内容
+</span><span>    footer: {
+</span><span>      contact: [
+</span><span>        {
+</span><span>          type: &#39;</span><span style="color:#a3be8c;">github</span><span>&#39;,
+</span><span>          link: &#39;</span><span style="color:#a3be8c;">https://github.com/naecoo</span><span>&#39;
+</span><span>        }
+</span><span>      ],
+</span><span>      copyright: [
+</span><span>        {
+</span><span>          text: &#39;</span><span style="color:#a3be8c;">MIT Licensed | Copyright © 2018-present</span><span>&#39;,
+</span><span>          link: &#39;</span><span style="color:#a3be8c;">/copyright/</span><span>&#39;,
+</span><span>        }
+</span><span>      ]
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">//  分页
+</span><span>    globalPagination: {
+</span><span>      prevText: &#39;</span><span style="color:#a3be8c;">上一页</span><span>&#39;,
+</span><span>      nextText: &#39;</span><span style="color:#a3be8c;">下一页</span><span>&#39;,
+</span><span>      lengthPerPage: &#39;</span><span style="color:#a3be8c;">7</span><span>&#39;,
+</span><span>      layout: &#39;</span><span style="color:#a3be8c;">Pagination</span><span>&#39;
+</span><span>    },
+</span><span>    </span><span style="color:#65737e;">// pwa支持
+</span><span>    pwa: {
+</span><span>      serviceWorker: </span><span style="color:#d08770;">true</span><span>,
+</span><span>      updatePopup: {
+</span><span>        message: &#39;</span><span style="color:#a3be8c;">发现新内容可用</span><span>&#39;,
+</span><span>        buttonText: &#39;</span><span style="color:#a3be8c;">refresh</span><span>&#39;
+</span><span>      }
+</span><span>    }
+</span><span>  },
+</span><span>  </span><span style="color:#65737e;">// 插件
+</span><span>  plugins: [&#39;</span><span style="color:#a3be8c;">@vuepress/back-to-top</span><span>&#39;]
+</span><span>}
+</span></code></pre>
+<p>​	迁移到<code>VuePress</code>之后，我终于可以专心写作，不用再捣鼓一些配置文件了，十分舒服省心。</p>
+<h3 id="li-yong-codingjin-xing-chi-xu-ji-cheng">利用coding进行持续集成</h3>
+<p>​	<img src="https://naecoo.github.io/vuepress/./1597072423908.png" alt="image-20200810231341612" /></p>
+<p>​	这里其实和vuepress本身没关系，hexo也可以利用coding进行持续集成。本来我的博客是放在github上面的，但国内访问github速度感人，加上博客访问人群主要也在国内，所以就将博客迁移到自己的云服务器，加快访问速度。我们希望每次push代码，博客会自动更新并部署，同时coding支持持续集成、持续部署和制品库等功能，完全免费，速度也很快。于是就将博客迁移到了coding，博客CI流程大概是这样的：</p>
+<p><img src="https://naecoo.github.io/vuepress/./coding-cicd-porcess.png" alt="coding持续集成" /></p>
+<p>​	可以看到，大部分的流程都是在coding上完成的，大大减轻了服务器的压力。</p>
+<h3 id="si-you-tu-chuang-da-jian">私有图床搭建</h3>
+<p><img src="https://naecoo.github.io/vuepress/./1597072528955.png" alt="image-20200810231521032" /></p>
+<p>​	私有图床采用的是minio，方法也很简单，minio官方提供了部署的docker镜像，一条命令就可以在机器上部署好，再修改一下nginx的配置就可以完成一个简单的图床系统，具体的操作请看<a href="https://azhuge233.com/%E4%BD%BF%E7%94%A8-minio-nginx-dotnet-core-%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A/">详细教程</a>。后续我会出写一篇博文专门介绍如何搭建私有图床，从minio的搭建到Typora的粘贴上传脚本编写。</p>
+<h3 id="hou-xu">后续</h3>
+<p>​	博客的持续部署流程还是有一点粗糙，还有在服务器写一段脚本监听仓库的更新事件，其实这些可以用webhook实现的，或者用Caddy替换掉nginx，Caddy内置了webhook，还支持免费的https，等有时间的时候，可以用接入Caddy重构一波。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/blog/"
+      >blog</a
+    >
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/minio/"
+      >minio</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pagecycle&#x2F;"
+    ><span class="mr-1.5">←</span><span>网页生命周期(Page lifecycle API)</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;private-oss-for-image&#x2F;"
+    ><span>利用Minio搭建私有图床</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

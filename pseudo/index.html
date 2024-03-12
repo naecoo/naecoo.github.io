@@ -1,0 +1,389 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    伪类和伪元素 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="伪类和伪元素" />
+  <meta name="author" content="伪类和伪元素" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pseudo&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">伪类和伪元素</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-09-01</time>
+  <span class="mx-1">&middot;</span>
+  <span>6min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pseudo/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pseudo/#wei-lei"
+            >伪类</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pseudo/#wei-yuan-su"
+            >伪元素</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pseudo/#liang-zhe-qu-bie"
+            >两者区别</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pseudo/#wei-lei-he-wei-yuan-su-du-you-na-xie"
+            >伪类和伪元素都有哪些？</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/pseudo/#can-kao-zi-liao"
+            >参考资料</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h4 id="qian-yan">前言</h4>
+<p>最近看一些前端面试题，经常有问到伪类和伪元素的作用以及两者区别，所以特意找了一些资料学习。下面是我对这一方面知识的理解和总结，可能会有遗漏或者一些出入，欢迎大家指正，相互交流～</p>
+<h4 id="wei-lei">伪类</h4>
+<blockquote>
+<p>A psuedo-class is a selector that selects elements that are in a specific state, e.g. they are the first element of their type, or they are being hovered over by the mouse pointer. They tend to act as if you had applied a class to some part of your document, often helping you cut down on excess classes in your markup, and giving you more flexible, maintainable code.</p>
+</blockquote>
+<p>MDN上面阐述的很明确，伪类就是一个选择处于特定状态的元素的选择器，比如某一个clsss的第一个元素，某个被hover的元素等等...，我们可以理解成一个特定的CSS类，但与普通的类不一样，它只有处于DOM树无法描述的状态下才能为元素添加样式，所以将其称为伪类</p>
+<h4 id="wei-yuan-su">伪元素</h4>
+<blockquote>
+<p>Pseudo-elements behave in a similar way, however they act as if you had added a whole new HTML element into the markup, rather than applying a class to existing elements. Pseudo-elements start with a double colon ::</p>
+</blockquote>
+<p>伪元素和伪类很像，但是伪元素类似于增添一个新的DOM节点到DOM树中，而不是改变元素的状态。注意了，这里是类似，而不是真的增加一个节点，这也是其被称为伪元素的原因（实质上，元素被创建在文档外）。</p>
+<h4 id="liang-zhe-qu-bie">两者区别</h4>
+<p>伪类是操作文档中已有的元素，而伪元素是创建了一个文档外的元素，两者最关键的区别就是这点。此外，为了书写CSS时进行区分，一般伪类是单冒号，如<code>:hover</code>，而伪元素是双冒号<code>::before</code>。一般大部分伪类强制使用单冒号，大部分伪元素单冒号和双冒号都可以，但是为了区分，建议按照规范书写。</p>
+<h4 id="wei-lei-he-wei-yuan-su-du-you-na-xie">伪类和伪元素都有哪些？</h4>
+<p><img src="https://user-gold-cdn.xitu.io/2019/9/1/16ceac430d44fc54?w=594&amp;h=537&amp;f=png&amp;s=50228" alt="伪类" /></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/9/1/16ceac464bbf0add?w=491&amp;h=212&amp;f=png&amp;s=17507" alt="伪元素" /></p>
+<ul>
+<li>伪类</li>
+</ul>
+<table><thead><tr><th>选择器</th><th>作用</th></tr></thead><tbody>
+<tr><td>:avtive</td><td>匹配被用户激活的元素（比如点击）</td></tr>
+<tr><td>:blank</td><td>匹配空的input</td></tr>
+<tr><td>:checked</td><td>匹配被选中的radio或者checkbox</td></tr>
+<tr><td>:disabled</td><td>匹配处于不可用状态的可交互元素</td></tr>
+<tr><td>:empty</td><td>匹配没有子元素的元素</td></tr>
+<tr><td>:enabled</td><td>匹配处于可用状态的可交互元素</td></tr>
+<tr><td>:first-child</td><td>匹配在兄弟元素中处于第一的元素</td></tr>
+<tr><td>:first-of-type</td><td>匹配在它的兄弟元素中是某个类型中的第一个的元素</td></tr>
+<tr><td>:focus</td><td>匹配获取焦点的的元素</td></tr>
+<tr><td>:focus-visible</td><td>匹配获取焦点且能被用户看到的元素</td></tr>
+<tr><td>:hover</td><td>匹配用户在此悬停或者触摸的元素</td></tr>
+<tr><td>:invalid</td><td>匹配处于不合法状态的元素，比如<code>&lt;input&gt;</code>正则校验不通过</td></tr>
+<tr><td>:lang</td><td>根据文档语言匹配元素</td></tr>
+<tr><td>:last-child</td><td>匹配在兄弟元素中处于最后的元素</td></tr>
+<tr><td>:last-of-type</td><td>匹配在它的兄弟元素中是某个类型中的最后一个的元素</td></tr>
+<tr><td>:link</td><td>匹配没有被访问过的链接</td></tr>
+<tr><td>:is()</td><td>匹配符合结果的元素</td></tr>
+<tr><td>:not()</td><td>匹配符合结果之外的元素</td></tr>
+<tr><td>:nth-child(n)</td><td>匹配父元素的第n个子元素。n可以是一个数字、一个关键字或一个公式</td></tr>
+<tr><td>:nth-of-type(n)</td><td>匹配父元素的某种类型元素中的第n个子元素。n可以是一个数字、一个关键字或一个  公式</td></tr>
+<tr><td>:nth-last-child(n)</td><td>与nth-child()类似，从后往前数</td></tr>
+<tr><td>:nth-last-of-type(n)</td><td>与nth-last-of-type-child()类似，从后往前数</td></tr>
+<tr><td>:only-child</td><td>匹配没有兄弟元素的元素</td></tr>
+<tr><td>:only-of-type</td><td>匹配一个元素，该元素是其兄弟元素中唯一的一个类型。</td></tr>
+<tr><td>:placeholder-shown</td><td>匹配显示默认占位符的表单元素</td></tr>
+<tr><td>:required</td><td>匹配内容为必填的表单元素</td></tr>
+<tr><td>:root</td><td>匹配根元素</td></tr>
+<tr><td>:valid</td><td>匹配处于合法状态的元素</td></tr>
+<tr><td>:target</td><td>匹配符合当前url的锚点元素</td></tr>
+<tr><td>:visited</td><td>匹配被访问过的元素</td></tr>
+</tbody></table>
+<ul>
+<li>伪元素</li>
+</ul>
+<table><thead><tr><th>选择器</th><th>作用</th></tr></thead><tbody>
+<tr><td>::before</td><td>匹配在原始元素的实际内容之后出现的区域</td></tr>
+<tr><td>::after</td><td>匹配在原始元素的实际内容之前出现的区域</td></tr>
+<tr><td>::first-letter</td><td>匹配元素的第一个字母</td></tr>
+<tr><td>::first-line</td><td>匹配元素第一行</td></tr>
+<tr><td>::selection</td><td>匹配被选中的文本或者区域</td></tr>
+</tbody></table>
+<h4 id="can-kao-zi-liao">参考资料</h4>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors/Pseudo-classes_and_pseudo-elements">MDN, Pseudo-classes_and_pseudo-elements</a></li>
+<li><a href="http://www.alloyteam.com/2016/05/summary-of-pseudo-classes-and-pseudo-elements/">AlloyTeam, 总结伪类和伪元素</a></li>
+</ul>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/css/"
+      >css</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;lazy-load&#x2F;"
+    ><span class="mr-1.5">←</span><span>懒加载原理</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;pika&#x2F;"
+    ><span>告别webpack，直接运行npm包</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

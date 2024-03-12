@@ -1,0 +1,351 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    JS中的位运算 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="JS中的位运算" />
+  <meta name="author" content="JS中的位运算" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;bit-operation&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">JS中的位运算</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-04-16</time>
+  <span class="mx-1">&middot;</span>
+  <span>3min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/bit-operation/#qian-yan"
+            >前言</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/bit-operation/#xiang-xia-qu-zheng-1"
+                >向下取整(1)</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/bit-operation/#xiang-xia-qu-zheng-2"
+                >向下取整(2)</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/bit-operation/#0-he-1-qie-huan"
+                >0 和 1 切换</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/bit-operation/#cheng-fa-zuo-yi-yi-wei-xiang-dang-yu-cheng-2"
+                >乘法(左移一位相当于乘 2)</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/bit-operation/#hou-xu"
+            >后续</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="qian-yan">前言</h3>
+<p>最近在做项目，有个需求是消息置顶功能，类似于微信聊天里面的置顶。这个功能前端单独做也没问题，但我们需要多端统一状态，所以需要前后台的配合。所以后台需要在每个消息加一个字段表示是否置顶，但我翻文档并没有发现这个字段，后来我抓包发现置顶会返回一个 status 为 1063，而不置顶会返回 1059。后面和后台确认了一下才知道他们用 status 这个字段表示了好几种状态，每一个状态分别用二进制的一位来代表，置顶这个状态就用了第三位，所以同一个消息置顶和不置顶 status 的值会相差 4(2^2=4)。知道什么意思就好办了，嗯，首先先把 status 用<code>toString(2)</code>转化为二进制，然后再提取第三位来判断。等等，这样做实在太麻烦了，有没有简单一点的方法呢？有的，这时候位运算就派上用场了，我们只需要写一行代码就可以判断了：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>  </span><span style="color:#b48ead;">if </span><span>( (</span><span style="color:#bf616a;">status </span><span>&amp; </span><span style="color:#d08770;">4</span><span>) !== </span><span style="color:#d08770;">0 </span><span>) {
+</span><span>    ...
+</span><span>  }
+</span></code></pre>
+<p><code>&amp;</code>叫做按位与运算符，和&amp;&amp;很像，只有两个操作数的比特位都是 1 时才返回 1。所以只要第三位是 0，不管 status 有啥，与 4 进行按位与都会返回 0。同样的原理，我们让 status 分别和 2^(n-1)进行按位与，就可以提取出每一位的状态，这样用一个字段就可以表示全部的状态。
+做完这个需求后，我又在网上看了一些文章，发现了位运算在 JS 中的一些妙用：</p>
+<h4 id="xiang-xia-qu-zheng-1">向下取整(1)</h4>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">n </span><span>= </span><span style="color:#d08770;">7.5</span><span>;
+</span><span>Math.</span><span style="color:#96b5b4;">floor</span><span>(</span><span style="color:#bf616a;">n</span><span>); </span><span style="color:#65737e;">// 7
+</span><span style="color:#d08770;">7.5 </span><span>| </span><span style="color:#d08770;">0</span><span>; </span><span style="color:#65737e;">// 7
+</span></code></pre>
+<h4 id="xiang-xia-qu-zheng-2">向下取整(2)</h4>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">const </span><span style="color:#bf616a;">n </span><span>= </span><span style="color:#d08770;">7.5</span><span>;
+</span><span>Math.</span><span style="color:#96b5b4;">floor</span><span>(</span><span style="color:#bf616a;">n</span><span>); </span><span style="color:#65737e;">// 7
+</span><span>~~</span><span style="color:#bf616a;">n</span><span>; </span><span style="color:#65737e;">// 7
+</span></code></pre>
+<h4 id="0-he-1-qie-huan">0 和 1 切换</h4>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#d08770;">0 </span><span>^ </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#65737e;">// 0
+</span><span style="color:#d08770;">1 </span><span>^ </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#65737e;">// 1
+</span></code></pre>
+<h4 id="cheng-fa-zuo-yi-yi-wei-xiang-dang-yu-cheng-2">乘法(左移一位相当于乘 2)</h4>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#d08770;">2 </span><span>&lt;&lt; </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#65737e;">//4
+</span><span style="color:#d08770;">3 </span><span>&lt;&lt; </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#65737e;">//6
+</span><span style="color:#d08770;">4 </span><span>&lt;&lt; </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#65737e;">//8
+</span></code></pre>
+<h3 id="hou-xu">后续</h3>
+<p>暂时想到的只有这么多，以后找到再补充。不过提醒一句，虽然位运算符看起来很简洁，但带来的是可读性的大大降低，再加上 JS 中奇怪的整型，我们很难保证不会出什么差错，所以建议减少使用。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;router&#x2F;"
+    ><span class="mr-1.5">←</span><span>谈一谈前端路由</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vue-key&#x2F;"
+    ><span>Vue组件复用的一些问题</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

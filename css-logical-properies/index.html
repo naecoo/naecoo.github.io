@@ -1,0 +1,595 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    CSS逻辑属性 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="CSS逻辑属性" />
+  <meta name="author" content="CSS逻辑属性" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;css-logical-properies&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">CSS逻辑属性</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2021-06-27</time>
+  <span class="mx-1">&middot;</span>
+  <span>13min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#shen-me-shi-luo-ji-shu-xing"
+            >什么是逻辑属性</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#kuai-zhuang-liu-block-flow"
+                >块状流(block flow)</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#nei-lian-liu-inline-flow"
+                >内联流(inline flow)</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#luo-ji-shu-xing-jie-shao"
+            >逻辑属性介绍</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#fang-xiang"
+                >方向</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#chi-cun"
+                >尺寸</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#nei-wai-bian-ju"
+                >内外边距</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#bian-kuang"
+                >边框</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#ding-wei"
+                >定位</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/css-logical-properies/#can-kao"
+            >参考</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="qian-yan">前言</h2>
+<p>​		传统的CSS属性大多是采用物理属性来定义的，比如元素的尺寸，偏移和边距等属性。但是随着业务的发展，越来越多的web应用需要考虑到国家化，必须适配不同的语言。大部分国家的语言排版都是从左到右，即LTR(left to right)，但是仍然有一部分语言采用的是从右到左，即RTL(right to left)的版本布局，比如阿拉伯语和希伯来语等。</p>
+<p>​	但是仅凭靠现有的物理属性，CSS很难处理多语言的业务场景，比如下面这个简单的例子：</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625380910525.png" alt="image-20210704144150291" /></p>
+<p>一个图标和一行文本，要求是文本距离图标要有一定的间距。如果按照传统的思路，我们可能直接加一个外边距就处理完成了：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>// 代表icon
+</span><span>&lt;</span><span style="color:#bf616a;">svg </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">icon</span><span>&quot;&gt;....&lt;/</span><span style="color:#bf616a;">svg</span><span>&gt;
+</span><span>&lt;</span><span style="color:#bf616a;">span </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">text</span><span>&quot;&gt;CSS is really good&lt;/</span><span style="color:#bf616a;">span</span><span>&gt;
+</span></code></pre>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">icon </span><span>{
+</span><span>    margin-right: </span><span style="color:#d08770;">0.5em</span><span>;
+</span><span>}
+</span></code></pre>
+<p>但是，当我们面对RTL的文本排版时，效果将会变成这样：</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625381308779.png" alt="image-20210704144828558" /></p>
+<p>很显然这是不符合实际需求的，为了兼容，我们不得不进行类似的处理:</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#bf616a;">html</span><span style="color:#8fa1b3;">[</span><span style="color:#d08770;">lang</span><span>=&quot;</span><span style="color:#a3be8c;">ar</span><span>&quot;</span><span style="color:#8fa1b3;">] .</span><span style="color:#d08770;">icon </span><span>{
+</span><span>    margin-right： 0;
+</span><span>    margin-left: </span><span style="color:#d08770;">0.5em</span><span>;
+</span><span>}
+</span></code></pre>
+<p>​		虽然这只是一个简单的例子，但也表明为了编写兼容多种语言的web页面，前端开发人员不得不做大量重复繁琐的样式调正，所以我们迫切需要一种新特性，可以让开发者根据书写模式来维护布局的完整性。幸运的是，CSS工作组也看到了这种困境，提出了<a href="https://www.w3.org/TR/css-logical-1/#intro">CSS逻辑属性（CSS Logical Properties and Values Level 1）</a>的这一特性，下面，我们将详细介绍该特性</p>
+<h2 id="shen-me-shi-luo-ji-shu-xing">什么是逻辑属性</h2>
+<p>​	<img src="https://naecoo.github.io/css-logical-properies/./1625755655244.jpg" alt="img" /></p>
+<p>​		传统CSS盒子模型中的top、right、bottom和left代表了UI视图在物理维度上的属性，与显示屏幕的方向保持一致，而css逻辑属性则和文档流排版的方向保持一致，这意味着逻辑属性可以根据文档流排版方向的改变而改变。首先我们要搞清楚什么是文档流的排版方向，在默认情况下，文档流的排版是从右到左，从上到下。而HTML的<code>dir</code>属性和CSS的<code>direction</code>、<code>writing-mode</code>，甚至是<code>flex</code>和<code>grid</code>等属性都可以改变文档的排版方向。一旦改变了文档排版方向，物理属性的左右上下就失去了意义，因为这些属性并没有和文档流的方向关联起来。因此，在CSS的逻辑属性中，并没有方向的概念，只有开始(<code>start</code>)和结束(<code>end</code>)，又由于web页面是二维的布局，所以也包含块(<code>block</code>)和内联(<code>inline</code>)的概念。</p>
+<h3 id="kuai-zhuang-liu-block-flow">块状流(block flow)</h3>
+<p>​		块状流就是块状元素排列的方向，英文和中文默认方向是从顶部到底部，类似于<code>flex</code>布局的主轴。</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625403658411.svg" alt="JKfvuIFBBtmvylmFSV8K" /></p>
+<h3 id="nei-lian-liu-inline-flow">内联流(inline flow)</h3>
+<p>​		内联流就是内联元素或者文本排列的方向，英文和中文默认方向是从左边到右边，类似于<code>flex</code>布局的交叉轴。</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625403779268.svg" alt="DfyMS0jh0SjSxaeNioJt" /></p>
+<p>​		block flow和inline flow的方向并不是固定的，可以用过HTML的<code>dir</code>属性，CSS的<code>direction</code>和<code>writing-mode</code>等属性进行变更，总之block flow就是块状元素堆叠的方向，inline flow就是内联元素和文本排列的方向。通过设定不同的<code>writing-mode</code>，block flow可以变成从底部到顶部、从左到右甚至是从右到左，inline flow同理，<code>wrigin-mode</code>的使用方法可以参考[MDN](<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/writing-mode">writing-mode - CSS: Cascading Style Sheets | MDN (mozilla.org)</a>)。</p>
+<p>​		在CSS逻辑属性中，不再需要使用<code>top</code>、<code>right</code>、<code>bottom</code>和<code>right</code>等物理属性了描述方向了，取而代之的是<code>start</code>和<code>end</code>。比如，按照正常的文档流（英文），<code>margin-top</code>属性可以改为<code>margin-block-start</code>，<code>margin-bottom</code>改为<code>margin-block-end</code>，<code>margin-left</code>改为<code>margin-inline-start</code>，<code>margin-right</code>改为<code>margin-inline-end</code>，<code>padding</code>和<code>border</code>也是有相应的转换，如下图所示：</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625411075738.png" alt="GezxDZXkJgkMevkKg39M" /></p>
+<p>我们可以简单对比一下两者的差异：</p>
+<p>HTML代码：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>  &lt;</span><span style="color:#bf616a;">h3</span><span>&gt;container1&lt;/</span><span style="color:#bf616a;">h3</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">container</span><span>&quot;&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">box</span><span>&quot;&gt;1&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">box</span><span>&quot;&gt;2&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>
+</span><span>  &lt;</span><span style="color:#bf616a;">h3</span><span>&gt;container2&lt;/</span><span style="color:#bf616a;">h3</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">container</span><span>&quot;&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">box</span><span>&quot;&gt;1&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">box</span><span>&quot;&gt;2&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span><span>  &lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>CSS代码</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span>	</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">root </span><span>{
+</span><span>      --size: </span><span style="color:#d08770;">100px</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">container </span><span>{
+</span><span>      display: flex;
+</span><span>      margin-top: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>      padding: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>      border: </span><span style="color:#d08770;">1px </span><span>solid </span><span style="color:#96b5b4;">#000</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">box </span><span>{
+</span><span>      width: </span><span style="color:#96b5b4;">var</span><span>(--size);
+</span><span>      height: </span><span style="color:#96b5b4;">var</span><span>(--size);
+</span><span>      line-height: </span><span style="color:#96b5b4;">var</span><span>(--size);
+</span><span>      text-align: center;
+</span><span>      background-color: sandybrown;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">container</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">nth-of-type(</span><span style="color:#d08770;">1</span><span style="color:#b48ead;">) </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">box</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">last-child </span><span>{
+</span><span>      margin-left: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">container</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">nth-of-type(</span><span style="color:#d08770;">2</span><span style="color:#b48ead;">) </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">box</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">last-child </span><span>{
+</span><span>      margin-inline-start: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>    }
+</span></code></pre>
+<p>结果：</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625411774281.png" alt="image-20210704231614024" /></p>
+<p>​		可以看出来，当设定正常的文档版本方向时，两者结果是一样的，黄色box都有10px的左边距。因为此时是正常的文档流，inline flow是从左到右，也就是<code>direction: ltr</code>的效果，此时inline flow的方向是这样的：</p>
+<p><code>direction: ltr</code>: </p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625412798241.png" alt="image-20210704233318006" /></p>
+<p>​	我们可以尝试改变一下<code>direction</code>，看看效果：</p>
+<p>CSS代码：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span>	</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">root </span><span>{
+</span><span>      --size: </span><span style="color:#d08770;">100px</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">container </span><span>{
+</span><span>      display: flex;
+</span><span>      margin-top: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>      padding: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>      border: </span><span style="color:#d08770;">1px </span><span>solid </span><span style="color:#96b5b4;">#000</span><span>;
+</span><span>
+</span><span>	  // inline flow修改为从右到左方向
+</span><span>      direction: rtl;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">box </span><span>{
+</span><span>      width: </span><span style="color:#96b5b4;">var</span><span>(--size);
+</span><span>      height: </span><span style="color:#96b5b4;">var</span><span>(--size);
+</span><span>      line-height: </span><span style="color:#96b5b4;">var</span><span>(--size);
+</span><span>      text-align: center;
+</span><span>      background-color: sandybrown;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">container</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">nth-of-type(</span><span style="color:#d08770;">1</span><span style="color:#b48ead;">) </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">box</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">last-child </span><span>{
+</span><span>      margin-left: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">container</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">nth-of-type(</span><span style="color:#d08770;">2</span><span style="color:#b48ead;">) </span><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">box</span><span style="color:#8fa1b3;">:</span><span style="color:#b48ead;">last-child </span><span>{
+</span><span>      margin-inline-start: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>    }
+</span></code></pre>
+<p>结果：</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625412110093.png" alt="" /></p>
+<p>​		很明显可以看出来，第一个container的box设置的是物理属性，当文档排版方向发生改变，布局效果就失去了效果，因为container1下的box元素设定的是物理属性，是固定不变的。而container2下的box设置的逻辑属性会随着排版方向变化的变化，在从右到左的布局中，<code>start</code>变成了右边开始，<code>end</code>变成了左边，所以布局效果不会受到影响。</p>
+<p><code>direction: rtl</code></p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625412710214.png" alt="image-20210704233149969" /></p>
+<p>​		CSS逻辑属性的优势就体现与此，其设定的值能够从逻辑角度（排版方向）控制布局，而不是基于物理维度。</p>
+<h2 id="luo-ji-shu-xing-jie-shao">逻辑属性介绍</h2>
+<p>​		CSS的逻辑属性不仅仅包括<code>margin</code>，下面我们将逐个介绍认识，下面的例子描述都是基于正常的英文文档流，inline flow为从左到右，block flow为从上到下。</p>
+<h3 id="fang-xiang">方向</h3>
+<p>​		传统的定位属性是<code>top</code>，<code>right</code>、<code>bottom</code>和<code>left</code>，基于逻辑属性，我们采用<code>start</code>和<code>end</code>来代替。</p>
+<p>​		比如向右对齐文本:</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#bf616a;">p </span><span>{
+</span><span>    text-align: right;
+</span><span>}
+</span></code></pre>
+<p>​		现在我们采用:</p>
+<pre data-lang="p" style="background-color:#2b303b;color:#c0c5ce;" class="language-p "><code class="language-p" data-lang="p"><span>p </span><span style="color:#65737e;">{
+</span><span style="color:#65737e;">	text-align: end;
+</span><span style="color:#65737e;">}
+</span></code></pre>
+<p>​		同样的，在定位系统中，我们可以使用<code>block-{start|end}</code>和<code>inline-{start|end}</code>属性，比如，基于英文文档排版方向，使元素向上偏移10px，向右偏移20px：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    position: absolute;
+</span><span>    block-start: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>    inline-start: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>}
+</span><span>
+</span></code></pre>
+<p>​		如果是基于物理属性：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    position: absolute;
+</span><span>    top: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>    left: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>}
+</span></code></pre>
+<h3 id="chi-cun">尺寸</h3>
+<p>​		相对应的，元素尺寸也有了新的写法，<code>width</code>改为<code>inline-size</code>代替，<code>height</code>改为<code>block-size</code>，如果我们像限定元素宽200px，高100px，可以这样书写：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    inline-size: </span><span style="color:#d08770;">200px</span><span>;
+</span><span>    block-size: </span><span style="color:#d08770;">100px</span><span>;
+</span><span>}
+</span></code></pre>
+<p>​		不仅如此，最大最小尺寸也可以用逻辑属性来代替，比如限定一个元素最大宽度为150px，最小高度为200px：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    max-inline-size: </span><span style="color:#d08770;">150px</span><span>;
+</span><span>    min-block-size: </span><span style="color:#d08770;">200px</span><span>;
+</span><span>}
+</span></code></pre>
+<h3 id="nei-wai-bian-ju">内外边距</h3>
+<p>​		前文已经提到逻辑属性中的外边距，其实内边距也是一样的，抛弃物理属性后，现在书写边距将会采用<code>{padding|margin}-{block|inline}-{start-end}</code>和<code>{padding|margin}-{block|inline}</code>两种模式的属性书写，我们先来看第一个，比方为元素添加右外边距20px、上外边距10px，同时添加30px下外边距：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    margin-inline-start: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>    margin-block-start: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>    margin-block-end: </span><span style="color:#d08770;">30px</span><span>;
+</span><span>}
+</span></code></pre>
+<p>​		有时候，为每一个属性单独设置值是没有必要的，CSS逻辑属性同时也提供了简写的方式：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    margin-block: </span><span style="color:#d08770;">10px 20px</span><span>;  </span><span style="color:#65737e;">/* 分别设置开始和结束值 */
+</span><span>    margin-block: </span><span style="color:#d08770;">10%</span><span>; </span><span style="color:#65737e;">/* 同时设置开始值和结束值 */
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/* 关键字 值 */
+</span><span>    margin-block: auto;
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/* 全局 值 */
+</span><span>    margin-block: inherit;
+</span><span>    margin-block: initial;
+</span><span>    margin-block: unset;
+</span><span>}
+</span></code></pre>
+<p>​		内边距的属性和外边距是一样的，把<code>margin</code>换成<code>padding</code>即可。</p>
+<h3 id="bian-kuang">边框</h3>
+<p>​		<code>border</code>和<code>border-radius</code>也可以通过CSS逻辑属性设置，比方在底部和右侧添加边框，并在右侧添加5px的<code>border-radius</code>：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    border-bottom: </span><span style="color:#d08770;">1px </span><span>solid red;
+</span><span>  	border-right: </span><span style="color:#d08770;">1px </span><span>solid red;
+</span><span>  	border-bottom-right-radius: </span><span style="color:#d08770;">5px</span><span>;
+</span><span>}
+</span></code></pre>
+<p>​		边框可以设定的参数很多，所以衍生出来的逻辑属性也非常多，在此就不一一罗列了，可以参考<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Logical_Properties#properties_for_margins_borders_and_padding">MDN文档</a>去了解，不管是简写还是具体值设定，都有相关的介绍。</p>
+<h3 id="ding-wei">定位</h3>
+<p>​		前面提到，当<code>top</code>和<code>left</code>等作为物理属性时，可以用相对应的逻辑属性代替。理所当然的，当<code>top</code>、<code>left</code>、<code>right</code>和<code>bottom</code>作为属性名的时候，比如作为定位属性使用的时候，CSS逻辑属性也有提供<code>inset-{block|inline}</code>和<code>inser-{block|inline}-{start|end}</code>两种模式的属性作为代替。比方说这样的样式：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    position: relative;
+</span><span>    top: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>    right: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>}
+</span></code></pre>
+<p>​		可以改为：</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    position: relative;
+</span><span>    inset-block-start: </span><span style="color:#d08770;">20px</span><span>;
+</span><span>    inset-inline-end: </span><span style="color:#d08770;">10px</span><span>;
+</span><span>}
+</span></code></pre>
+<p>​		也可以用简写</p>
+<pre data-lang="css" style="background-color:#2b303b;color:#c0c5ce;" class="language-css "><code class="language-css" data-lang="css"><span style="color:#8fa1b3;">.</span><span style="color:#d08770;">element </span><span>{
+</span><span>    position: relative;
+</span><span>    inset-block: </span><span style="color:#d08770;">20px 0</span><span>;
+</span><span>    inset-inline: </span><span style="color:#d08770;">0 10px</span><span>;
+</span><span>}
+</span></code></pre>
+<h2 id="zong-jie">总结</h2>
+<p>​	下面一张图可以看到逻辑属性和物理属性的对比：</p>
+<p><img src="https://naecoo.github.io/css-logical-properies/./1625841832479.jpg" alt="v2-eaca48e0be9936a6ccdee360be21e994_r" /></p>
+<p>​		我们一直习惯使用物理属性 <code>left</code>、<code>right</code>、<code>top</code>、<code>bottom</code> 描述盒模型，但是这些属性受制于书写模式，一旦书写模式改变，物理属性也随之改变，从而造成问题。但在逻辑属性中却不一样，因为逻辑属性中没有方向性的概念，不受书写模式的干扰。从现在开始，请尽可能的使用逻辑属性，减少使用物理属性，让CSS更加自然、灵活和贴切。</p>
+<p>​		最后，我们看一下CSS逻辑属性的浏览器支持性，请确保你的用户群体浏览器版本属于这一范围:</p>
+<p>​	<img src="https://naecoo.github.io/css-logical-properies/./1625841995642.png" alt="捕获" /></p>
+<h2 id="can-kao">参考</h2>
+<ul>
+<li><a href="https://web.dev/learn/css/logical-properties">css-logical-properties</a></li>
+<li><a href="https://caniuse.com/?search=logic">&quot;logic&quot; | Can I use... Support tables for HTML5, CSS3, etc</a></li>
+<li><a href="https://css-tricks.com/css-logical-properties/">CSS Logical Properties | CSS-Tricks</a></li>
+<li><a href="https://www.smashingmagazine.com/2018/03/understanding-logical-properties-values/">Understanding Logical Properties And Values — Smashing Magazine</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Logical_Properties">CSS 逻辑属性与值 - CSS（层叠样式表） | MDN (mozilla.org)</a></li>
+<li><a href="https://www.zhihu.com/pin/1250489765822078976">CSS逻辑属性和物理属性之间的映射关系</a></li>
+</ul>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/css/"
+      >css</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;esbuild-plugin&#x2F;"
+    ><span class="mr-1.5">←</span><span>实现一个esbuild插件</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;tailwindcss&#x2F;"
+    ><span>对tailwindcss的一些简单看法</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

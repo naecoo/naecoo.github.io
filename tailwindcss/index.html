@@ -1,0 +1,421 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    对tailwindcss的一些简单看法 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="对tailwindcss的一些简单看法" />
+  <meta name="author" content="对tailwindcss的一些简单看法" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;tailwindcss&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">对tailwindcss的一些简单看法</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2021-07-16</time>
+  <span class="mx-1">&middot;</span>
+  <span>6min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#you-dian"
+            >优点</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#ke-ding-zhi-hua-cheng-du-gao"
+                >可定制化程度高</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#bu-xu-yao-guan-li-cssyang-shi"
+                >不需要管理CSS样式</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#ti-gao-liao-kai-fa-de-xiao-lu"
+                >提高了开发的效率</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#feng-fu-de-nei-zhi-te-xing"
+                >丰富的内置特性</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#jian-shao-csswen-jian-ti-ji"
+                >减少css文件体积</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#que-dian"
+            >缺点</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#bu-mei-guan"
+                >不美观</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#xu-yao-dui-uishe-ji-gui-fan-you-yi-ding-de-li-jie"
+                >需要对UI设计规范有一定的理解</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#you-yi-ding-de-shang-shou-cheng-ben"
+                >有一定的上手成本</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#zeng-jia-liao-wei-hu-cheng-ben"
+                >增加了维护成本</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/tailwindcss/#zong-jie"
+            >总结</a
+          >
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><blockquote>
+<p>本文是笔者对于Tailwind的一些简单看法，并不涉及Tailwind的介绍和学习等内容，对于后者而言，网上的资源是非常丰富的，本文不会复述这些内容。</p>
+</blockquote>
+<h2 id="qian-yan">前言</h2>
+<p><a href="https://naecoo.github.io/tailwindcss/%5Btailwindcss.com%5D(https://tailwindcss.com/)">Tailwind</a>是一个用于快速开发界面，原子类优先的css框架，在过去的一年里非常流行，网上的讨论也十分多。如果你没听说过Tailwind和原子css，我们可以看一个例子：</p>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">bg-gray-100 flex-1 p-8 w-1 h-1</span><span>&quot;&gt;Hello World&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>Tailwind提供了包含多个预定义类的css集合，开发者不再需要编写CSS，而是在HTML中直接引用预先定义好的类名，上述的例子就采用了这些类名：</p>
+<ul>
+<li>背景 (bg-gray-100)</li>
+<li>flex布局 (flex-1)</li>
+<li>内边距 (p-8)</li>
+<li>尺寸 (w-1, h-1)</li>
+</ul>
+<p>Tailwind提供了成千上万的预设类名，尽可能包括了所有基础css特性，同时提供了响应式、hover和focus状态、深色模式等等特性。所以开发者不再需要管理css，只需要像乐高积木那样，通过丰富的类名，组合成自己想要的效果</p>
+<h2 id="you-dian">优点</h2>
+<h3 id="ke-ding-zhi-hua-cheng-du-gao">可定制化程度高</h3>
+<p>如果不喜欢Tailwind的默认配置，开发者可以在tailwind.config.js文件中修改，定制主题、响应式断点、颜色、间距等等的配置，甚至，还可以引入第三方的插件和预设，覆盖默认配置。</p>
+<h3 id="bu-xu-yao-guan-li-cssyang-shi">不需要管理CSS样式</h3>
+<p>使用了Taliwind之后，你不再需要编写新的css，也不用再管理css，不用在为class的起名感到烦恼。</p>
+<h3 id="ti-gao-liao-kai-fa-de-xiao-lu">提高了开发的效率</h3>
+<p>Taliwind提供了丰富的原子class，有点像乐高积木，开发者可以通过这些class拼装自己的模型，而不用再手动编写css样式。</p>
+<h3 id="feng-fu-de-nei-zhi-te-xing">丰富的内置特性</h3>
+<p>Taliwind内置了许多有用的特性，比如响应式、动画和深色模式等等，开发者可以基于这些特性快速地开发出UI页面。如果不使用Tailwind，自己手动编写css代码，复杂度会相当高。</p>
+<h3 id="jian-shao-csswen-jian-ti-ji">减少css文件体积</h3>
+<p>Taliwind提供了purge的功能，也就是tree-shaking，可以清除未使用的类名，一般的项目只有10kb左右的css文件。</p>
+<h2 id="que-dian">缺点</h2>
+<h3 id="bu-mei-guan">不美观</h3>
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">div </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">min-w-0 flex-auto space-y-0.5</span><span>&quot;&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">text-lime-600 dark:text-lime-400 text-sm sm:text-base lg:text-sm xl:text-base font-semibold uppercase</span><span>&quot;&gt;
+</span><span>    &lt;</span><span style="color:#bf616a;">abbr </span><span style="color:#d08770;">title</span><span>=&quot;</span><span style="color:#a3be8c;">Episode</span><span>&quot;&gt;Ep.&lt;/</span><span style="color:#bf616a;">abbr</span><span>&gt; 128
+</span><span>  &lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">h2 </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">text-black dark:text-white text-base sm:text-xl lg:text-base xl:text-xl font-semibold truncate</span><span>&quot;&gt;
+</span><span>    Scaling CSS at Heroku with Utility Classes
+</span><span>  &lt;/</span><span style="color:#bf616a;">h2</span><span>&gt;
+</span><span>  &lt;</span><span style="color:#bf616a;">p </span><span style="color:#d08770;">class</span><span>=&quot;</span><span style="color:#a3be8c;">text-gray-500 dark:text-gray-400 text-base sm:text-lg lg:text-base xl:text-lg font-medium</span><span>&quot;&gt;
+</span><span>    Full Stack Radio
+</span><span>  &lt;/</span><span style="color:#bf616a;">p</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">div</span><span>&gt;
+</span></code></pre>
+<p>使用了Taliwind的标签看起来非常凌乱，丑陋...</p>
+<h3 id="xu-yao-dui-uishe-ji-gui-fan-you-yi-ding-de-li-jie">需要对UI设计规范有一定的理解</h3>
+<p>前面我们提到Taliwind的可定制化程度高，可以通过配置文件生成不同的预设，但是前提是UI设计要有一定的规范，否则很容易出现预设值无法覆盖所有尺寸的问题，比如设计师让一张图片圆角设为3px，这时候可能需要单独编写css了，但这也违反了Taliwind的原则。所以，使用Taliwind前，必须要有一套完善的UI设计规范，尽可能保证预设值能覆盖所有属性。</p>
+<h3 id="you-yi-ding-de-shang-shou-cheng-ben">有一定的上手成本</h3>
+<p>尽管Taliwind提供了Tailwind CSS IntelliSense插件，可以帮助开发者输入Tailwind类名，但是Tailwind有成千上百个关键词，对于新人来说仍然有一定的上手成本。同时，Tailwind在不断的迭代，关键词也会出现变动，开发者需要保持关注。</p>
+<h3 id="zeng-jia-liao-wei-hu-cheng-ben">增加了维护成本</h3>
+<p>因为每个class都是独立的，如果要修改，每一个都要去修改，大大增加了维护成本。</p>
+<h2 id="zong-jie">总结</h2>
+<p>总体来说，尽管存在着那么多的缺点，但是瑕不掩瑜，Tailwind仍然是一个十分优秀的css框架，超过800K的周下载量可以说明这一点。</p>
+<p><img src="https://naecoo.github.io/tailwindcss/./1627195641622.png" alt="image-20210725144720847" /></p>
+<p>我的建议是，一方面，对于UI还原没那么重视的项目可以用起来了，比如to B行业的项目、公司内部的项目、私人小项目等等，使用Tailwind开发，可以极大的提高效率；另一方面，Tailwind可以作为UI框架的基础css框架，结合React、Vue、甚至是Web Components等组件化技术，不仅提高了开发效率，而且可以最大化压缩UI框架体积，提高极限性能。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/css/"
+      >css</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;css-logical-properies&#x2F;"
+    ><span class="mr-1.5">←</span><span>CSS逻辑属性</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;obvious&#x2F;"
+    ><span>obvious - 微前端框架分析</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

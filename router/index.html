@@ -1,0 +1,323 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    谈一谈前端路由 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="谈一谈前端路由" />
+  <meta name="author" content="谈一谈前端路由" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;router&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">谈一谈前端路由</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2019-04-14</time>
+  <span class="mx-1">&middot;</span>
+  <span>5min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/router/#qian-yan"
+            >前言</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/router/#he-wei-qian-duan-lu-you"
+                >何谓前端路由</a
+              >
+            </li>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/router/#shi-xian-lu-you"
+                >实现路由</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h2 id="qian-yan">前言</h2>
+<p>在最初的多页面应用中，每一个页面往往都会对应一个具体的url，每当我们切换一次页面，浏览器都会重新发起一次对服务器的请求，然后再重新渲染HTML。后来随着Ajax等技术的发展，SPA逐渐开始流行起来。所谓SPA呢，指的是只加载单个HTML页面的应用，后续的交互只会向服务器请求数据，然后前端通过操作dom，来切换数据相应的视图。但是SPA也存在着一些缺点，由于SPA不会改变url，所以万一不小心刷新了页面，所有的状态都会被销毁，页面又会回到最初的状态。所以我们迫切需要一种机制，把应用的层次结构映射到url中，于是乎，前端路由就诞生了。</p>
+<h3 id="he-wei-qian-duan-lu-you">何谓前端路由</h3>
+<p>说白了，前端路由就是根据不同的url，动态地切换需要显示的视图。但是一般如果我们直接改变url，浏览器会刷新页面。所以一开始的路由利用了url上的hash，因为hash的改变不会导致页面刷新，再加上浏览器又提供了<code>onhashchange</code>这样的事件接口，所以hash路由开始大行其道。但是hash这种模式的路由有一个缺陷，就是url上出现一个#字符，显得很突兀，有人可能会觉得很丑。后面HTML5新增了popstate的接口，我们可以通过history的方法改变url而不刷新页面，然后在<code>onpopstate</code>的事件中执行相应的处理逻辑。所以目前主流的路由是有两种模式，一种是hash，兼容性强但不美观；一张是history，美观但不兼容一些低版本浏览器，而且后端需要额外的处理逻辑。</p>
+<h3 id="shi-xian-lu-you">实现路由</h3>
+<p>下面我们实现一个简单的hash路由：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Router </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">  </span><span style="color:#b48ead;">constructor </span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">routes </span><span>= </span><span style="color:#eff1f5;">{}
+</span><span style="color:#eff1f5;">    window.</span><span style="color:#96b5b4;">addEventListener</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">hashchange</span><span>&#39;</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">change</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">bind</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">    window.</span><span style="color:#96b5b4;">addEventListener</span><span style="color:#eff1f5;">(</span><span>&#39;</span><span style="color:#a3be8c;">load</span><span>&#39;</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">change</span><span style="color:#eff1f5;">.</span><span style="color:#8fa1b3;">bind</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">))
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">  
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">addRoute</span><span>(</span><span style="color:#bf616a;">path </span><span>= &#39;</span><span style="color:#a3be8c;">/</span><span>&#39;</span><span style="color:#eff1f5;">, </span><span style="color:#bf616a;">match</span><span>) </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">routes</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">path</span><span style="color:#eff1f5;">] </span><span>= </span><span style="color:#bf616a;">match
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">  </span><span style="color:#8fa1b3;">change </span><span>() </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">currentUrl </span><span>= </span><span style="color:#bf616a;">location</span><span style="color:#eff1f5;">.hash.</span><span style="color:#96b5b4;">slice</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">1</span><span style="color:#eff1f5;">) </span><span>|| &#39;</span><span style="color:#a3be8c;">/</span><span>&#39;
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">match </span><span>= </span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">routes</span><span style="color:#eff1f5;">[</span><span style="color:#bf616a;">currentUrl</span><span style="color:#eff1f5;">]
+</span><span style="color:#eff1f5;">    </span><span style="color:#bf616a;">match </span><span>&amp;&amp; </span><span style="color:#8fa1b3;">match</span><span style="color:#eff1f5;">()
+</span><span style="color:#eff1f5;">  }
+</span><span style="color:#eff1f5;">}
+</span></code></pre>
+<p>原理很简单，就是根据url的变化来执行对应url的回调函数。如果我们还想要更精细的操作，我们可以在Router内部维护一个记录url变化的数组，这样就可以实现一些编程式的导航方法，比如go，back，push和replace等等。
+再来说一下history路由，history是浏览器提供的一个接口，上面有pushState和replaceState两个方法，其实两个方法差不多，只不过replaceState是取代当前state。这两个方法最关键的是可以无刷新的改变url，就和改变hash值差不多。但是有一点问题就是这两个方法不会触发popstate事件，所以如果利用这点去做编程式的路由跳转，需要去包装这两个方法，在跳转的同时需要触发相应path的回调。除此之外，history还提供了go，back，forward等接口，可以通过JavaScript模拟页面的前进后退等功能。其实大体的实现原理是和hash差不多的，只不过hisotry原生支持了很多功能，而hash需要hack。</p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/javascript/"
+      >javascript</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;bit-operation&#x2F;"
+    ><span>JS中的位运算</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>

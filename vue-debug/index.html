@@ -1,0 +1,411 @@
+<!doctype html>
+<html class="not-ready lg:text-base" lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Title -->
+  <title>
+    如何在生产环境排查 Vue 应用问题 - Naeco&#x27;s blog
+  </title>
+
+  <!-- Meta -->
+  <meta name="theme-color" />
+
+  <!-- Author -->
+  
+  <meta name="description" content="如何在生产环境排查 Vue 应用问题" />
+  <meta name="author" content="如何在生产环境排查 Vue 应用问题" />
+  
+
+  <!-- CSS & JS -->
+  <link rel="preload stylesheet" as="style" href="https://naecoo.github.io/main.css" />
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-dark: #18181b;
+      --header: #e4e4e7;
+      --header-dark: #27272a;
+    }
+  </style>
+
+  
+
+  <!-- Dark Icon -->
+  <link rel="preload" as="image" href="https://naecoo.github.io/icons/theme.svg" />
+
+  <!-- Math -->
+  
+  <!---->
+
+  <!-- Mermaid -->
+  
+  <!---->
+  <script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+  <!---->
+  
+  <!---->
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://naecoo.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://naecoo.github.io/apple-touch-icon.png" />
+
+  <!-- Feeds -->
+  
+  <!---->
+  
+  <link
+    rel="alternate"
+    type="application/atom+xml"
+    title="Atom"
+    href="https://naecoo.github.io/atom.xml"
+  />
+  
+  <!---->
+  
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;vue-debug&#x2F;" />
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header
+  class="header fixed top-0 z-40 mx-auto min-h-[3.5rem] w-full"
+>
+  <div class="mx-auto w-full max-w-4xl p-3 lg:flex lg:justify-between">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        <a class="text-2xl font-semibold" href="https://naecoo.github.io">Naeco&#x27;s blog</a>
+        <div
+          class="btn-dark ml-4 h-6 w-6 shrink-0 cursor-pointer text-[0] [background:url(./icons/theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"
+          role="button"
+          aria-label="Dark"
+        ></div>
+      </div>
+      
+      <div
+        class="btn-menu relative z-50 flex h-8 w-8 shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+        role="button"
+        aria-label="Menu"
+      ></div>
+      
+    </div>
+    <script>
+      // base
+      const htmlClass = document.documentElement.classList;
+      setTimeout(() => {
+        htmlClass.remove("not-ready");
+      }, 10);
+
+      // mobile menu
+      const btnMenu = document.querySelector(".btn-menu");
+      btnMenu?.addEventListener("click", () => {
+        htmlClass.toggle("open");
+      });
+
+      // dark theme
+      const setDark = (isDark) => {
+        htmlClass[isDark ? "add" : "remove"]("dark");
+        localStorage.setItem("dark", isDark);
+      };
+
+      // init
+      const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      if (htmlClass.contains("dark")) {
+        setDark(true);
+      } else {
+        const darkVal = localStorage.getItem("dark");
+        setDark(darkVal ? darkVal === "true" : darkScheme.matches);
+      }
+
+      // listen system
+      darkScheme.addEventListener("change", (event) => {
+        setDark(event.matches);
+      });
+
+      // manual switch
+      const btnDark = document.querySelector(".btn-dark");
+      btnDark.addEventListener("click", () => {
+        setDark(localStorage.getItem("dark") !== "true");
+      });
+    </script>
+    
+    <nav class="flex w-full items-center lg:w-auto">
+      <ul
+        class="nav-wrapper flex w-full flex-col py-2 lg:w-auto lg:flex-row lg:self-center lg:py-0"
+      >
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/archive"
+            >Archive</a
+          >
+        </li>
+        
+        <li>
+          <a
+            class="primary-link block py-2 text-center text-lg font-medium lg:px-3 lg:py-0"
+            href="https://naecoo.github.io/tags"
+            >Tags</a
+          >
+        </li>
+        
+      </ul>
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-4 pb-16 pt-32 dark:prose-invert"
+    >
+      
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">如何在生产环境排查 Vue 应用问题</h1>
+    <div class="text-sm antialiased opacity-60">
+  
+  <time>2022-09-08</time>
+  <span class="mx-1">&middot;</span>
+  <span>6min</span>
+  <!---->
+  
+  <!---->
+  
+  <span class="mx-1">&middot;</span>
+  <span>naeco</span>
+  
+</div>
+
+  </header>
+
+  
+
+  <!-- TOC -->
+  <!---->
+<div class="block-bg mb-12 flex rounded-lg p-2 text-lg">
+  <details>
+    <summary class="cursor-pointer py-1 pl-4">
+      <span>Table of Contents</span>
+    </summary>
+    <div class="px-2">
+      <ul>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-debug/#qian-yan"
+            >前言</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-debug/#vueshi-li"
+            >vue实例</a
+          >
+          
+        </li>
+        
+        <li>
+          <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-debug/#vue-devtools"
+            >vue-devtools</a
+          >
+          
+          <ul>
+            
+            <li>
+              <a class="no-underline hover:underline" href="https://naecoo.github.io/vue-debug/#wu-fa-zhong-xin-gou-jian"
+                >无法重新构建</a
+              >
+            </li>
+            
+          </ul>
+          
+        </li>
+        
+      </ul>
+    </div>
+  </details>
+</div>
+
+<!---->
+
+  <!-- Content -->
+  <section><h3 id="qian-yan">前言</h3>
+<p>很多时候，我们没有完整的测试环境，或者不能在测试环境复现问题，因此不得不在生产环境上面排查问题。在生产环境上，我们可供使用的工具就显得捉襟见肘了，除了打开网页控制台，看一下network、elements之外，我们还能做些什么呢？没关系，今天就跟随本文学习几种方法（主要针对Vue应用）。</p>
+<h3 id="vueshi-li">vue实例</h3>
+<p>很多人不知道，vue 会在挂载的 DOM 节点上设置一个属性，指向对应的 vue 实例。</p>
+<p>我们可以查看相关的源代码：</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1668939732307.png" alt="image-20221120182205123" /></p>
+<blockquote>
+<p>vue 2.x</p>
+</blockquote>
+<p><img src="https://naecoo.github.io/vue-debug/./1668939584579.png" alt="image-20221120181944288" /></p>
+<p><strong>所以我们可以这样获取实例</strong></p>
+<p><img src="https://naecoo.github.io/vue-debug/./1668939236088.png" alt="image-20221120181355719" /></p>
+<p><img src="https://naecoo.github.io/vue-debug/./1668939309157.png" alt="image-20221120181508892" /></p>
+<p>我们可以通过 <code>__vue_app__</code> 这个字段获取到 vue 实例，这样子我们就可以获取到组件的状态，查看是否有和预期不一致的现象，从而发现问题。 <code>__vue_app__</code>是 vue 3.x 版本设置的，针对 2.x 版本，我们可以使用 <code>__vue__</code>。</p>
+<h3 id="vue-devtools">vue-devtools</h3>
+<p><code>vue-devtools </code>  是 vue 官方提供的一个浏览器插件，帮助我们调试 vue 应用，通过这个插件，我们观察应用的结构、状态、事件等等。但是默认情况下，这个插件只会在本地开发环境开启，部署到线上就不能使用了。</p>
+<p>我们可以通过一些设定，让devtools在线上的环境也能使用，例如：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#65737e;">// vite.config.js
+</span><span>
+</span><span style="color:#65737e;">// https://vitejs.dev/config/
+</span><span style="color:#b48ead;">export default </span><span style="color:#8fa1b3;">defineConfig</span><span>({
+</span><span>  plugins: [</span><span style="color:#8fa1b3;">vue</span><span>()],
+</span><span>  define: {
+</span><span>    </span><span style="color:#65737e;">// 开启 vue-devtools
+</span><span>    &#39;</span><span style="color:#a3be8c;">__VUE_PROD_DEVTOOLS__</span><span>&#39;: </span><span style="color:#d08770;">true
+</span><span>  }
+</span><span>})
+</span><span>
+</span></code></pre>
+<p>使用其它构建工具也可以修改，请查看具体<a href="https://github.com/vuejs/core/tree/main/packages/vue#bundler-build-feature-flags">文档</a></p>
+<p>如果是 vue 2.x 版本，不用修改构建配置，直接在 <code>main.js</code> 中添加一句代码即可：</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#bf616a;">app</span><span>.</span><span style="color:#bf616a;">config</span><span>.</span><span style="color:#bf616a;">devtools </span><span>= </span><span style="color:#d08770;">true</span><span>;
+</span></code></pre>
+<p>修改完配置后，重新构建代码，部署到线上环境，就可以正常使用 <code>vue-devtools</code> 了。</p>
+<h4 id="wu-fa-zhong-xin-gou-jian">无法重新构建</h4>
+<p>还有一种极端的情况，我们<strong>无法重新部署生产环境</strong>，因此修改配置，重新构建、部署这一条路走不通。那么这种情况，我们应该怎么处理呢？</p>
+<p>vue 2.x 版本的比较容易解决，因为这个版本 devtools 工具是通过运行时的配置来开启的，我们可以在生产环境通过调试工具修改配置。具体操作步骤：</p>
+<ol>
+<li>打开网页控制台 - source，找到网站对应的静态资源，这里的 js 文件可能会很多，我们需要找到 vue 对应的源文件。</li>
+</ol>
+<p><img src="https://naecoo.github.io/vue-debug/./1669032712273.png" alt="image-20221121201151897" /></p>
+<ol start="2">
+<li>
+<p>点击源文件，格式化</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669032807725.png" alt="image-20221121201327434" /></p>
+</li>
+<li>
+<p>筛选出 devtools 配置，找到对应的代码片段</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669032922056.png" alt="image-20221121201521780" /></p>
+</li>
+<li>
+<p>打一个断点</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669032977155.png" alt="image-20221121201616885" /></p>
+</li>
+<li>
+<p>然后刷新浏览器，此时会在断点这里暂停</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669033019070.png" alt="image-20221121201658780" /></p>
+</li>
+<li>
+<p>在代码执行暂停期间，我们在 Console 手动修改配置，执行以下的代码</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669033186339.png" alt="image-20221121201946080" /></p>
+</li>
+<li>
+<p>最后恢复断点，关闭控制台，再重新打开，就可以看到 <code>vue-devtools</code> 正常启用了</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669033247463.png" alt="image-20221121202047188" /></p>
+</li>
+</ol>
+<p>这种方法有个缺点，每次刷新或者重新进入网页，都会重置状态，又要重新走一遍步骤。针对这个问题，<strong>我们可以使用网页代理工具，比如 <a href="https://www.telerik.com/fiddler">Fiddler</a> 和 <a href="https://www.charlesproxy.com/">Charles</a> 等，配置规则，拦截网页、修改 JS 内容</strong>。</p>
+<p>有没有更加简单的方式呢？其实有的，阅读源码后我们可以发现 vue 开启 devtools的关键代码：</p>
+<p><img src="https://naecoo.github.io/vue-debug/./1669130076361.png" alt="image-20221122231435994" /></p>
+<p>因此我们也可以用这种方式开启 devtools</p>
+<pre data-lang="javascript" style="background-color:#2b303b;color:#c0c5ce;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>(</span><span style="color:#b48ead;">function </span><span>() {
+</span><span>  </span><span style="color:#65737e;">// 随便获取一个 vue 组件
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">app</span><span>;
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">all </span><span>= document.</span><span style="color:#96b5b4;">querySelectorAll</span><span>(&quot;</span><span style="color:#a3be8c;">*</span><span>&quot;);
+</span><span>  </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">i </span><span>= </span><span style="color:#d08770;">0</span><span>; </span><span style="color:#bf616a;">i </span><span>&lt; </span><span style="color:#bf616a;">all</span><span>.length; </span><span style="color:#bf616a;">i</span><span>++) {
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">all</span><span>[</span><span style="color:#bf616a;">i</span><span>].</span><span style="color:#bf616a;">__vue__</span><span>) {
+</span><span>      </span><span style="color:#bf616a;">app </span><span>= </span><span style="color:#bf616a;">all</span><span>[</span><span style="color:#bf616a;">i</span><span>].</span><span style="color:#bf616a;">__vue__</span><span>;
+</span><span>      </span><span style="color:#b48ead;">break</span><span>;
+</span><span>    }
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">app</span><span>) </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 获取 Vue 基类
+</span><span>  </span><span style="color:#b48ead;">let </span><span style="color:#bf616a;">Vue </span><span>= </span><span style="color:#ebcb8b;">Object</span><span>.</span><span style="color:#8fa1b3;">getPrototypeOf</span><span>(</span><span style="color:#bf616a;">app</span><span>).constructor;
+</span><span>  </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#bf616a;">super</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">Vue </span><span>= </span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#bf616a;">super</span><span>;
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// 参考源码，手动开启 devtools
+</span><span>  </span><span style="color:#b48ead;">const </span><span style="color:#bf616a;">devtools </span><span>= window.</span><span style="color:#bf616a;">__VUE_DEVTOOLS_GLOBAL_HOOK__</span><span>;
+</span><span>  </span><span style="color:#bf616a;">Vue</span><span>.</span><span style="color:#bf616a;">config</span><span>.</span><span style="color:#bf616a;">devtools </span><span>= </span><span style="color:#d08770;">true</span><span>;
+</span><span>  </span><span style="color:#bf616a;">devtools</span><span>.</span><span style="color:#8fa1b3;">emit</span><span>(&quot;</span><span style="color:#a3be8c;">init</span><span>&quot;, </span><span style="color:#bf616a;">Vue</span><span>);
+</span><span>  </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span>;
+</span><span>})();
+</span></code></pre>
+<p>拷贝上面的代码到控制台执行，然后关闭控制台重新打开，就可以开启 <code>vue-devtools</code> 了。</p>
+<p>因为 3.x 版本将 devtools 改为编译的配置了，又因为 tree-shaking 的作用， <code>vue-devtools</code> 相关的代码都被清理掉了，所以我们不能用同样的方式开启调试工具，就算可以开启，大部分功能也是不能正常使用的。</p>
+<p><strong>社区上也有人基于同样的机制，制作了一个 <a href="https://chrome.google.com/webstore/detail/oohfffedbkbjnbpbbedapppafmlnccmb/reviews">浏览器插件</a>，使用这个插件，不用这些繁琐的操作，直接在生产环境上开启 <code>vue-devtools</code>。</strong></p>
+</section>
+
+  <hr />
+
+  <!-- Post Taxonomies -->
+  
+<footer class="mt-12 flex flex-col">
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  
+  <div class="mb-2 flex flex-wrap">
+    <span class="block-bg mb-1.5 mr-1.5 rounded-lg px-5 py-1.5">Tags </span>
+    
+    <a
+      class="block-bg block-hover mb-1.5 mr-1.5 rounded-lg px-5 py-1.5 no-underline"
+      href="https://naecoo.github.io/tags/vue/"
+      >vue</a
+    >
+    
+  </div>
+  
+</footer>
+
+<!---->
+
+  <!-- Post Nav -->
+  
+<nav class="block-bg mt-12 flex rounded-lg text-lg">
+  
+  <a
+    class="block-hover-mask flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;petite-vue&#x2F;"
+    ><span class="mr-1.5">←</span><span>petite-vue 框架分析</span></a
+  >
+  <!---->
+  
+  <a
+    class="block-hover-mask ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline"
+    href="https:&#x2F;&#x2F;naecoo.github.io&#x2F;life-is-not-short&#x2F;"
+    ><span>人生并不短暂</span><span class="ml-1.5">→</span></a
+  >
+  
+</nav>
+
+<!---->
+
+  <!-- Comment -->
+  
+</article>
+
+    </main>
+
+    <footer class="mx-auto flex max-w-3xl flex-wrap items-center px-8 py-4 text-sm opacity-60">
+  <div class="mr-auto basis-full lg:basis-1/2">
+    &copy;  2024
+    <a class="link" href="https://naecoo.github.io"
+      >naeco</a
+    >
+    
+  </div>
+  <div class="flex basis-full lg:basis-1/2 lg:justify-end">
+    <a class="link mr-6 lg:ml-6" href="https://www.getzola.org/" rel="noopener" target="_blank"
+      >Powered by Zola</a
+    >
+    <a class="link" href="https://github.com/st1020/kita" rel="noopener" target="_blank">✎ Kita</a>
+  </div>
+</footer>
+
+  </body>
+</html>
